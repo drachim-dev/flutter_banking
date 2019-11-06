@@ -4,6 +4,7 @@ import 'package:flutter_banking/model/user.dart';
 import 'package:flutter_banking/model/user_location.dart';
 import 'package:flutter_banking/services/authentication_service.dart';
 import 'package:flutter_banking/services/location_service.dart';
+import 'package:flutter_banking/services/theme_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_banking/router.dart';
 import 'package:flutter_banking/locator.dart';
@@ -15,25 +16,18 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
 
   // get theme from SharedPreferences
-  ThemeData theme;
-  switch (prefs.getString('theme')) {
-    case 'Dark':
-      theme = MyTheme.dark;
-      break;
-    default:
-      theme = MyTheme.light;
-      break;
-  }
+  ThemeData theme = MyTheme.getThemeFromName(prefs.getString('theme'));
 
   setupLocator();
-  runApp(MyApp(theme: theme));
+  runApp(
+    ChangeNotifierProvider<ThemeNotifier>(
+      builder: (_) => ThemeNotifier(theme),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  final ThemeData theme;
-
-  const MyApp({Key key, @required this.theme}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -50,7 +44,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        theme: theme,
+        theme: Provider.of<ThemeNotifier>(context).theme,
         onGenerateRoute: Router.generateRoute,
         initialRoute: Router.LoginViewRoute,
       ),

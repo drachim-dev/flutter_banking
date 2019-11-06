@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/dimensions.dart';
+import 'package:flutter_banking/common/my_theme.dart';
+import 'package:flutter_banking/services/theme_notifier.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferencesView extends StatefulWidget {
@@ -111,12 +114,17 @@ class _PreferencesViewState extends State<PreferencesView> {
 
   void setTheme(String value) async {
     final SharedPreferences prefs = await _prefs;
+    prefs.setString('theme', value);
+
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+    themeNotifier.setTheme(MyTheme.getThemeFromName(value));
 
     setState(() {
       _selectedTheme = prefs.setString('theme', value).then((bool success) {
         return value;
       });
     });
+
   }
 
   Widget _buildTransactionNotifier() {
