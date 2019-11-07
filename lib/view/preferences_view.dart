@@ -11,61 +11,62 @@ class PreferencesView extends StatefulWidget {
 }
 
 class _PreferencesViewState extends State<PreferencesView> {
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  Future<SharedPreferences> _prefsFuture = SharedPreferences.getInstance();
+  SharedPreferences _prefs;
+
+  String _selectedTheme = 'Light';
 
   bool _notifyOnTransaction = true;
   bool _notifyOnDocument = false;
 
-  Future<String> _selectedTheme;
-
   @override
   void initState() {
     super.initState();
-    _selectedTheme = _prefs.then((SharedPreferences prefs) {
-      return (prefs.getString('theme') ?? 'light');
-    });
+    loadPreferences();
   }
 
-  @override
-  void setState(fn) {
-    super.setState(fn);
+  void loadPreferences() {
+    _prefsFuture.then((prefs) {
+      _selectedTheme = prefs.getString('theme') ?? _selectedTheme;
+      _notifyOnTransaction =
+          prefs.getBool('notifyOnTransaction') ?? _notifyOnTransaction;
+      _notifyOnDocument =
+          prefs.getBool('notifyOnDocument') ?? _notifyOnDocument;
+
+      _prefs = prefs;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text('Settings'),
-        ),
-        body: ListView(
-          padding: const EdgeInsets.symmetric(
-              horizontal: Dimensions.horizontalPadding,
-              vertical: Dimensions.listVerticalPadding),
-          children: <Widget>[
-            _buildGroup(context, 'Allgemein'),
-            FutureBuilder(
-              future: _selectedTheme,
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return const CircularProgressIndicator();
-                  default:
-                    if (snapshot.hasError)
-                      return Text('Error: ${snapshot.error}');
-                    else
-                      return _buildThemeSelector(snapshot.data);
-                }
-              },
-            ),
-            _buildGroup(context, 'Benachrichtungen'),
-            _buildTransactionNotifier(),
-            _buildDocumentNotifier(),
-            _buildGroup(context, 'Service'),
-            _buildAddressChange(),
-            _buildLockCard(),
-          ],
-        ));
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text('Settings'),
+      ),
+      body: FutureBuilder(
+        future: _prefsFuture,
+        builder: (context, snapshot) {
+          return snapshot.hasData
+              ? ListView(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Dimensions.horizontalPadding,
+                      vertical: Dimensions.listVerticalPadding),
+                  children: <Widget>[
+                    _buildGroup(context, 'General'),
+                    _buildThemeSelector(),
+                    _buildGroup(context, 'Notifications'),
+                    _buildTransactionNotifier(),
+                    _buildDocumentNotifier(),
+                    _buildGroup(context, 'Service'),
+                    _buildAddressChange(),
+                    _buildLockCard(),
+                  ],
+                )
+              : Center(child: CircularProgressIndicator());
+        },
+      ),
+    );
   }
 
   Widget _buildGroup(BuildContext context, String label) {
@@ -80,15 +81,15 @@ class _PreferencesViewState extends State<PreferencesView> {
     );
   }
 
-  Widget _buildThemeSelector(String selectedTheme) {
+  Widget _buildThemeSelector() {
     return ListTile(
         title: Text('Design'),
-        subtitle: Text(selectedTheme),
+        subtitle: Text(_selectedTheme),
         leading: Icon(Icons.color_lens),
-        onTap: () async => showThemeDialog(selectedTheme));
+        onTap: () async => showThemeDialog());
   }
 
-  showThemeDialog(String selectedTheme) {
+  showThemeDialog() {
     return showDialog(
         context: context,
         builder: (context) => StatefulBuilder(
@@ -99,12 +100,12 @@ class _PreferencesViewState extends State<PreferencesView> {
                     children: <Widget>[
                       RadioListTile(
                           title: Text('Light'),
-                          groupValue: selectedTheme,
+                          groupValue: _selectedTheme,
                           value: 'Light',
                           onChanged: (value) => setTheme(value)),
                       RadioListTile(
                           title: Text('Dark'),
-                          groupValue: selectedTheme,
+                          groupValue: _selectedTheme,
                           value: 'Dark',
                           onChanged: (value) => setTheme(value)),
                     ],
@@ -113,26 +114,22 @@ class _PreferencesViewState extends State<PreferencesView> {
   }
 
   void setTheme(String value) async {
-    final SharedPreferences prefs = await _prefs;
-    prefs.setString('theme', value);
-
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     themeNotifier.setTheme(MyTheme.getThemeFromName(value));
 
+    _prefs.setString('theme', value);
     setState(() {
-      _selectedTheme = prefs.setString('theme', value).then((bool success) {
-        return value;
-      });
+      _selectedTheme = value;
     });
-
   }
 
   Widget _buildTransactionNotifier() {
     return SwitchListTile(
-        title: Text('Kontomelder'),
+        title: Text('Spending'),
         secondary: Icon(Icons.monetization_on),
         value: _notifyOnTransaction,
         onChanged: (bool value) {
+          _prefs.setBool('notifyOnTransaction', value);
           setState(() {
             _notifyOnTransaction = value;
           });
@@ -141,10 +138,11 @@ class _PreferencesViewState extends State<PreferencesView> {
 
   Widget _buildDocumentNotifier() {
     return SwitchListTile(
-        title: Text('Postbox'),
+        title: Text('Inbox'),
         secondary: Icon(Icons.mail),
         value: _notifyOnDocument,
         onChanged: (bool value) {
+          _prefs.setBool('notifyOnDocument', value);
           setState(() {
             _notifyOnDocument = value;
           });
@@ -153,7 +151,7 @@ class _PreferencesViewState extends State<PreferencesView> {
 
   Widget _buildAddressChange() {
     return ListTile(
-      title: Text('Adressänderung'),
+      title: Text('Change address'),
       leading: Icon(Icons.home),
       onTap: () {},
     );
@@ -161,7 +159,7 @@ class _PreferencesViewState extends State<PreferencesView> {
 
   Widget _buildLockCard() {
     return ListTile(
-      title: Text('Karte sperren'),
+      title: Text('Lock card'),
       leading: Icon(Icons.lock),
       onTap: () {},
     );
