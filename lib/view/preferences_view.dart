@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/dimensions.dart';
+import 'package:flutter_banking/common/keys.dart';
 import 'package:flutter_banking/common/my_theme.dart';
 import 'package:flutter_banking/services/theme_notifier.dart';
 import 'package:provider/provider.dart';
@@ -27,11 +28,11 @@ class _PreferencesViewState extends State<PreferencesView> {
 
   void loadPreferences() {
     _prefsFuture.then((prefs) {
-      _selectedTheme = prefs.getString('theme') ?? _selectedTheme;
+      _selectedTheme = prefs.getString(Keys.pref_theme) ?? _selectedTheme;
       _notifyOnTransaction =
-          prefs.getBool('notifyOnTransaction') ?? _notifyOnTransaction;
+          prefs.getBool(Keys.pref_notify_on_transaction) ?? _notifyOnTransaction;
       _notifyOnDocument =
-          prefs.getBool('notifyOnDocument') ?? _notifyOnDocument;
+          prefs.getBool(Keys.pref_notify_on_document) ?? _notifyOnDocument;
 
       _prefs = prefs;
     });
@@ -117,7 +118,7 @@ class _PreferencesViewState extends State<PreferencesView> {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
     themeNotifier.setTheme(MyTheme.getThemeFromName(value));
 
-    _prefs.setString('theme', value);
+    _prefs.setString(Keys.pref_theme, value);
     setState(() {
       _selectedTheme = value;
     });
@@ -129,7 +130,7 @@ class _PreferencesViewState extends State<PreferencesView> {
         secondary: Icon(Icons.monetization_on),
         value: _notifyOnTransaction,
         onChanged: (bool value) {
-          _prefs.setBool('notifyOnTransaction', value);
+          _prefs.setBool(Keys.pref_notify_on_transaction, value);
           setState(() {
             _notifyOnTransaction = value;
           });
@@ -142,7 +143,7 @@ class _PreferencesViewState extends State<PreferencesView> {
         secondary: Icon(Icons.mail),
         value: _notifyOnDocument,
         onChanged: (bool value) {
-          _prefs.setBool('notifyOnDocument', value);
+          _prefs.setBool(Keys.pref_notify_on_document, value);
           setState(() {
             _notifyOnDocument = value;
           });
