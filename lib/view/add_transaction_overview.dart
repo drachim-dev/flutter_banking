@@ -223,20 +223,25 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
               ),
             ),
           ])),
-      Align(
-        alignment: Alignment.bottomCenter,
-        child: RaisedButton(
-          onPressed: () {
-            setState(() {
-              _isSending = true;
-            });
-            Future.delayed(Duration(seconds: 2), () {
+      Positioned(
+        bottom: 0,
+        left: 0,
+        right: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: RaisedButton(
+            onPressed: () {
               setState(() {
-                _isSuccess = true;
+                _isSending = true;
               });
-            });
-          },
-          child: Text('Transfer now'),
+              Future.delayed(Duration(seconds: 2), () {
+                setState(() {
+                  _isSuccess = true;
+                });
+              });
+            },
+            child: Text('Transfer now'),
+          ),
         ),
       ),
       if (_isSending || _isSuccess)

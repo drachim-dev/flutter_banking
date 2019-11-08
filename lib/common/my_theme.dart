@@ -50,5 +50,4 @@ class MyTheme {
         return light;
     }
   }
-  
 }

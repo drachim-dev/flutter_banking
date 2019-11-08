@@ -107,7 +107,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
                                               horizontal: 20, vertical: 4),
                                       leading: Icon(Icons.person_add),
                                       title: Text('Add new contact'),
-                                      onTap: () {},
+                                      onTap: () => Navigator.of(context).pushNamed(Router.AddContactViewRoute),
                                     ),
                                     ListGroupHeader(
                                         context: context,
