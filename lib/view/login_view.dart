@@ -94,12 +94,12 @@ class _LoginViewState extends State<LoginView> {
         _loginSuccess = await model.authenticateWithBiometrics();
         if (_loginSuccess) startHome();
       },
-      icon: Icon(Icons.fingerprint, color: MyColor.primaryColor),
+      icon: Icon(Icons.fingerprint, color: MyColor.olbPrimary),
     );
   }
 
   Widget _buildBottomColorBar() {
-    return Container(height: 25, color: MyColor.primaryColor);
+    return Container(height: 25, color: MyColor.olbPrimary);
   }
 
   void startHome() {

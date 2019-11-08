@@ -35,7 +35,7 @@ class _HomeViewState extends State<HomeView>
   Widget _buildNavigationBarItem(int index, IconData iconData) {
     final ThemeData theme = Theme.of(context);
     final Color itemColor =
-        index == _selectedIndex ? MyColor.accentColor : theme.iconTheme.color;
+        index == _selectedIndex ? theme.indicatorColor : theme.iconTheme.color;
 
     return Expanded(
       child: IconButton(

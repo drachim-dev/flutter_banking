@@ -4,22 +4,38 @@ import 'package:flutter_banking/common/colors.dart';
 class MyTheme {
   static final ThemeData light = ThemeData(
     brightness: Brightness.light,
-    primarySwatch: Colors.green,
-    primaryColor: MyColor.primaryColor,
-    // backgroundColor: const Color(0xFFE5E5E5),
-    accentColor: MyColor.accentColor,
-    accentIconTheme: IconThemeData(color: Colors.white),
-    // dividerColor: Colors.white54
+    primaryColor: MyColor.olbPrimary,
+    accentColor: MyColor.olbAccent,
+    accentColorBrightness: Brightness.light,
+    textSelectionColor: MyColor.olbPrimary.withAlpha(100),
   );
 
   static final ThemeData dark = ThemeData(
     brightness: Brightness.dark,
-    primaryColor: MyColor.primaryColor,
-    // backgroundColor: const Color(0xFF212121),
-    accentColor: MyColor.accentColor,
-    accentIconTheme: IconThemeData(color: Colors.black),
-    // dividerColor: Colors.black12,
-    appBarTheme: AppBarTheme(color: Colors.grey[900]),
+    primaryColor: MyColor.darkGrey,
+    accentColor: MyColor.olbAccent,
+    accentColorBrightness: Brightness.light,
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: MyColor.olbPrimary,
+      foregroundColor: Colors.white,
+    ),
+    bottomAppBarColor: MyColor.darkGrey,
+    toggleableActiveColor: MyColor.olbAccent,
+    buttonTheme: ButtonThemeData(
+      buttonColor: MyColor.olbPrimary,
+    ),
+    indicatorColor: MyColor.olbAccent,
+    textSelectionColor: MyColor.olbAccent.withAlpha(100),
+    cursorColor: MyColor.lightGrey,
+    inputDecorationTheme: InputDecorationTheme(
+      border: UnderlineInputBorder(),
+    ),
+  );
+
+  static final ThemeData black = dark.copyWith(
+    scaffoldBackgroundColor: Colors.black,
+    dialogBackgroundColor: MyColor.darkGrey,
+    primaryColor: Colors.black,
   );
 
   static ThemeData getThemeFromName(String themeName) {
@@ -28,6 +44,8 @@ class MyTheme {
         return light;
       case 'Dark':
         return dark;
+      case 'Black':
+        return black;
       default:
         return light;
     }

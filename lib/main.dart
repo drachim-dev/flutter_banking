@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_banking/common/keys.dart';
 import 'package:flutter_banking/common/my_theme.dart';
 import 'package:flutter_banking/model/user.dart';
 import 'package:flutter_banking/model/user_location.dart';
@@ -16,7 +17,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
 
   // get theme from SharedPreferences
-  ThemeData theme = MyTheme.getThemeFromName(prefs.getString('theme'));
+  ThemeData theme = MyTheme.getThemeFromName(prefs.getString(Keys.pref_theme));
 
   setupLocator();
   runApp(

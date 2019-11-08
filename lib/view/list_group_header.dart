@@ -15,19 +15,22 @@ class ListGroupHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
-    final TextStyle groupHeaderTextStyle =
-        themeData.textTheme.subhead.copyWith(color: Colors.black);
+    final ThemeData theme = Theme.of(context);
+    final bool isDark = theme.brightness == Brightness.dark;
+
+    final TextStyle textStyle =
+        theme.textTheme.subhead;
+    final Color backgroundColor = isDark ? MyColor.darkGrey : MyColor.transparentOlbPrimary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Dimensions.listGroupHeaderPaddingVertical),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        color: MyColor.groupHeaderColor,
+        color: backgroundColor,
         child: Row(children: <Widget>[
-          Expanded(child: Text(leadingText, style: groupHeaderTextStyle)),
+          Expanded(child: Text(leadingText, style: textStyle)),
           if (trailingText != null)
-            Text(trailingText, style: groupHeaderTextStyle),
+            Text(trailingText, style: textStyle),
         ]),
       ),
     );

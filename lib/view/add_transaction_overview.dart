@@ -95,16 +95,14 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
     final ThemeData theme = Theme.of(context);
     final TextStyle amountTextStyle =
         theme.textTheme.title.copyWith(color: Colors.white);
-    final Color amountBgColor = MyColor.primaryColor;
+    final Color amountBgColor = MyColor.olbPrimary;
 
     const double contentPadding = 16.0;
 
     return Stack(children: [
       Scaffold(
           appBar: TransparentAppBar(
-            title: Text('Validate and send',
-                style: theme.textTheme.title.copyWith(color: Colors.black)),
-            iconTheme: theme.iconTheme.copyWith(color: Colors.black),
+            title: Text('Validate and send'),
           ),
           body: ListView(padding: const EdgeInsets.all(8), children: <Widget>[
             Stack(
@@ -247,7 +245,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
           child: WillPopScope(
               onWillPop: () async => false,
               child: Scaffold(
-                  backgroundColor: MyColor.lighterGrey.withOpacity(0.8),
+                  backgroundColor: theme.scaffoldBackgroundColor.withOpacity(0.9),
                   body: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
@@ -267,7 +265,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                               secondChild: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Icon(Icons.check_circle,
-                                    color: MyColor.primaryColor, size: 48),
+                                    color: MyColor.olbPrimary, size: 48),
                               ),
                               duration: Duration(milliseconds: 500),
                               crossFadeState: _isSuccess
@@ -279,7 +277,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                       ),
                       if (_isSuccess)
                         Container(
-                          color: MyColor.primaryColor,
+                          color: MyColor.olbPrimary,
                           child: IntrinsicHeight(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -109,6 +109,11 @@ class _PreferencesViewState extends State<PreferencesView> {
                           groupValue: _selectedTheme,
                           value: 'Dark',
                           onChanged: (value) => setTheme(value)),
+                      RadioListTile(
+                          title: Text('Black'),
+                          groupValue: _selectedTheme,
+                          value: 'Black',
+                          onChanged: (value) => setTheme(value)),
                     ],
                   )),
             ));
