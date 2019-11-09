@@ -10,7 +10,7 @@ class MyColor {
   static final Color darkGrey = Colors.grey[900];
 
   static const Color olbPrimary = const Color(0xff007858);
-  static const Color olbAccent = Colors.deepOrangeAccent;
+  static const Color olbAccent = const Color(0xffff8b02);
 
   static final Color transparentOlbPrimary = olbPrimary.withOpacity(0.10);
   static final Color transparentOlbAccent = olbAccent.withOpacity(0.10);

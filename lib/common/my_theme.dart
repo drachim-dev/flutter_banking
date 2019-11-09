@@ -6,7 +6,7 @@ class MyTheme {
     brightness: Brightness.light,
     primaryColor: MyColor.olbPrimary,
     accentColor: MyColor.olbAccent,
-    accentColorBrightness: Brightness.light,
+    accentColorBrightness: Brightness.dark,
     textSelectionColor: MyColor.olbPrimary.withAlpha(100),
   );
 
@@ -29,6 +29,10 @@ class MyTheme {
     cursorColor: MyColor.lightGrey,
     inputDecorationTheme: InputDecorationTheme(
       border: UnderlineInputBorder(),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: MyColor.darkGrey,
+      modalBackgroundColor: MyColor.darkGrey,
     ),
   );
 

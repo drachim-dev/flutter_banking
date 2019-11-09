@@ -83,6 +83,10 @@ class _LoginViewState extends State<LoginView> {
         errorText: _errorText,
         prefixIcon: Icon(Icons.lock),
         contentPadding: const EdgeInsets.all(18),
+        suffix: IconButton(
+          icon: Icon(Icons.send, color: Theme.of(context).accentColor),
+          onPressed: () => _validatePassword(model, _controller.text),
+        )
       ),
     );
   }

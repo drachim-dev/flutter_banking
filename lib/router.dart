@@ -17,8 +17,8 @@ import 'package:flutter_banking/view/undefined_view.dart';
 
 class Router {
 
-  static const String LoginViewRoute = '/login';
-  static const String HomeViewRoute = '/';
+  static const String LoginViewRoute = '/';
+  static const String HomeViewRoute = '/home';
   static const String SpendingViewRoute = '/home/spending/list';
   static const String AccountViewRoute = '/home/account/list';
   static const String MapViewRoute = '/home/map';

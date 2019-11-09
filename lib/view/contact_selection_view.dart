@@ -102,10 +102,14 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
                                       CrossAxisAlignment.stretch,
                                   children: <Widget>[
                                     ListTile(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 4),
-                                      leading: Icon(Icons.person_add),
+                                      contentPadding: const EdgeInsets.symmetric(
+                                          horizontal:
+                                          Dimensions.listItemPaddingHorizontal,
+                                          vertical: 4),
+                                      leading: Container(
+                                          padding: const EdgeInsets.all(12),
+                                          child: Icon(Icons.person_add),
+                                      ),
                                       title: Text('Add new contact'),
                                       onTap: () => Navigator.of(context).pushNamed(Router.AddContactViewRoute),
                                     ),
