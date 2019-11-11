@@ -8,10 +8,13 @@ import 'package:flutter_banking/model/viewstate.dart';
 import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/model/branch.dart';
 import 'package:flutter_banking/model/user_location.dart';
+import 'package:flutter_banking/services/theme_notifier.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/viewmodel/map_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+
+import 'package:flutter/services.dart' show rootBundle;
 
 class MapView extends StatefulWidget {
   @override
@@ -47,6 +50,10 @@ class _MapViewState extends State<MapView> {
         position: LatLng(53.1330698, 8.1954535)),
   ];
 
+  GoogleMapController _mapController;
+  String _mapStyle, _nightStyle;
+  bool _nightMode = false;
+
   Set<Marker> markers = {};
   String _filter = 'Alle';
 
@@ -54,11 +61,10 @@ class _MapViewState extends State<MapView> {
   void initState() {
     super.initState();
 
+    // set markers
     Future<BitmapDescriptor> future = BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/institute/olb-small.png');
-    future.then((markerIcon) => {
-
-    });
+        ImageConfiguration(), 'assets/images/institute/olb-small.png');
+    future.then((markerIcon) => {});
 
     Set<Marker> _markers = branches.map((branch) {
       return Marker(
@@ -72,11 +78,48 @@ class _MapViewState extends State<MapView> {
     });
   }
 
+  void _onThemeChange() => setState(() {
+    _nightMode = Provider.of<ThemeNotifier>(context).theme.brightness == Brightness.dark;
+
+    if(_nightMode) {
+      _mapStyle = _nightStyle;
+    } else {
+      _mapStyle = null;
+    }
+
+    setState(() {
+      _mapController.setMapStyle(_mapStyle);
+    });
+  });
+
+  void onMapCreated(GoogleMapController controller) {
+    // add theme listener
+    _nightMode = Provider.of<ThemeNotifier>(context).theme.brightness == Brightness.dark;
+    Provider.of<ThemeNotifier>(context).addListener(_onThemeChange);
+
+    // load night style
+    rootBundle.loadString('assets/styles/maps_night_mode.json').then((style) {
+      _nightStyle = style;
+
+      if(_nightMode) {
+        setState(() {
+          _mapStyle = _nightStyle;
+        });
+      }
+    });
+
+    setState(() {
+      _mapController = controller;
+      _mapController.setMapStyle(_mapStyle);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = Theme.of(context);
-    final TextStyle dropdownButtonText = themeData.textTheme.title
-        .copyWith(color: MyColor.darkGrey, fontSize: 16);
+    final ThemeData theme = Theme.of(context);
+    final TextStyle searchBarText =
+        theme.textTheme.title.copyWith(fontSize: 16);
+    final Color searchBarColor = theme.bottomAppBarColor;
 
     return BaseView<MapModel>(
       builder: (context, model, child) {
@@ -91,6 +134,7 @@ class _MapViewState extends State<MapView> {
                 body: model.state == ViewState.Busy
                     ? Center(child: CircularProgressIndicator())
                     : GoogleMap(
+                        onMapCreated: onMapCreated,
                         initialCameraPosition: CameraPosition(
                             zoom: 14.0,
                             target: LatLng(
@@ -111,7 +155,7 @@ class _MapViewState extends State<MapView> {
                 child: AppBar(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
-                  backgroundColor: MyColor.lighterGrey,
+                  backgroundColor: searchBarColor,
                   elevation: 2,
                   primary: true,
                   title: DropdownButton<String>(
@@ -131,7 +175,7 @@ class _MapViewState extends State<MapView> {
                     ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Text(value, style: dropdownButtonText),
+                        child: Text(value, style: searchBarText),
                       );
                     }).toList(),
                   ),

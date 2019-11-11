@@ -49,7 +49,9 @@ flutter:
 
   assets:
     - assets/
-    - assets/institute/
+    - assets/images/
+    - assets/images/institute/
+    - assets/styles/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -65,7 +65,7 @@ class _LoginViewState extends State<LoginView> {
 
   Widget get _buildLogo {
     return Image.asset(
-      'assets/olb-logo.png',
+      'assets/images/olb-logo.png',
       scale: 1.25,
     );
   }

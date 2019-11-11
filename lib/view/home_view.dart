@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/model/destination.dart';
 import 'package:flutter_banking/router.dart';
 
