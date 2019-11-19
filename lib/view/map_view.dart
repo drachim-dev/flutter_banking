@@ -8,20 +8,18 @@ import 'package:flutter_banking/model/viewstate.dart';
 import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/model/branch.dart';
 import 'package:flutter_banking/model/user_location.dart';
-import 'package:flutter_banking/services/theme_notifier.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/viewmodel/map_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 
 class MapView extends StatefulWidget {
   @override
-  _MapViewState createState() => _MapViewState();
+  MapViewState createState() => MapViewState();
 }
 
-class _MapViewState extends State<MapView> {
+class MapViewState extends State<MapView> {
   static List<Branch> branches = [
     Branch(
         id: '0',
@@ -51,8 +49,8 @@ class _MapViewState extends State<MapView> {
   ];
 
   GoogleMapController _mapController;
-  String _mapStyle, _nightStyle;
-  bool _nightMode = false;
+  String _nightStyle;
+  bool _nightMode;
 
   Set<Marker> markers = {};
   String _filter = 'Alle';
@@ -78,40 +76,19 @@ class _MapViewState extends State<MapView> {
     });
   }
 
-  void _onThemeChange() => setState(() {
-    _nightMode = Provider.of<ThemeNotifier>(context).theme.brightness == Brightness.dark;
-
-    if(_nightMode) {
-      _mapStyle = _nightStyle;
-    } else {
-      _mapStyle = null;
-    }
-
-    setState(() {
-      _mapController.setMapStyle(_mapStyle);
-    });
-  });
-
-  void onMapCreated(GoogleMapController controller) {
-    // add theme listener
-    _nightMode = Provider.of<ThemeNotifier>(context).theme.brightness == Brightness.dark;
-    Provider.of<ThemeNotifier>(context).addListener(_onThemeChange);
-
-    // load night style
-    rootBundle.loadString('assets/styles/maps_night_mode.json').then((style) {
-      _nightStyle = style;
-
-      if(_nightMode) {
-        setState(() {
-          _mapStyle = _nightStyle;
-        });
-      }
-    });
-
+  void onMapCreated(GoogleMapController controller) async {
     setState(() {
       _mapController = controller;
-      _mapController.setMapStyle(_mapStyle);
     });
+
+    // load night style
+    if (_nightMode) {
+      _nightStyle =
+          await rootBundle.loadString('assets/styles/maps_night_mode.json');
+      setState(() {
+        _mapController.setMapStyle(_nightStyle);
+      });
+    }
   }
 
   @override
@@ -121,69 +98,82 @@ class _MapViewState extends State<MapView> {
         theme.textTheme.title.copyWith(fontSize: 16);
     final Color searchBarColor = theme.bottomAppBarColor;
 
+    // sets dark theme
+    _nightMode = theme.brightness == Brightness.dark;
+
     return BaseView<MapModel>(
       builder: (context, model, child) {
-        var userLocation = Provider.of<UserLocation>(context);
-        return Stack(
-          children: <Widget>[
-            AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle(
-                statusBarColor: MyColor.transparentStatusBarColor,
-              ),
-              child: Scaffold(
-                body: model.state == ViewState.Busy
-                    ? Center(child: CircularProgressIndicator())
-                    : GoogleMap(
-                        onMapCreated: onMapCreated,
-                        initialCameraPosition: CameraPosition(
-                            zoom: 14.0,
-                            target: LatLng(
-                                userLocation.latitude, userLocation.longitude)),
-                        mapToolbarEnabled: false,
-                        myLocationEnabled: true,
-                        myLocationButtonEnabled: true,
-                        padding: EdgeInsets.only(top: 96),
-                        markers: markers,
-                      ),
-              ),
-            ),
-            Positioned(
-              top: 10,
-              right: 10,
-              left: 10,
-              child: SafeArea(
-                child: AppBar(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  backgroundColor: searchBarColor,
-                  elevation: 2,
-                  primary: true,
-                  title: DropdownButton<String>(
-                    value: _filter,
-                    icon: Icon(Icons.filter_list),
-                    isExpanded: true,
-                    onChanged: (String value) {
-                      setState(() {
-                        _filter = value;
-                      });
-                    },
-                    items: <String>[
-                      'Alle',
-                      'Filialen',
-                      'Geldautomaten',
-                      'Geldeinzahlautomaten'
-                    ].map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value, style: searchBarText),
-                      );
-                    }).toList(),
+        return StreamBuilder(
+            initialData: UserLocation(latitude: 53.158017, longitude: 8.213230),
+            stream: model.locationStream,
+            builder: (context, AsyncSnapshot<UserLocation> snapshot) {
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+
+              var userLocation = snapshot.data;
+
+              return Stack(
+                children: <Widget>[
+                  AnnotatedRegion<SystemUiOverlayStyle>(
+                    value: SystemUiOverlayStyle(
+                      statusBarColor: MyColor.transparentStatusBarColor,
+                    ),
+                    child: Scaffold(
+                      body: model.state == ViewState.Busy
+                          ? Center(child: CircularProgressIndicator())
+                          : GoogleMap(
+                              onMapCreated: onMapCreated,
+                              initialCameraPosition: CameraPosition(
+                                  zoom: 14.0,
+                                  target: LatLng(userLocation.latitude,
+                                      userLocation.longitude)),
+                              mapToolbarEnabled: false,
+                              myLocationEnabled: true,
+                              myLocationButtonEnabled: true,
+                              padding: EdgeInsets.only(top: 96),
+                              markers: markers,
+                            ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          ],
-        );
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    left: 10,
+                    child: SafeArea(
+                      child: AppBar(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        backgroundColor: searchBarColor,
+                        elevation: 2,
+                        primary: true,
+                        title: DropdownButton<String>(
+                          value: _filter,
+                          icon: Icon(Icons.filter_list),
+                          isExpanded: true,
+                          onChanged: (String value) {
+                            setState(() {
+                              _filter = value;
+                            });
+                          },
+                          items: <String>[
+                            'Alle',
+                            'Filialen',
+                            'Geldautomaten',
+                            'Geldeinzahlautomaten'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value, style: searchBarText),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            });
       },
     );
   }

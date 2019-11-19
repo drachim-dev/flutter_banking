@@ -81,19 +81,23 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(account.institute.name),
-                                      Text(Utils.getFormattedNumber(account.number))
+                                      Text(Utils.getFormattedNumber(
+                                          account.number))
                                     ]),
                                 onTap: () {
                                   // unfocus SearchTextField
-                                  WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+                                  WidgetsBinding
+                                      .instance.focusManager.primaryFocus
+                                      ?.unfocus();
 
                                   // create transaction
-                                  _transaction = Transaction(foreignAccount: _selectionList[index]);
+                                  _transaction = Transaction(
+                                      foreignAccount: _selectionList[index]);
 
                                   // pass transaction to new route
                                   Navigator.of(context).pushNamed(
-                                    Router.AmountSelectionViewRoute,
-                                    arguments: _transaction);
+                                      Router.AmountSelectionViewRoute,
+                                      arguments: _transaction);
                                 });
 
                             if (index == 0) {
@@ -102,16 +106,19 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
                                       CrossAxisAlignment.stretch,
                                   children: <Widget>[
                                     ListTile(
-                                      contentPadding: const EdgeInsets.symmetric(
-                                          horizontal:
-                                          Dimensions.listItemPaddingHorizontal,
-                                          vertical: 4),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: Dimensions
+                                                  .listItemPaddingHorizontal,
+                                              vertical: 4),
                                       leading: Container(
-                                          padding: const EdgeInsets.all(12),
-                                          child: Icon(Icons.person_add),
+                                        padding: const EdgeInsets.all(12),
+                                        child: Icon(Icons.person_add),
                                       ),
                                       title: Text('Add new contact'),
-                                      onTap: () => Navigator.of(context).pushNamed(Router.AddContactViewRoute),
+                                      onTap: () => Navigator.of(context)
+                                          .pushNamed(
+                                              Router.AddContactViewRoute),
                                     ),
                                     ListGroupHeader(
                                         context: context,

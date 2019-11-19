@@ -15,16 +15,19 @@ class _HomeViewState extends State<HomeView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-          index: _selectedIndex,
-          children: allDestinations.map((destination) {
-            return destination.view;
-          }).toList()),
+      body: IndexedStack(index: _selectedIndex, 
+      children: [
+        for(int i = 0; i < allDestinations.length; i++)
+          allDestinations[i].keepAlive || i == _selectedIndex 
+            ? allDestinations[i].view 
+            : Container()
+      ] 
+      ),
       bottomNavigationBar: _buildBottomNavigationBar(),
       floatingActionButton: allDestinations[_selectedIndex].showFab
           ? FloatingActionButton(
-              onPressed: () =>
-                  Navigator.pushNamed(context, Router.ContactSelectionViewRoute),
+              onPressed: () => Navigator.pushNamed(
+                  context, Router.ContactSelectionViewRoute),
               child: Icon(Icons.add))
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/keys.dart';
 import 'package:flutter_banking/common/my_theme.dart';
 import 'package:flutter_banking/model/user.dart';
-import 'package:flutter_banking/model/user_location.dart';
 import 'package:flutter_banking/services/authentication_service.dart';
-import 'package:flutter_banking/services/location_service.dart';
 import 'package:flutter_banking/services/theme_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_banking/router.dart';
@@ -36,10 +34,6 @@ class MyApp extends StatelessWidget {
         StreamProvider<User>(
           initialData: User.initial(),
           builder: (_) => locator<AuthenticationService>().user,
-        ),
-        StreamProvider<UserLocation>(
-          initialData: UserLocation(latitude: 53.158017, longitude: 8.213230),
-          builder: (_) => locator<LocationService>().locationStream,
         ),
       ],
       child: MaterialApp(

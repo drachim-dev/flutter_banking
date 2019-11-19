@@ -4,9 +4,8 @@ import 'package:flutter_banking/model/user_location.dart';
 import 'package:location/location.dart';
 
 class LocationService {
-  UserLocation _currentLocation;
-
   Location _location = Location();
+  UserLocation _currentLocation;
 
   StreamController<UserLocation> _locationController =
       StreamController<UserLocation>.broadcast();
@@ -35,4 +34,5 @@ class LocationService {
 
     return _currentLocation;
   }
+
 }
