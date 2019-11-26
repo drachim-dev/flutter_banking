@@ -1,33 +1,38 @@
-import 'package:flutter_banking/model/institute.dart';
-import 'package:flutter_banking/model/viewstate.dart';
+import 'dart:async';
+
+import 'package:flutter_banking/locator.dart';
 import 'package:flutter_banking/model/account.dart';
+import 'package:flutter_banking/model/viewstate.dart';
+import 'package:flutter_banking/services/account_service.dart';
 import 'package:flutter_banking/viewmodel/base_model.dart';
 
 class ContactModel extends BaseModel {
+  final AccountService _accountService = locator<AccountService>();
+  StreamSubscription _accountsSubscription;
 
-  Future<List<Account>> getContacts() async {
-    setState(ViewState.Busy);
-    List<Account> contacts = [];
-    contacts.add(Account(owner: 'Max Mustermann', institute: Institute(name: 'OLB'), number: 'DE12345678910900050100'));
-    contacts.add(Account(owner: 'Max Mustermann', institute: Institute(name: 'Commerzbank'), number: 'DE12345678910900050100'));
-    contacts.add(Account(owner: 'Max Mustermann', institute: Institute(name: 'Postbank'), number: 'DE12345678910900050100'));
-    contacts.add(Account(owner: 'Wilma Bier', institute: Institute(name: 'Ing Diba'), number: 'DE98765433211009187123'));
-    contacts.add(Account(owner: 'Wilma Bier', institute: Institute(name: 'Postbank'), number: 'DE98765433211009187123'));
-    contacts.add(Account(owner: 'Wilma Bier', institute: Institute(name: 'Postbank'), number: 'DE98765433211009187123'));
-    setState(ViewState.Idle);
+  List<Account> allContacts;
+  List<Account> suggestedContacts;
 
-    return contacts;
+  ContactModel() {
+    _accountsSubscription = _accountService.accounts.listen(_onAccountsUpdated);
   }
 
-  Future<List<Account>> getSuggestions() async {
-    setState(ViewState.Busy);
-    List<Account> contacts = [];
-    contacts.add(Account(owner: 'Max Mustermann', institute: Institute(name: 'OLB'), number: 'DE12345678910900050100'));
-    contacts.add(Account(owner: 'Wilma Bier', institute: Institute(name: 'OLB'), number: 'DE98765433211009187123'));
-    contacts.add(Account(owner: 'Wilma Bier', institute: Institute(name: '1822 direkt'), number: 'DE98765433211009187123'));
-    setState(ViewState.Idle);
-
-    return contacts;
+  @override
+  void dispose() {
+    _accountsSubscription.cancel();
+    super.dispose();
   }
 
+  void _onAccountsUpdated(List<Account> accounts) {
+    this.allContacts = accounts;
+    this.suggestedContacts = accounts.take(1).toList();
+    
+    if (accounts == null) {
+      setState(ViewState.Busy);
+    } else {
+      setState(accounts.isEmpty
+          ? ViewState.NoDataAvailable
+          : ViewState.DataFetched);
+    }
+  }
 }

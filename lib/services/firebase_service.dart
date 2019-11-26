@@ -1,74 +1,74 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:flutter_banking/model/account.dart';
-import 'package:flutter_banking/model/account_type.dart';
 import 'package:flutter_banking/model/institute.dart';
-import 'package:flutter_banking/model/purpose.dart';
 import 'package:flutter_banking/model/transaction.dart';
+import 'package:rxdart/subjects.dart';
 
 class FirebaseService {
-  var account1 = Account(
-      owner: 'Tim Wiechmann',
-      institute: Institute(name: 'OLB', bic: 'OLBODEH2XXX'),
-      accountType: AccountType.CheckingAccount,
-      name: 'Servicekonto Gold',
-      number: 'DE11111111111111111111',
-      balance: 10000.0);
-  var account2 = Account(
-      owner: 'Tim Wiechmann',
-      institute: Institute(name: 'Curve'),
-      accountType: AccountType.CreditCard,
-      name: 'Curve Blue',
-      number: '4513258658760869',
-      balance: 500.0);
+  final StreamController<List<Account>> _accountController = BehaviorSubject();
+  final StreamController<List<Transaction>> _transactionController =
+      BehaviorSubject();
 
-  Future<List<Account>> getAccounts(int userId) async {
-    Future.delayed(Duration(seconds: 2));
+  Stream<List<Account>> get accounts => _accountController.stream;
+  Stream<List<Transaction>> get transactions => _transactionController.stream;
 
-    var accounts = List<Account>();
-    accounts.add(account1);
-    accounts.add(account2);
+  FirebaseService() {
+    firestore.Firestore.instance
+        .collection('accounts')
+        .snapshots()
+        .listen(_accountsAdded);
 
-    return accounts;
+    firestore.Firestore.instance
+        .collection('transactions')
+        .snapshots()
+        .listen(_transactionsAdded);
   }
 
-  Future<List<Transaction>> getTransactions(String accountNumber) async {
-    await Future.delayed(Duration(seconds: 1));
+  Future<void> _accountsAdded(firestore.QuerySnapshot snapshot) async {
+    List<Account> accounts = List<Account>();
 
-    var transactions = List<Transaction>();
-    transactions = List();
+    for (var document in snapshot.documents) {
+      var account = await _getAccountFromSnapshot(document);
+      accounts.add(account);
+    }
+    _accountController.add(accounts);
+  }
 
-    transactions.addAll(List.generate(4, (int index) {
-      var date = DateTime.now().subtract(Duration(days: 30 * index + 1));
-      date = DateTime(date.year, date.month, date.day);
+  Future<Account> _getAccountFromSnapshot(
+      firestore.DocumentSnapshot snapshot) async {
+    var account = Account.fromSnapshot(snapshot);
+    var instituteRef = await account.instituteRef.get();
+    account.institute = Institute.fromSnapshot(instituteRef);
+    return account;
+  }
 
-      return Transaction(
-          ownAccount: account2,
-          foreignAccount: Account(
-              owner: 'Spotify',
-              institute: Institute(name: 'Nordax Bank'),
-              number: '123'),
-          date: date,
-          usageText: 'Rechnung ${date.month}/2019',
-          purpose: Purpose.DirectDebit,
-          amount: -100.00);
-    }));
+  Future<void> _transactionsAdded(firestore.QuerySnapshot snapshot) async {
+    List<Transaction> transactions = List<Transaction>();
 
-    transactions.addAll(List.generate(10, (int index) {
-      var date = DateTime.now().subtract(Duration(days: 30 * index + 1));
-      date = DateTime(date.year, date.month, date.day);
+    for (var document in snapshot.documents) {
+      var transaction = Transaction.fromSnapshot(document);
 
-      return Transaction(
-          ownAccount: account1,
-          date: date,
-          foreignAccount: Account(
-              owner: 'OLB', institute: Institute(name: 'OLB'), number: '123'),
-          usageText: 'Gehalt ${date.month}/2019',
-          purpose: Purpose.BankTransfer,
-          amount: 1800.00);
-    }));
+      var ownAccountRef = await transaction.ownAccountRef.get();
+      transaction.ownAccount = await _getAccountFromSnapshot(ownAccountRef);
+
+      var foreignAccountRef = await transaction.foreignAccountRef.get();
+      transaction.foreignAccount =
+          await _getAccountFromSnapshot(foreignAccountRef);
+
+      transactions.add(transaction);
+    }
 
     // sort by date
     transactions.sort((t1, t2) => t2.date.compareTo(t1.date));
 
-    return transactions;
+    _transactionController.add(transactions);
+  }
+
+  Future<void> addTransaction(Map<String, dynamic> transaction) {
+    return firestore.Firestore.instance
+        .collection('transactions')
+        .add(transaction);
   }
 }
