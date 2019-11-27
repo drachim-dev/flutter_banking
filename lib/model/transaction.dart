@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_banking/model/account.dart';
 import 'package:flutter_banking/model/purpose.dart';
 
@@ -16,14 +15,14 @@ class Transaction {
 
   Transaction({
     this.documentID,
-    @required this.ownAccount,
+    this.ownAccount,
     this.ownAccountRef,
-    @required this.foreignAccount,
+    this.foreignAccount,
     this.foreignAccountRef,
-    @required this.date,
+    this.date,
     this.usageText,
-    @required this.amount,
-    @required this.purpose,
+    this.amount,
+    this.purpose,
   });
 
   Map<String, dynamic> toMap() => {

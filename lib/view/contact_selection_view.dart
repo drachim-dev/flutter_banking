@@ -39,35 +39,29 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
   }
 
   Widget _buildBody(ContactModel model, ThemeData theme) {
-    switch (model.state) {
-      case ViewState.Busy:
-        return _buildLoadingUi();
-      case ViewState.NoDataAvailable:
-        return _buildNoDataUi();
-      case ViewState.Error:
-        return _buildErrorUi();
-      case ViewState.DataFetched:
-        _contacts = model.allContacts;
-        _suggestions = model.suggestedContacts;
-        _selectionList = List.from(_contacts)..addAll(_suggestions);
+    if (model.state == ViewState.NoDataAvailable) return _buildNoDataUi();
+    if (model.state == ViewState.Error) return _buildErrorUi();
+    if (model.state == ViewState.DataFetched) {
+      _contacts = model.allContacts;
+      _suggestions = model.suggestedContacts;
+      _selectionList = List.from(_contacts)..addAll(_suggestions);
 
-        return Column(children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: Dimensions.listItemPaddingHorizontal,
-                vertical: Dimensions.listItemPaddingVertical),
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: 'Search',
-              ),
+      return Column(children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: Dimensions.listItemPaddingHorizontal,
+              vertical: Dimensions.listItemPaddingVertical),
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: 'Search',
             ),
           ),
-          Expanded(child: _buildContactListView(theme, _selectionList)),
-        ]);
-      case ViewState.Busy:
-      default:
-        return _buildLoadingUi();
+        ),
+        Expanded(child: _buildContactListView(theme, _selectionList)),
+      ]);
     }
+
+    return _buildLoadingUi();
   }
 
   Center _buildLoadingUi() {

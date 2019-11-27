@@ -8,17 +8,34 @@ import 'package:rxdart/subjects.dart';
 
 class FirebaseService {
   final StreamController<List<Account>> _accountController = BehaviorSubject();
+  final StreamController<List<Account>> _contactController = BehaviorSubject();
+  final StreamController<List<Institute>> _instituteController =
+      BehaviorSubject();
   final StreamController<List<Transaction>> _transactionController =
       BehaviorSubject();
 
   Stream<List<Account>> get accounts => _accountController.stream;
+  Stream<List<Account>> get contacts => _contactController.stream;
+  Stream<List<Institute>> get institutes => _instituteController.stream;
   Stream<List<Transaction>> get transactions => _transactionController.stream;
 
   FirebaseService() {
     firestore.Firestore.instance
         .collection('accounts')
+        .where('customerId', isEqualTo: '1000000000')
         .snapshots()
         .listen(_accountsAdded);
+
+    firestore.Firestore.instance
+        .collection('accounts')
+        .where('customerId', isNull: true)
+        .snapshots()
+        .listen(_contactsAdded);
+
+    firestore.Firestore.instance
+        .collection('institutes')
+        .snapshots()
+        .listen(_institutesAdded);
 
     firestore.Firestore.instance
         .collection('transactions')
@@ -42,6 +59,47 @@ class FirebaseService {
     var instituteRef = await account.instituteRef.get();
     account.institute = Institute.fromSnapshot(instituteRef);
     return account;
+  }
+
+  Future<void> addAccount(Map<String, dynamic> account) {
+    return firestore.Firestore.instance.collection('accounts').add(account);
+  }
+
+  Future<void> _contactsAdded(firestore.QuerySnapshot snapshot) async {
+    List<Account> contacts = List<Account>();
+
+    for (var document in snapshot.documents) {
+      var contact = await _getContactFromSnapshot(document);
+      contacts.add(contact);
+    }
+    _contactController.add(contacts);
+  }
+
+  Future<Account> _getContactFromSnapshot(
+      firestore.DocumentSnapshot snapshot) async {
+    var contact = Account.fromSnapshot(snapshot);
+    var instituteRef = await contact.instituteRef.get();
+    contact.institute = Institute.fromSnapshot(instituteRef);
+    return contact;
+  }
+
+  Future<void> addContact(Map<String, dynamic> contact) {
+    return firestore.Firestore.instance.collection('accounts').add(contact);
+  }
+
+  Future<void> _institutesAdded(firestore.QuerySnapshot snapshot) async {
+    List<Institute> institutes = List<Institute>();
+
+    for (var document in snapshot.documents) {
+      var institute = await _getInstituteFromSnapshot(document);
+      institutes.add(institute);
+    }
+    _instituteController.add(institutes);
+  }
+
+  Future<Institute> _getInstituteFromSnapshot(
+      firestore.DocumentSnapshot snapshot) async {
+    return Institute.fromSnapshot(snapshot);
   }
 
   Future<void> _transactionsAdded(firestore.QuerySnapshot snapshot) async {

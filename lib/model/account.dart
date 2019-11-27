@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_banking/model/account_type.dart';
 import 'package:flutter_banking/model/institute.dart';
 
 class Account {
   final String documentID;
   final DocumentReference documentReference;
-  final String owner, number, name;
+  final String customerId;
+  String owner, number, name;
   Institute institute;
   final DocumentReference instituteRef;
   final AccountType accountType;
@@ -15,17 +15,29 @@ class Account {
   Account(
       {this.documentID,
       this.documentReference,
-      @required this.owner,
-      @required this.number,
+      this.customerId,
+      this.owner,
+      this.number,
       this.institute,
-      @required this.instituteRef,
+      this.instituteRef,
       this.accountType,
       this.name,
       this.balance});
 
+    Map<String, dynamic> toMap() => {
+        'customerId': customerId,
+        'owner': owner,
+        'number': number.toUpperCase(),
+        'name': name,
+        'institute': institute.documentReference,
+        'accountType': '',
+        'balance': balance,
+      };
+
   Account.fromSnapshot(DocumentSnapshot snapshot)
       : documentID = snapshot.documentID,
         documentReference = snapshot.reference,
+        customerId = snapshot['customerId'],
         owner = snapshot['owner'] ?? '',
         number = snapshot['number'],
         instituteRef = snapshot['institute'],

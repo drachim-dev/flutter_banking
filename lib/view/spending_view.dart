@@ -131,6 +131,11 @@ class _SearchDemoSearchDelegate extends SearchDelegate<int> {
       List<int>.generate(100001, (int i) => i).reversed.toList();
   final List<int> _history = <int>[42607, 85604, 66374, 44, 174];
 
+  // TODO: SearchDelegate doesn't respect theme
+  // Workaround from https://github.com/flutter/flutter/issues/32180
+  @override
+   ThemeData appBarTheme(BuildContext context) => Theme.of(context);
+
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(

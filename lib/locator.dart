@@ -1,8 +1,10 @@
 import 'package:flutter_banking/services/account_service.dart';
+import 'package:flutter_banking/services/contact_service.dart';
 import 'package:flutter_banking/services/firebase_service.dart';
 import 'package:flutter_banking/services/location_service.dart';
 import 'package:flutter_banking/services/transaction_service.dart';
 import 'package:flutter_banking/viewmodel/account_model.dart';
+import 'package:flutter_banking/viewmodel/add_contact_model.dart';
 import 'package:flutter_banking/viewmodel/add_transaction_overview_model.dart';
 import 'package:flutter_banking/viewmodel/contact_model.dart';
 import 'package:flutter_banking/viewmodel/login_model.dart';
@@ -20,12 +22,14 @@ void setupLocator() {
   locator.registerLazySingleton(() => FirebaseService());
   locator.registerLazySingleton(() => LocationService());
   locator.registerLazySingleton(() => AccountService());
+  locator.registerLazySingleton(() => ContactService());
   locator.registerLazySingleton(() => TransactionService());
   locator.registerLazySingleton(() => UserService());
   locator.registerLazySingleton(() => LocalAuthentication());
 
   locator.registerFactory(() => AccountModel());
   locator.registerFactory(() => ContactModel());
+  locator.registerFactory(() => AddContactModel());
   locator.registerFactory(() => LoginModel());
   locator.registerFactory(() => MapModel());
   locator.registerFactory(() => SpendingModel());
