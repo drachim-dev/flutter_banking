@@ -127,7 +127,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                     bottom: contentPadding,
                                     top: contentPadding * 2.5),
                                 leading: Icon(Icons.person),
-                                title: Text(_transaction.foreignAccount.owner),
+                                title: Text(_transaction.foreignAccount.customer),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[

@@ -4,18 +4,18 @@ import 'package:flutter_banking/locator.dart';
 import 'package:flutter_banking/model/account.dart';
 import 'package:flutter_banking/model/institute.dart';
 import 'package:flutter_banking/model/viewstate.dart';
-import 'package:flutter_banking/services/contact_service.dart';
+import 'package:flutter_banking/services/account_service.dart';
 import 'package:flutter_banking/viewmodel/base_model.dart';
 
-class AddContactModel extends BaseModel {
-  final ContactService _contactService = locator<ContactService>();
+class AddAccountModel extends BaseModel {
+  final AccountService _accountService = locator<AccountService>();
   StreamSubscription _institutesSubscription;
 
   List<Institute> institutes;
 
-  AddContactModel() {
+  AddAccountModel() {
     _institutesSubscription =
-        _contactService.institutes.listen(_onInstitutesUpdated);
+        _accountService.institutes.listen(_onInstitutesUpdated);
   }
 
   @override
@@ -36,7 +36,7 @@ class AddContactModel extends BaseModel {
     }
   }
 
-  Future<void> addContact(Account contact) {
-    return _contactService.addContact(contact);
+  Future<void> addAccount(Account account) {
+    return _accountService.addAccount(account);
   }
 }

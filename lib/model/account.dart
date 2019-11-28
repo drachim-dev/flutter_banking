@@ -6,42 +6,42 @@ class Account {
   final String documentID;
   final DocumentReference documentReference;
   final String customerId;
-  String owner, number, name;
+  String customer, number, name;
   Institute institute;
   final DocumentReference instituteRef;
-  final AccountType accountType;
+  AccountType accountType;
   final double balance;
 
   Account(
       {this.documentID,
       this.documentReference,
       this.customerId,
-      this.owner,
+      this.customer,
       this.number,
       this.institute,
       this.instituteRef,
-      this.accountType,
+      this.accountType = AccountType.CheckingAccount,
       this.name,
       this.balance});
 
-    Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap() => {
         'customerId': customerId,
-        'owner': owner,
+        'customer': customer,
         'number': number.toUpperCase(),
         'name': name,
         'institute': institute.documentReference,
-        'accountType': '',
+        'accountType': AccountTypeHelper.getValue(accountType),
         'balance': balance,
       };
 
   Account.fromSnapshot(DocumentSnapshot snapshot)
       : documentID = snapshot.documentID,
         documentReference = snapshot.reference,
-        customerId = snapshot['customerId'],
-        owner = snapshot['owner'] ?? '',
+        customerId = snapshot['customerId'] ?? '',
+        customer = snapshot['customer'] ?? '',
         number = snapshot['number'],
         instituteRef = snapshot['institute'],
-        accountType = AccountType.CheckingAccount,
+        accountType = AccountTypeHelper.fromValue(snapshot['accountType']),
         name = snapshot['name'] ?? '',
         balance = snapshot['balance']?.toDouble() ?? 0;
 }

@@ -1,33 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_banking/common/colors.dart';
+import 'package:flutter_banking/common/constants.dart';
 import 'package:flutter_banking/common/masked_text_input_formatter.dart';
 import 'package:flutter_banking/common/dimensions.dart';
 import 'package:flutter_banking/model/account.dart';
+import 'package:flutter_banking/model/account_type.dart';
 import 'package:flutter_banking/model/institute.dart';
 import 'package:flutter_banking/model/transaction.dart';
 import 'package:flutter_banking/router.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/view/transparent_app_bar.dart';
-import 'package:flutter_banking/viewmodel/add_contact_model.dart';
+import 'package:flutter_banking/viewmodel/add_account_model.dart';
 
-class AddContactView extends StatefulWidget {
+class AddAccountView extends StatefulWidget {
+  final bool createOwnAccount;
+
+  const AddAccountView({Key key, @required this.createOwnAccount})
+      : super(key: key);
+
   @override
-  _AddContactViewState createState() => _AddContactViewState();
+  _AddAccountViewState createState() =>
+      _AddAccountViewState(this.createOwnAccount);
 }
 
-class _AddContactViewState extends State<AddContactView> {
+class _AddAccountViewState extends State<AddAccountView> {
   final TextInputFormatter _ibanFormatter = MaskedTextInputFormatter(
-      mask: 'xxxx xxxx xxxx xxxx xxxx xx', separator: ' ');
+      mask: Constants.ibanMask, separator: Constants.ibanSeparator);
+
+  final bool _createOwnAccount;
+
   String _ibanErrorText;
   bool _ibanSuccess = false;
-  Account _contact = Account();
+  Account _account;
+
+  _AddAccountViewState(this._createOwnAccount);
+
+  @override
+  void initState() {
+    super.initState();
+
+    _account = Account(customerId: _createOwnAccount ? '1000000000' : null);
+  }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    return BaseView<AddContactModel>(builder: (_, model, child) {
+    return BaseView<AddAccountModel>(builder: (_, model, child) {
       return Stack(children: [
         Scaffold(
           appBar: _buildAppBar(),
@@ -39,51 +59,60 @@ class _AddContactViewState extends State<AddContactView> {
   }
 
   TransparentAppBar _buildAppBar() {
+    String title = _createOwnAccount ? 'Add account' : 'Add contact';
     return TransparentAppBar(
-      title: Text('Add contact'),
+      title: Text(title),
     );
   }
 
-  Align _buildBottomBar(AddContactModel model) {
+  Align _buildBottomBar(AddAccountModel model) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: <Widget>[
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  onPressed: () {
-                    model.addContact(_contact);
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Add contact'),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  onPressed: () {
-                    model.addContact(_contact);
-
-                    // create transaction
-                    Transaction _transaction =
-                        Transaction(foreignAccount: _contact);
-
-                    // pass transaction to new route
-                    Navigator.of(context).pushNamed(
-                        Router.AmountSelectionViewRoute,
-                        arguments: _transaction);
-                  },
-                  child: Text('Add & Send money'),
-                ),
-              ),
-            ),
+            _buildAddButton(model),
+            if (!_createOwnAccount) _buildSendMoneyButton(model),
           ],
+        ),
+      ),
+    );
+  }
+
+  Expanded _buildAddButton(AddAccountModel model) {
+    String persistText = _createOwnAccount ? 'Save' : 'Add';
+
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: RaisedButton(
+          onPressed: () {
+            model.addAccount(_account);
+            Navigator.of(context).pop();
+          },
+          child: Text(persistText),
+        ),
+      ),
+    );
+  }
+
+  Expanded _buildSendMoneyButton(AddAccountModel model) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: RaisedButton(
+          onPressed: () {
+            model.addAccount(_account);
+
+            // create transaction
+            Transaction _transaction = Transaction(foreignAccount: _account);
+
+            // pass transaction to new route
+            Navigator.of(context).pushNamed(Router.AmountSelectionViewRoute,
+                arguments: _transaction);
+          },
+          child: Text('Add & Send money'),
         ),
       ),
     );
@@ -97,6 +126,8 @@ class _AddContactViewState extends State<AddContactView> {
         padding: const EdgeInsets.symmetric(
             horizontal: Dimensions.listItemPaddingHorizontal, vertical: 32),
         children: [
+          if (_createOwnAccount) _buildAccountTypeField(),
+          if (_createOwnAccount) SizedBox(height: 24),
           _buildNameField(),
           SizedBox(height: 32),
           _buildAccountNumberField(),
@@ -107,9 +138,34 @@ class _AddContactViewState extends State<AddContactView> {
         ]);
   }
 
+  DropdownButton _buildAccountTypeField() {
+    return DropdownButton(
+      value: _account.accountType,
+      isExpanded: true,
+      onChanged: (value) => setState(() => _account.accountType = value),
+      items: AccountType.values
+          .map((type) => DropdownMenuItem(
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 16, bottom: 6, right: 20),
+                      child: Icon(AccountTypeHelper.getIcon(type)),
+                    ),
+                    Text(AccountTypeHelper.getValue(type)),
+                  ],
+                ),
+                value: type,
+              ))
+          .toList(),
+    );
+  }
+
   TextFormField _buildNameField() {
     return TextFormField(
-      onChanged: (value) => _contact.owner = value,
+      textInputAction: TextInputAction.next,
+      textCapitalization: TextCapitalization.words,
+      onChanged: (value) => _account.customer = value,
       decoration: InputDecoration(
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 16, bottom: 6, right: 20),
@@ -121,17 +177,18 @@ class _AddContactViewState extends State<AddContactView> {
 
   TextFormField _buildAccountNumberField() {
     return TextFormField(
+      textInputAction: TextInputAction.next,
+      textCapitalization: TextCapitalization.characters,
       inputFormatters: [_ibanFormatter],
       onChanged: (value) {
-        _contact.number = value;
-        _contact.institute = Institute();
+        _account.number = value;
+        _account.institute = Institute();
       },
       onFieldSubmitted: (value) => _validateIban(value),
       decoration: InputDecoration(
         prefixIcon: Padding(
-          padding: const EdgeInsets.only(left: 16, bottom: 6, right: 20),
-          child: Icon(Icons.account_balance),
-        ),
+            padding: const EdgeInsets.only(left: 16, bottom: 6, right: 20),
+            child: Icon(Icons.edit)),
         hintText: 'IBAN',
         errorText: _ibanErrorText,
       ),
@@ -154,6 +211,7 @@ class _AddContactViewState extends State<AddContactView> {
 
   TextFormField _buildNotesField() {
     return TextFormField(
+      textInputAction: TextInputAction.done,
       decoration: InputDecoration(
           prefixIcon: Padding(
             padding: const EdgeInsets.only(left: 16, bottom: 6, right: 20),

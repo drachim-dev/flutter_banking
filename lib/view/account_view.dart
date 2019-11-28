@@ -40,7 +40,7 @@ class _AccountViewState extends State<AccountView> {
       actions: [
         if (!selectionMode)
           IconButton(
-            onPressed: () => Navigator.of(context).pushNamed(Router.AddContactViewRoute),
+            onPressed: () => Navigator.of(context).pushNamed(Router.AddAccountViewRoute),
             icon: Icon(Icons.add),
           )
       ],

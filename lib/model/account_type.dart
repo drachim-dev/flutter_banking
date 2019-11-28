@@ -10,7 +10,7 @@ class AccountTypeHelper {
       case AccountType.CreditCard:
         return Icons.credit_card;
       case AccountType.CustodyAccount:
-        return Icons.trending_up;
+        return Icons.card_membership;
       default:
         return Icons.close;
     }
@@ -26,6 +26,19 @@ class AccountTypeHelper {
         return 'Depot';
       default:
         return '';
+    }
+  }
+
+  static AccountType fromValue(String value) {
+    switch (value) {
+      case 'Girokonto':
+        return AccountType.CheckingAccount;
+      case 'Kreditkarte':
+        return AccountType.CreditCard;
+      case 'Depot':
+        return AccountType.CustodyAccount;
+      default:
+        return AccountType.CheckingAccount;
     }
   }
 }

@@ -17,7 +17,7 @@ class ContactSelectionView extends StatefulWidget {
 }
 
 class _ContactSelectionViewState extends State<ContactSelectionView> {
-  List<Account> _selectionList = [];
+  List<Account> _allContacts = [];
   List<Account> _suggestions = [];
   List<Account> _contacts = [];
 
@@ -39,29 +39,27 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
   }
 
   Widget _buildBody(ContactModel model, ThemeData theme) {
-    if (model.state == ViewState.NoDataAvailable) return _buildNoDataUi();
     if (model.state == ViewState.Error) return _buildErrorUi();
-    if (model.state == ViewState.DataFetched) {
-      _contacts = model.allContacts;
-      _suggestions = model.suggestedContacts;
-      _selectionList = List.from(_contacts)..addAll(_suggestions);
 
-      return Column(children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: Dimensions.listItemPaddingHorizontal,
-              vertical: Dimensions.listItemPaddingVertical),
-          child: TextField(
-            decoration: InputDecoration(
-              labelText: 'Search',
-            ),
+    return Column(children: <Widget>[
+      Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: Dimensions.listItemPaddingHorizontal,
+            vertical: Dimensions.listItemPaddingVertical),
+        child: TextField(
+          decoration: InputDecoration(
+            labelText: 'Search',
           ),
         ),
-        Expanded(child: _buildContactListView(theme, _selectionList)),
-      ]);
-    }
-
-    return _buildLoadingUi();
+      ),
+      Expanded(
+          child: ListView(children: [
+        _buildAddContactItem(),
+        if (model.state == ViewState.DataFetched)
+          _buildContactListView(theme, model),
+        if (model.state == ViewState.Busy) _buildLoadingUi(),
+      ])),
+    ]);
   }
 
   Center _buildLoadingUi() {
@@ -70,20 +68,22 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
     );
   }
 
-  Center _buildNoDataUi() {
-    return Center(child: Text('No data available'));
-  }
-
   Center _buildErrorUi() {
     return Center(child: Text('An error occurred'));
   }
 
-  ListView _buildContactListView(ThemeData theme, List<Account> accounts) {
+  ListView _buildContactListView(ThemeData theme, ContactModel model) {
+    _contacts = model.allContacts;
+    _suggestions = model.suggestedContacts;
+    _allContacts = List.from(_contacts)..addAll(_suggestions);
+
     return ListView.separated(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       padding:
           const EdgeInsets.symmetric(vertical: Dimensions.listVerticalPadding),
-      itemCount: accounts.length,
-      itemBuilder: (_, index) => _buildContactItem(theme, accounts, index),
+      itemCount: _allContacts.length,
+      itemBuilder: (_, index) => _buildContactItem(theme, _allContacts, index),
       separatorBuilder: (context, index) {
         // Contacts header
         if (index == _suggestions.length - 1) {
@@ -99,23 +99,26 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
   _buildContactItem(ThemeData theme, List<Account> contacts, int index) {
     var account = contacts[index];
 
-    var initials = account.owner.substring(0, 1) +
-        account.owner.split(' ').last.substring(0, 1);
+    var initials = account.customer.substring(0, 1) +
+        account.customer.split(' ').last.substring(0, 1);
     var contactItem = ListTile(
         contentPadding: const EdgeInsets.symmetric(
             horizontal: Dimensions.listItemPaddingHorizontal,
             vertical: Dimensions.listItemPaddingVertical),
         leading: Container(
-          padding: const EdgeInsets.all(12),
-          child: Text(
-            initials,
-            style: theme.textTheme.body1
-                .copyWith(fontSize: 16, color: MyColor.darkGrey),
+          width: 48,
+          height: 48,
+          child: Center(
+            child: Text(
+              initials,
+              style: theme.textTheme.body1
+                  .copyWith(fontSize: 16, color: MyColor.darkGrey),
+            ),
           ),
           decoration:
               ShapeDecoration(shape: CircleBorder(), color: MyColor.lightGrey),
         ),
-        title: Text(account.owner),
+        title: Text(account.customer),
         subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -135,26 +138,25 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
         });
 
     if (index == 0) {
-      return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(
-                  horizontal: Dimensions.listItemPaddingHorizontal,
-                  vertical: 4),
-              leading: Container(
-                padding: const EdgeInsets.all(12),
-                child: Icon(Icons.person_add),
-              ),
-              title: Text('Add new contact'),
-              onTap: () =>
-                  Navigator.of(context).pushNamed(Router.AddContactViewRoute),
-            ),
-            ListGroupHeader(context: context, leadingText: 'Suggestions'),
-            contactItem
-          ]);
+      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        ListGroupHeader(context: context, leadingText: 'Suggestions'),
+        contactItem
+      ]);
     }
 
     return contactItem;
+  }
+
+  ListTile _buildAddContactItem() {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(
+          horizontal: Dimensions.listItemPaddingHorizontal, vertical: 4),
+      leading: Container(
+        padding: const EdgeInsets.all(12),
+        child: Icon(Icons.person_add),
+      ),
+      title: Text('Add new contact'),
+      onTap: () => Navigator.of(context).pushNamed(Router.AddContactViewRoute),
+    );
   }
 }

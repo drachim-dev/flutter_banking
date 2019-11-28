@@ -99,7 +99,7 @@ class _SpendingViewState extends State<SpendingView> {
             vertical: Dimensions.listItemPaddingVertical),
         leading:
             Icon(AccountTypeHelper.getIcon(transaction.ownAccount.accountType)),
-        title: Text(transaction.foreignAccount.owner),
+        title: Text(transaction.foreignAccount.customer),
         subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

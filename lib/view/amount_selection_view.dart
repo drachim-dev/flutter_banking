@@ -54,7 +54,7 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('To ${_transaction.foreignAccount.owner}'),
+          title: Text('To ${_transaction.foreignAccount.customer}'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -95,7 +95,7 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
             RaisedButton(
                 child: Text('Continue'),
                 onPressed: () {
-                  _transaction.amount = _cents / 100;
+                  _transaction.amount = _cents / 100 * -1;
                   Navigator.of(context).pushNamed(
                       Router.AccountSelectionViewRoute,
                       arguments: _transaction);
