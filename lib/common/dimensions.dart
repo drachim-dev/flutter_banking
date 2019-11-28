@@ -11,7 +11,10 @@ class Dimensions {
   // should be the same padding used by Divider and listGroupHeaderPaddingVertical
   static const double listVerticalPadding = 6;
 
+  // buttons
+  static const double buttonPadding = 12;
+
   // amount input buttons
-  static const double numberTextScaleFactor = 1.2;
+  static const double numberTextScaleFactor = 1.5;
   static const double numberButtonPadding = 24;
 }

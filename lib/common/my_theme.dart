@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/colors.dart';
+import 'package:flutter_banking/common/dimensions.dart';
 
 class MyTheme {
   static final ThemeData light = ThemeData(
@@ -7,6 +8,10 @@ class MyTheme {
     primaryColor: MyColor.olbPrimary,
     accentColor: MyColor.olbAccent,
     accentColorBrightness: Brightness.dark,
+    buttonTheme: ButtonThemeData(
+      buttonColor: MyColor.olbAccent,
+      padding: const EdgeInsets.all(Dimensions.buttonPadding),
+    ),
     textSelectionColor: MyColor.olbPrimary.withAlpha(100),
   );
 
@@ -23,6 +28,7 @@ class MyTheme {
     toggleableActiveColor: MyColor.olbAccent,
     buttonTheme: ButtonThemeData(
       buttonColor: MyColor.olbPrimary,
+      padding: const EdgeInsets.all(Dimensions.buttonPadding),
     ),
     indicatorColor: MyColor.olbAccent,
     textSelectionColor: MyColor.olbAccent.withAlpha(100),

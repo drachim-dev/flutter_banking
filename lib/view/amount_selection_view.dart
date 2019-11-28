@@ -90,7 +90,7 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
               ],
             ),
             SizedBox(
-              height: 40,
+              height: 64,
             ),
             RaisedButton(
                 child: Text('Continue'),
@@ -125,8 +125,8 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
     );
   }
 
-  FlatButton _buildNumberButton(String numberString) {
-    int number = int.parse(numberString);
+  FlatButton _buildNumberButton(final String numberString) {
+    final int number = int.parse(numberString);
 
     return FlatButton(
       padding: const EdgeInsets.all(Dimensions.numberButtonPadding),

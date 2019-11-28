@@ -1,16 +1,17 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_banking/common/dimensions.dart';
 import 'package:flutter_banking/model/viewstate.dart';
 import 'package:flutter_banking/common/colors.dart';
-import 'package:flutter_banking/model/branch.dart';
+import 'package:flutter_banking/model/place.dart';
 import 'package:flutter_banking/model/user_location.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/viewmodel/map_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -20,28 +21,28 @@ class MapView extends StatefulWidget {
 }
 
 class MapViewState extends State<MapView> {
-  static List<Branch> branches = [
-    Branch(
+  static List<Place> places = [
+    Place(
         id: '0',
         name: 'Oldenburg-Nadorst',
         type: 'Geldautomat',
         position: LatLng(53.155361, 8.2175729)),
-    Branch(
+    Place(
         id: '1',
         name: 'Oldenburg-Bürgerfelde',
         type: 'Filiale',
         position: LatLng(53.1719524, 8.1928393)),
-    Branch(
+    Place(
         id: '2',
         name: 'Oldenburg-Alexanderstraße',
         type: 'SB-Filiale',
         position: LatLng(53.1557353, 8.207197)),
-    Branch(
+    Place(
         id: '3',
         name: 'Oldenburg-Gottorpstraße',
         type: 'Filiale',
         position: LatLng(53.1406419, 8.2158691)),
-    Branch(
+    Place(
         id: '4',
         name: 'Oldenburg-Eversten',
         type: 'Filiale',
@@ -59,21 +60,7 @@ class MapViewState extends State<MapView> {
   void initState() {
     super.initState();
 
-    // set markers
-    Future<BitmapDescriptor> future = BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/images/institute/olb-small.png');
-    future.then((markerIcon) => {});
-
-    Set<Marker> _markers = branches.map((branch) {
-      return Marker(
-          markerId: MarkerId(branch.id),
-          icon: BitmapDescriptor.defaultMarker,
-          position: branch.position);
-    }).toSet();
-
-    setState(() {
-      markers = _markers;
-    });
+    initMarkers();
   }
 
   void onMapCreated(GoogleMapController controller) async {
@@ -130,10 +117,19 @@ class MapViewState extends State<MapView> {
                                       userLocation.longitude)),
                               mapToolbarEnabled: false,
                               myLocationEnabled: true,
-                              myLocationButtonEnabled: true,
+                              myLocationButtonEnabled: false,
                               padding: EdgeInsets.only(top: 96),
                               markers: markers,
                             ),
+                      floatingActionButton: FloatingActionButton(
+                        onPressed: () {
+                          final CameraUpdate camera = CameraUpdate.newLatLng(
+                              LatLng(userLocation.latitude,
+                                  userLocation.longitude));
+                          _mapController.animateCamera(camera);
+                        },
+                        child: Icon(Icons.gps_fixed),
+                      ),
                     ),
                   ),
                   Positioned(
@@ -176,5 +172,79 @@ class MapViewState extends State<MapView> {
             });
       },
     );
+  }
+
+  void initMarkers() async {
+    /* TODO: Parameter size does nothing. Maybe related to https://github.com/flutter/flutter/issues/40699
+       For now use a smaller version of the image */
+
+    BitmapDescriptor markerIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(size: Size(16, 16)),
+        'assets/images/institute/olb-small.png');
+
+    Set<Marker> _markers = places.map((place) {
+      return Marker(
+          markerId: MarkerId(place.id),
+          infoWindow: InfoWindow(
+            title: place.name,
+            onTap: () => _buildBottomSheet(place),
+          ),
+          icon: markerIcon ?? BitmapDescriptor.defaultMarker,
+          position: place.position);
+    }).toSet();
+
+    setState(() {
+      markers = _markers;
+    });
+  }
+
+  Future _buildBottomSheet(Place place) {
+    final ThemeData theme = Theme.of(context);
+    final TextStyle headline = theme.textTheme.title;
+    final TextStyle body =
+        theme.textTheme.subtitle.copyWith(color: Colors.grey);
+
+    return showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return Container(
+            height: 164,
+            padding: const EdgeInsets.symmetric(
+                horizontal: Dimensions.listItemPaddingHorizontal,
+                vertical: Dimensions.listItemPaddingVertical),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(place.name, style: headline),
+                SizedBox(
+                  height: 2,
+                ),
+                Text(place.type, style: body),
+                Text(place.position.toString(), style: body),
+                SizedBox(
+                  height: 12,
+                ),
+                RaisedButton(
+                  onPressed: () => _startNavigation(place.position),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Text('Route'),
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  void _startNavigation(LatLng location) async {
+    final url =
+        'google.navigation:q=${location.latitude},${location.longitude}';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
