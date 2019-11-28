@@ -34,4 +34,10 @@ class ContactModel extends BaseModel {
           contacts.isEmpty ? ViewState.NoDataAvailable : ViewState.DataFetched);
     }
   }
+
+  List<Account> findContactsByName(String searchTerm) {
+    return allContacts
+        .where((contact) => contact.customer.contains(searchTerm))
+        .toList();
+  }
 }

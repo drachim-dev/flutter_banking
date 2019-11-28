@@ -17,18 +17,54 @@ class ContactSelectionView extends StatefulWidget {
 }
 
 class _ContactSelectionViewState extends State<ContactSelectionView> {
-  List<Account> _allContacts = [];
-  List<Account> _suggestions = [];
-  List<Account> _contacts = [];
+  final TextEditingController _searchController = TextEditingController();
+
+  ContactModel _model;
+
+  List<Account> _contactList;
+  List<Account> _contacts;
+  List<Account> _suggestions;
 
   Transaction _transaction;
+
+  bool _showSearchResults = false;
+
+  @override
+  initState() {
+    super.initState();
+    _searchController.addListener(_onChangedSearchListener);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onChangedSearchListener() {
+    _showSearchResults = _searchController.text.length >= 3;
+    setState(() {
+      _initContactList();
+    });
+  }
+
+  void _initContactList() {
+    if (_showSearchResults) {
+      _contactList = _model.findContactsByName(_searchController.text);
+    } else {
+      _contacts ??= _model.allContacts;
+      _suggestions ??= _model.suggestedContacts;
+      _contactList = List.from(_contacts)..addAll(_suggestions);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
     return BaseView<ContactModel>(builder: (_, model, child) {
-      return Scaffold(appBar: _buildAppBar(), body: _buildBody(model, theme));
+      this._model = model;
+      return Scaffold(appBar: _buildAppBar(), body: _buildBody(theme));
     });
   }
 
@@ -38,8 +74,8 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
     );
   }
 
-  Widget _buildBody(ContactModel model, ThemeData theme) {
-    if (model.state == ViewState.Error) return _buildErrorUi();
+  Widget _buildBody(ThemeData theme) {
+    if (_model.state == ViewState.Error) return _buildErrorUi();
 
     return Column(children: <Widget>[
       Padding(
@@ -47,6 +83,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
             horizontal: Dimensions.listItemPaddingHorizontal,
             vertical: Dimensions.listItemPaddingVertical),
         child: TextField(
+          controller: _searchController,
           decoration: InputDecoration(
             labelText: 'Search',
           ),
@@ -55,9 +92,8 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
       Expanded(
           child: ListView(children: [
         _buildAddContactItem(),
-        if (model.state == ViewState.DataFetched)
-          _buildContactListView(theme, model),
-        if (model.state == ViewState.Busy) _buildLoadingUi(),
+        if (_model.state == ViewState.DataFetched) _buildContactListView(theme),
+        if (_model.state == ViewState.Busy) _buildLoadingUi(),
       ])),
     ]);
   }
@@ -72,18 +108,16 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
     return Center(child: Text('An error occurred'));
   }
 
-  ListView _buildContactListView(ThemeData theme, ContactModel model) {
-    _contacts = model.allContacts;
-    _suggestions = model.suggestedContacts;
-    _allContacts = List.from(_contacts)..addAll(_suggestions);
+  ListView _buildContactListView(ThemeData theme) {
+    _initContactList();
 
     return ListView.separated(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       padding:
           const EdgeInsets.symmetric(vertical: Dimensions.listVerticalPadding),
-      itemCount: _allContacts.length,
-      itemBuilder: (_, index) => _buildContactItem(theme, _allContacts, index),
+      itemCount: _contactList.length,
+      itemBuilder: (_, index) => _buildContactItem(theme, _contactList, index),
       separatorBuilder: (context, index) {
         // Contacts header
         if (index == _suggestions.length - 1) {
@@ -139,7 +173,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
 
     if (index == 0) {
       return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        ListGroupHeader(context: context, leadingText: 'Suggestions'),
+        ListGroupHeader(context: context, leadingText: _showSearchResults ? 'Results' : 'Suggestions'),
         contactItem
       ]);
     }
