@@ -37,7 +37,8 @@ class ContactModel extends BaseModel {
 
   List<Account> findContactsByName(String searchTerm) {
     return allContacts
-        .where((contact) => contact.customer.contains(searchTerm))
+        .where((contact) =>
+            contact.customer.toUpperCase().contains(searchTerm.toUpperCase()))
         .toList();
   }
 }
