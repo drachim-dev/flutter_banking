@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:flutter_banking/model/account.dart';
 import 'package:flutter_banking/model/institute.dart';
+import 'package:flutter_banking/model/place.dart';
 import 'package:flutter_banking/model/transaction.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -13,11 +14,13 @@ class FirebaseService {
       BehaviorSubject();
   final StreamController<List<Transaction>> _transactionController =
       BehaviorSubject();
+  final StreamController<List<Place>> _placeController = BehaviorSubject();
 
   Stream<List<Account>> get accounts => _accountController.stream;
   Stream<List<Account>> get contacts => _contactController.stream;
   Stream<List<Institute>> get institutes => _instituteController.stream;
   Stream<List<Transaction>> get transactions => _transactionController.stream;
+  Stream<List<Place>> get places => _placeController.stream;
 
   FirebaseService() {
     firestore.Firestore.instance
@@ -41,6 +44,11 @@ class FirebaseService {
         .collection('transactions')
         .snapshots()
         .listen(_transactionsAdded);
+
+        firestore.Firestore.instance
+        .collection('places')
+        .snapshots()
+        .listen(_placesAdded);
   }
 
   Future<void> _accountsAdded(firestore.QuerySnapshot snapshot) async {
@@ -128,5 +136,12 @@ class FirebaseService {
     return firestore.Firestore.instance
         .collection('transactions')
         .add(transaction);
+  }
+
+  Future<void> _placesAdded(firestore.QuerySnapshot snapshot) async {
+    List<Place> places = List<Place>();
+
+    snapshot.documents.forEach((doc) async => places.add(await Place.fromSnapshot(doc)));
+    _placeController.add(places);
   }
 }

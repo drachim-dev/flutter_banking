@@ -21,33 +21,7 @@ class MapView extends StatefulWidget {
 }
 
 class MapViewState extends State<MapView> {
-  static List<Place> places = [
-    Place(
-        id: '0',
-        name: 'Oldenburg-Nadorst',
-        type: 'Geldautomat',
-        position: LatLng(53.155361, 8.2175729)),
-    Place(
-        id: '1',
-        name: 'Oldenburg-Bürgerfelde',
-        type: 'Filiale',
-        position: LatLng(53.1719524, 8.1928393)),
-    Place(
-        id: '2',
-        name: 'Oldenburg-Alexanderstraße',
-        type: 'SB-Filiale',
-        position: LatLng(53.1557353, 8.207197)),
-    Place(
-        id: '3',
-        name: 'Oldenburg-Gottorpstraße',
-        type: 'Filiale',
-        position: LatLng(53.1406419, 8.2158691)),
-    Place(
-        id: '4',
-        name: 'Oldenburg-Eversten',
-        type: 'Filiale',
-        position: LatLng(53.1330698, 8.1954535)),
-  ];
+  MapModel _model;
 
   GoogleMapController _mapController;
   String _nightStyle;
@@ -56,11 +30,117 @@ class MapViewState extends State<MapView> {
   Set<Marker> markers = {};
   String _filter = 'Alle';
 
-  @override
-  void initState() {
-    super.initState();
+  UserLocation _userLocation =
+      UserLocation(latitude: 53.158017, longitude: 8.213230);
 
-    initMarkers();
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
+    // sets dark theme
+    _nightMode = theme.brightness == Brightness.dark;
+
+    return BaseView<MapModel>(
+      builder: (context, model, child) {
+        _model = model;
+
+        return StreamBuilder(
+            initialData: _userLocation,
+            stream: model.locationStream,
+            builder: (_, AsyncSnapshot<UserLocation> snapshot) {
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+
+              _userLocation = snapshot.data;
+
+              return Stack(
+                children: <Widget>[
+                  AnnotatedRegion<SystemUiOverlayStyle>(
+                    value: SystemUiOverlayStyle(
+                      statusBarColor: MyColor.transparentStatusBarColor,
+                    ),
+                    child: Scaffold(
+                      body: _buildBody(),
+                      floatingActionButton: _buildFloatingActionButton(),
+                    ),
+                  ),
+                  _buildAppBar(theme),
+                ],
+              );
+            });
+      },
+    );
+  }
+
+  Positioned _buildAppBar(ThemeData theme) {
+    final TextStyle searchBarText =
+        theme.textTheme.title.copyWith(fontSize: 16);
+    final Color searchBarColor = theme.bottomAppBarColor;
+
+    return Positioned(
+      top: 10,
+      right: 10,
+      left: 10,
+      child: SafeArea(
+        child: AppBar(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          backgroundColor: searchBarColor,
+          elevation: 2,
+          primary: true,
+          title: DropdownButton<String>(
+            value: _filter,
+            icon: Icon(Icons.filter_list),
+            isExpanded: true,
+            onChanged: (String value) {
+              setState(() {
+                _filter = value;
+              });
+            },
+            items: <String>[
+              'Alle',
+              'Filialen',
+              'Geldautomaten',
+              'Geldeinzahlautomaten'
+            ].map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value, style: searchBarText),
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_model.state == ViewState.DataFetched) initMarkers();
+
+    return _model.state == ViewState.Busy
+        ? _buildLoadingUi()
+        : _buildGoogleMap();
+  }
+
+  Center _buildLoadingUi() {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  GoogleMap _buildGoogleMap() {
+    return GoogleMap(
+      onMapCreated: onMapCreated,
+      initialCameraPosition: CameraPosition(
+          zoom: 14.0,
+          target: LatLng(_userLocation.latitude, _userLocation.longitude)),
+      mapToolbarEnabled: false,
+      myLocationEnabled: true,
+      myLocationButtonEnabled: false,
+      padding: EdgeInsets.only(top: 96),
+      markers: markers,
+    );
   }
 
   void onMapCreated(GoogleMapController controller) async {
@@ -78,102 +158,6 @@ class MapViewState extends State<MapView> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final TextStyle searchBarText =
-        theme.textTheme.title.copyWith(fontSize: 16);
-    final Color searchBarColor = theme.bottomAppBarColor;
-
-    // sets dark theme
-    _nightMode = theme.brightness == Brightness.dark;
-
-    return BaseView<MapModel>(
-      builder: (context, model, child) {
-        return StreamBuilder(
-            initialData: UserLocation(latitude: 53.158017, longitude: 8.213230),
-            stream: model.locationStream,
-            builder: (context, AsyncSnapshot<UserLocation> snapshot) {
-              if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              }
-
-              var userLocation = snapshot.data;
-
-              return Stack(
-                children: <Widget>[
-                  AnnotatedRegion<SystemUiOverlayStyle>(
-                    value: SystemUiOverlayStyle(
-                      statusBarColor: MyColor.transparentStatusBarColor,
-                    ),
-                    child: Scaffold(
-                      body: model.state == ViewState.Busy
-                          ? Center(child: CircularProgressIndicator())
-                          : GoogleMap(
-                              onMapCreated: onMapCreated,
-                              initialCameraPosition: CameraPosition(
-                                  zoom: 14.0,
-                                  target: LatLng(userLocation.latitude,
-                                      userLocation.longitude)),
-                              mapToolbarEnabled: false,
-                              myLocationEnabled: true,
-                              myLocationButtonEnabled: false,
-                              padding: EdgeInsets.only(top: 96),
-                              markers: markers,
-                            ),
-                      floatingActionButton: FloatingActionButton(
-                        onPressed: () {
-                          final CameraUpdate camera = CameraUpdate.newLatLng(
-                              LatLng(userLocation.latitude,
-                                  userLocation.longitude));
-                          _mapController.animateCamera(camera);
-                        },
-                        child: Icon(Icons.gps_fixed),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 10,
-                    right: 10,
-                    left: 10,
-                    child: SafeArea(
-                      child: AppBar(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        backgroundColor: searchBarColor,
-                        elevation: 2,
-                        primary: true,
-                        title: DropdownButton<String>(
-                          value: _filter,
-                          icon: Icon(Icons.filter_list),
-                          isExpanded: true,
-                          onChanged: (String value) {
-                            setState(() {
-                              _filter = value;
-                            });
-                          },
-                          items: <String>[
-                            'Alle',
-                            'Filialen',
-                            'Geldautomaten',
-                            'Geldeinzahlautomaten'
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value, style: searchBarText),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            });
-      },
-    );
-  }
-
   void initMarkers() async {
     /* TODO: Parameter size does nothing. Maybe related to https://github.com/flutter/flutter/issues/40699
        For now use a smaller version of the image */
@@ -182,9 +166,9 @@ class MapViewState extends State<MapView> {
         ImageConfiguration(size: Size(16, 16)),
         'assets/images/institute/olb-small.png');
 
-    Set<Marker> _markers = places.map((place) {
+    Set<Marker> _markers = _model.places.map((place) {
       return Marker(
-          markerId: MarkerId(place.id),
+          markerId: MarkerId(place.documentID),
           onTap: () => _buildBottomSheet(place),
           infoWindow: InfoWindow(
             title: place.name,
@@ -196,6 +180,17 @@ class MapViewState extends State<MapView> {
     setState(() {
       markers = _markers;
     });
+  }
+
+  FloatingActionButton _buildFloatingActionButton() {
+    return FloatingActionButton(
+      onPressed: () {
+        final CameraUpdate camera = CameraUpdate.newLatLng(
+            LatLng(_userLocation.latitude, _userLocation.longitude));
+        _mapController.animateCamera(camera);
+      },
+      child: Icon(Icons.gps_fixed),
+    );
   }
 
   Future _buildBottomSheet(Place place) {
