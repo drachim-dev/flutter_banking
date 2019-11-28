@@ -185,9 +185,9 @@ class MapViewState extends State<MapView> {
     Set<Marker> _markers = places.map((place) {
       return Marker(
           markerId: MarkerId(place.id),
+          onTap: () => _buildBottomSheet(place),
           infoWindow: InfoWindow(
             title: place.name,
-            onTap: () => _buildBottomSheet(place),
           ),
           icon: markerIcon ?? BitmapDescriptor.defaultMarker,
           position: place.position);
