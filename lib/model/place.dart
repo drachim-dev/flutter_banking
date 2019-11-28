@@ -3,19 +3,21 @@ import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Place {
-  final String documentID, name, type;
+  final String documentID, name, type, address;
   final LatLng position;
 
   Place(
       {@required this.documentID,
       @required this.name,
       @required this.type,
+      @required this.address,
       @required this.position});
 
   Place.fromSnapshot(DocumentSnapshot snapshot)
       : documentID = snapshot.documentID,
         name = snapshot['name'],
         type = snapshot['type'],
+        address = snapshot['address'],
         position = LatLng(
             snapshot['position'].latitude, snapshot['position'].longitude);
 }

@@ -216,7 +216,7 @@ class MapViewState extends State<MapView> {
                   height: 2,
                 ),
                 Text(place.type, style: body),
-                Text(place.position.toString(), style: body),
+                Text(place.address, style: body),
                 SizedBox(
                   height: 12,
                 ),

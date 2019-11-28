@@ -2,19 +2,20 @@ import 'dart:async';
 
 import 'package:flutter_banking/model/user_location.dart';
 import 'package:location/location.dart';
+import 'package:rxdart/rxdart.dart';
 
 class LocationService {
   Location _location = Location();
   UserLocation _currentLocation;
 
-  StreamController<UserLocation> _locationController =
-      StreamController<UserLocation>.broadcast();
+  StreamController<UserLocation> _locationController = BehaviorSubject();
   Stream<UserLocation> get locationStream => _locationController.stream;
+  StreamSubscription _locationSubscription;
 
   LocationService() {
     _location.requestPermission().then((granted) {
       if (granted) {
-        _location.onLocationChanged().listen((locationData) => {
+        _locationSubscription = _location.onLocationChanged().listen((locationData) => {
               _locationController.add(UserLocation(
                   latitude: locationData.latitude,
                   longitude: locationData.longitude))
@@ -35,4 +36,7 @@ class LocationService {
     return _currentLocation;
   }
 
+  void dispose() {
+    _locationSubscription.cancel();
+  }
 }

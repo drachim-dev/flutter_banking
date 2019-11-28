@@ -24,6 +24,7 @@ class MapModel extends BaseModel {
 
   @override
   void dispose() {
+    _locationService.dispose();
     _placesSubscription.cancel();
     super.dispose();
   }
