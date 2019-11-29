@@ -141,7 +141,7 @@ class FirebaseService {
   Future<void> _placesAdded(firestore.QuerySnapshot snapshot) async {
     List<Place> places = List<Place>();
 
-    snapshot.documents.forEach((doc) async => places.add(await Place.fromSnapshot(doc)));
+    snapshot.documents.forEach((doc) async => places.add(Place.fromSnapshot(doc)));
     _placeController.add(places);
   }
 }
