@@ -160,13 +160,11 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
               Text(Utils.getFormattedNumber(account.number))
             ]),
         onTap: () {
-          // unfocus SearchTextField
-          WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
-
           // create transaction
           _transaction = Transaction(foreignAccount: account);
 
           // pass transaction to new route
+          _resetFocus();
           Navigator.of(context).pushNamed(Router.AmountSelectionViewRoute,
               arguments: _transaction);
         });
@@ -181,6 +179,11 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
     return contactItem;
   }
 
+  _resetFocus() {
+    // unfocus SearchTextField
+    WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+  }
+
   ListTile _buildAddContactItem() {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(
@@ -190,7 +193,10 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
         child: Icon(Icons.person_add),
       ),
       title: Text('Add new contact'),
-      onTap: () => Navigator.of(context).pushNamed(Router.AddContactViewRoute),
+      onTap: () {
+        _resetFocus();
+        Navigator.of(context).pushNamed(Router.AddContactViewRoute);
+      },
     );
   }
 }
