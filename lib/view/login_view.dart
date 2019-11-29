@@ -34,41 +34,49 @@ class _LoginViewState extends State<LoginView> {
       }
     }, builder: (context, model, child) {
       return Stack(children: [
-        Scaffold(body: LayoutBuilder(builder: (context, constraint) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraint.maxHeight),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  _buildLogo,
-                  SizedBox(height: 64),
-                  Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: _buildPasswordField(model),
-                  ),
-                  SizedBox(height: 16),
-                  model.state == ViewState.Busy
-                      ? CircularProgressIndicator()
-                      : _canCheckBiometrics
-                          ? _buildBiometricsButton(model)
-                          : SizedBox()
-                ],
-              ),
-            ),
-          );
-        })),
-        Align(alignment: Alignment.bottomCenter, child: _buildBottomColorBar()),
+        Scaffold(body: _buildBody(model)),
+        _buildBottomColorBar()
       ]);
     });
   }
 
-  Widget get _buildLogo {
-    return Image.asset(
-      'assets/images/olb-logo.png',
-      scale: 1.25,
-    );
+  Widget _buildBody(LoginModel model) {
+    return LayoutBuilder(builder: (_, constraint) {
+      return SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraint.maxHeight),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildLogo,
+              SizedBox(height: 64),
+              Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: _buildPasswordField(model),
+              ),
+              SizedBox(height: 16),
+              model.state == ViewState.Busy
+                  ? CircularProgressIndicator()
+                  : _canCheckBiometrics
+                      ? _buildBiometricsButton(model)
+                      : SizedBox()
+            ],
+          ),
+        ),
+      );
+    });
   }
+
+  Align _buildBottomColorBar() {
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(height: 25, color: MyColor.olbPrimary));
+  }
+
+  Widget get _buildLogo => Image.asset(
+        'assets/images/olb-logo.png',
+        scale: 1.25,
+      );
 
   Widget _buildPasswordField(LoginModel model) {
     return TextFormField(
@@ -77,17 +85,16 @@ class _LoginViewState extends State<LoginView> {
       obscureText: true,
       onEditingComplete: () => _validatePassword(model, _controller.text),
       decoration: InputDecoration(
-        filled: true,
-        labelText: 'Password',
-        hintText: 'Your personal password',
-        errorText: _errorText,
-        prefixIcon: Icon(Icons.lock),
-        contentPadding: const EdgeInsets.all(18),
-        suffix: IconButton(
-          icon: Icon(Icons.send, color: Theme.of(context).accentColor),
-          onPressed: () => _validatePassword(model, _controller.text),
-        )
-      ),
+          filled: true,
+          labelText: 'Password',
+          hintText: 'Your personal password',
+          errorText: _errorText,
+          prefixIcon: Icon(Icons.lock),
+          contentPadding: const EdgeInsets.all(18),
+          suffix: IconButton(
+            icon: Icon(Icons.send, color: Theme.of(context).accentColor),
+            onPressed: () => _validatePassword(model, _controller.text),
+          )),
     );
   }
 
@@ -100,10 +107,6 @@ class _LoginViewState extends State<LoginView> {
       },
       icon: Icon(Icons.fingerprint, color: MyColor.olbPrimary),
     );
-  }
-
-  Widget _buildBottomColorBar() {
-    return Container(height: 25, color: MyColor.olbPrimary);
   }
 
   void startHome() {
