@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/keys.dart';
 import 'package:flutter_banking/common/my_theme.dart';
@@ -9,8 +11,18 @@ import 'package:provider/provider.dart';
 import 'package:flutter_banking/router.dart';
 import 'package:flutter_banking/locator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 Future<void> main() async {
+  // Set `enableInDevMode` to true to see reports while in debug mode
+  // This is only to be used for confirming that reports are being
+  // submitted as expected. It is not intended to be used for everyday
+  // development.
+  Crashlytics.instance.enableInDevMode = true;
+
+  // Pass all uncaught errors to Crashlytics.
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+
   // access SharedPreferences
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
@@ -20,12 +32,15 @@ Future<void> main() async {
 
   setupLocator();
   FirebaseService();
-  runApp(
-    ChangeNotifierProvider<ThemeNotifier>(
-      builder: (_) => ThemeNotifier(theme),
-      child: MyApp(),
-    ),
-  );
+
+  runZoned<Future<void>>(() async {
+    runApp(
+      ChangeNotifierProvider<ThemeNotifier>(
+        create: (_) => ThemeNotifier(theme),
+        child: MyApp(),
+      ),
+    );
+  }, onError: Crashlytics.instance.recordError);
 }
 
 class MyApp extends StatelessWidget {
@@ -35,7 +50,7 @@ class MyApp extends StatelessWidget {
       providers: [
         StreamProvider<User>(
           initialData: User.initial(),
-          builder: (_) => locator<AuthenticationService>().user,
+          create: (_) => locator<AuthenticationService>().user,
         ),
         // ChangeNotifierProvider(builder: (_) => locator<CRUDModel>()),
       ],

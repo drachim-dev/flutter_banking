@@ -19,6 +19,11 @@ class _LoginViewState extends State<LoginView> {
   String _errorText;
 
   @override
+  initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -32,7 +37,7 @@ class _LoginViewState extends State<LoginView> {
         _loginSuccess = await model.authenticateWithBiometrics();
         if (_loginSuccess) startHome();
       }
-    }, builder: (context, model, child) {
+    }, builder: (_, model, child) {
       return Stack(children: [
         Scaffold(body: _buildBody(model)),
         _buildBottomColorBar()

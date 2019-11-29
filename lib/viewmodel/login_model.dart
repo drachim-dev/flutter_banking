@@ -17,7 +17,11 @@ class LoginModel extends BaseModel {
   }
 
   Future<bool> canCheckBiometrics() async {
-    return _authService.canCheckBiometrics();
+    setState(ViewState.Busy);
+    var success =_authService.canCheckBiometrics();
+    setState(ViewState.Idle);
+
+    return success;
   }
 
   Future<bool> authenticateWithBiometrics() {
