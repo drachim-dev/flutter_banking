@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: Provider.of<ThemeNotifier>(context).theme,
         onGenerateRoute: Router.generateRoute,
-        initialRoute: Router.LoginViewRoute,
+        initialRoute: Router.loginView,
       ),
     );
   }

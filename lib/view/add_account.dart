@@ -109,7 +109,7 @@ class _AddAccountViewState extends State<AddAccountView> {
             Transaction _transaction = Transaction(foreignAccount: _account);
 
             // pass transaction to new route
-            Navigator.of(context).pushNamed(Router.AmountSelectionViewRoute,
+            Navigator.of(context).pushNamed(Router.amountSelectionView,
                 arguments: _transaction);
           },
           child: Text('Add & Send money'),

@@ -165,7 +165,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
 
           // pass transaction to new route
           _resetFocus();
-          Navigator.of(context).pushNamed(Router.AmountSelectionViewRoute,
+          Navigator.of(context).pushNamed(Router.amountSelectionView,
               arguments: _transaction);
         });
 
@@ -195,7 +195,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
       title: Text('Add new contact'),
       onTap: () {
         _resetFocus();
-        Navigator.of(context).pushNamed(Router.AddContactViewRoute);
+        Navigator.of(context).pushNamed(Router.addContactView);
       },
     );
   }

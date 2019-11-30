@@ -16,56 +16,56 @@ import 'package:flutter_banking/view/spending_view.dart';
 import 'package:flutter_banking/view/undefined_view.dart';
 
 class Router {
-  static const String LoginViewRoute = '/';
-  static const String HomeViewRoute = '/home';
-  static const String SpendingViewRoute = '/spending/list';
-  static const String MapViewRoute = '/mapview';
-  static const String PreferencesViewRoute = '/preferences';
+  static const String loginView = '/';
+  static const String homeView = '/home';
+  static const String spendingView = '/spending/list';
+  static const String mapView = '/mapview';
+  static const String preferencesView = '/preferences';
 
-  static const String AccountViewRoute = '/account/list';
-  static const String AddAccountViewRoute = '/account/list/add';
+  static const String accountView = '/account/list';
+  static const String addAccountView = '/account/list/add';
 
-  static const String ContactSelectionViewRoute = '/transaction/contact/list';
-  static const String AddContactViewRoute = '/transaction/contact/list/add';
+  static const String contactSelectionView = '/transaction/contact/list';
+  static const String addContactView = '/transaction/contact/list/add';
 
-  static const String AmountSelectionViewRoute = '/transaction/send/amount';
-  static const String PurposeSelectionViewRoute = '/transaction/send/purpose';
-  static const String AccountSelectionViewRoute = '/transaction/send/account';
-  static const String AddTransactionOverviewRoute =
+  static const String amountSelectionView = '/transaction/send/amount';
+  static const String purposeSelectionView = '/transaction/send/purpose';
+  static const String accountSelectionView = '/transaction/send/account';
+  static const String addTransactionOverview =
       '/transaction/send/overview';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case LoginViewRoute:
+      case loginView:
         return MaterialPageRoute(builder: (_) => LoginView());
 
-      case HomeViewRoute:
+      case homeView:
         return MaterialPageRoute(builder: (_) => HomeView());
 
-      case SpendingViewRoute:
+      case spendingView:
         return MaterialPageRoute(builder: (_) => SpendingView());
 
-      case AccountViewRoute:
+      case accountView:
         return MaterialPageRoute(builder: (_) => AccountView());
 
-      case AddAccountViewRoute:
+      case addAccountView:
         return MaterialPageRoute(
             builder: (_) => AddAccountView(createOwnAccount: true));
 
-      case MapViewRoute:
+      case mapView:
         return MaterialPageRoute(builder: (_) => MapView());
 
-      case PreferencesViewRoute:
+      case preferencesView:
         return MaterialPageRoute(builder: (_) => PreferencesView());
 
-      case ContactSelectionViewRoute:
+      case contactSelectionView:
         return MaterialPageRoute(builder: (_) => ContactSelectionView());
 
-      case AddContactViewRoute:
+      case addContactView:
         return MaterialPageRoute(
             builder: (_) => AddAccountView(createOwnAccount: false));
 
-      case AmountSelectionViewRoute:
+      case amountSelectionView:
         final Transaction transaction = settings.arguments;
 
         return PageRouteBuilder(
@@ -76,7 +76,7 @@ class Router {
           },
         );
 
-      case AccountSelectionViewRoute:
+      case accountSelectionView:
         final Transaction transaction = settings.arguments;
 
         return PageRouteBuilder(
@@ -88,13 +88,13 @@ class Router {
           },
         );
 
-      case AddTransactionOverviewRoute:
+      case addTransactionOverview:
         final Transaction transaction = settings.arguments;
 
         return MaterialPageRoute(
             builder: (_) => AddTransactionOverview(transaction: transaction));
 
-      case PurposeSelectionViewRoute:
+      case purposeSelectionView:
         return PageRouteBuilder(
           pageBuilder: (context, anim1, anim2) {
             return PurposeSelectionView();

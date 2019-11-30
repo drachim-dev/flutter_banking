@@ -298,7 +298,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                       onPressed: () =>
                                           Navigator.pushNamedAndRemoveUntil(
                                               context,
-                                              Router.HomeViewRoute,
+                                              Router.homeView,
                                               (Route<dynamic> route) => false),
                                       child: Text(
                                         'OVERVIEW',
@@ -316,11 +316,11 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                       onPressed: () {
                                         Navigator.of(context)
                                             .pushNamedAndRemoveUntil(
-                                                Router.HomeViewRoute,
+                                                Router.homeView,
                                                 (Route<dynamic> route) =>
                                                     false);
                                         Navigator.of(context).pushNamed(
-                                            Router.ContactSelectionViewRoute);
+                                            Router.contactSelectionView);
                                       },
                                       child: Text('SEND MORE',
                                           style: theme.textTheme.body1

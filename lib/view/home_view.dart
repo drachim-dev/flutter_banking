@@ -27,7 +27,7 @@ class _HomeViewState extends State<HomeView>
       floatingActionButton: allDestinations[_selectedIndex].showFab
           ? FloatingActionButton(
               onPressed: () => Navigator.pushNamed(
-                  context, Router.ContactSelectionViewRoute),
+                  context, Router.contactSelectionView),
               child: Icon(Icons.add))
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

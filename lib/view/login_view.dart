@@ -115,7 +115,7 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void startHome() {
-    Navigator.pushReplacementNamed(context, Router.HomeViewRoute);
+    Navigator.pushReplacementNamed(context, Router.homeView);
   }
 
   void _validatePassword(LoginModel model, String value) async {

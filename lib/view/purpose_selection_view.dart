@@ -33,7 +33,7 @@ class _PurposeSelectionViewState extends State<PurposeSelectionView> {
                 RaisedButton(
                     child: Text('Continue'),
                     onPressed: () => Navigator.of(context)
-                        .pushNamed(Router.AccountSelectionViewRoute))
+                        .pushNamed(Router.accountSelectionView))
               ]),
         ));
   }

@@ -97,7 +97,7 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
                 onPressed: () {
                   _transaction.amount = _cents / 100 * -1;
                   Navigator.of(context).pushNamed(
-                      Router.AccountSelectionViewRoute,
+                      Router.accountSelectionView,
                       arguments: _transaction);
                 })
           ]),

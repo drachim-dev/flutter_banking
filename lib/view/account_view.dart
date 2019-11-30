@@ -45,7 +45,7 @@ class _AccountViewState extends State<AccountView> {
         if (!_selectionMode)
           IconButton(
             onPressed: () =>
-                Navigator.of(context).pushNamed(Router.AddAccountViewRoute),
+                Navigator.of(context).pushNamed(Router.addAccountView),
             icon: Icon(Icons.add),
           )
       ],
@@ -109,7 +109,7 @@ class _AccountViewState extends State<AccountView> {
   void _onTapAccount(Account account) {
     if (_selectionMode) {
       _transaction.ownAccount = account;
-      Navigator.of(context).pushNamed(Router.AddTransactionOverviewRoute,
+      Navigator.of(context).pushNamed(Router.addTransactionOverview,
           arguments: _transaction);
     }
   }
