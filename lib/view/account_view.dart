@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_banking/common/dimensions.dart';
+import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/common/utils.dart';
 import 'package:flutter_banking/model/account.dart';
 import 'package:flutter_banking/model/account_type.dart';
@@ -20,41 +20,46 @@ class AccountView extends StatefulWidget {
 
 class _AccountViewState extends State<AccountView> {
   final Transaction _transaction;
+  bool _selectionMode = false;
 
   _AccountViewState(this._transaction);
 
   @override
-  Widget build(BuildContext context) {
-    bool selectionMode = _transaction != null;
+  void initState() {
+    super.initState();
 
+    _selectionMode = _transaction != null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BaseView<AccountModel>(builder: (_, model, child) {
-      return Scaffold(
-          appBar: _buildAppBar(selectionMode),
-          body: _buildBody(model, selectionMode));
+      return Scaffold(appBar: _buildAppBar(), body: _buildBody(model));
     });
   }
 
-  AppBar _buildAppBar(bool selectionMode) {
+  AppBar _buildAppBar() {
     return AppBar(
-      title: Text(selectionMode ? 'Select account for payment' : 'Accounts'),
+      title: Text(_selectionMode ? 'Select account for payment' : 'Accounts'),
       actions: [
-        if (!selectionMode)
+        if (!_selectionMode)
           IconButton(
-            onPressed: () => Navigator.of(context).pushNamed(Router.AddAccountViewRoute),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(Router.AddAccountViewRoute),
             icon: Icon(Icons.add),
           )
       ],
     );
   }
 
-  Widget _buildBody(AccountModel model, bool selectionMode) {
+  Widget _buildBody(AccountModel model) {
     switch (model.state) {
       case ViewState.NoDataAvailable:
         return _buildNoDataUi();
       case ViewState.Error:
         return _buildErrorUi();
       case ViewState.DataFetched:
-        return _buildAccountListView(model.accounts, selectionMode);
+        return _buildAccountListView(model.accounts);
       case ViewState.Busy:
       default:
         return _buildLoadingUi();
@@ -75,28 +80,22 @@ class _AccountViewState extends State<AccountView> {
     return Center(child: Text('An error occurred'));
   }
 
-  ListView _buildAccountListView(List<Account> accounts, bool selectionMode) {
+  ListView _buildAccountListView(List<Account> accounts) {
     return ListView.separated(
       padding:
-          const EdgeInsets.symmetric(vertical: Dimensions.listVerticalPadding),
+          const EdgeInsets.symmetric(vertical: Dimens.listVerticalPadding),
       itemCount: accounts.length,
-      itemBuilder: (_, index) {
-        var account = accounts[index];
-
-        return _buildAccountItem(selectionMode, account);
-      },
-      separatorBuilder: (_, index) {
-        return Divider();
-      },
+      itemBuilder: (_, index) => _buildAccountItem(accounts[index]),
+      separatorBuilder: (_, index) => Divider(),
     );
   }
 
-  ListTile _buildAccountItem(bool selectionMode, Account account) {
+  ListTile _buildAccountItem(Account account) {
     return ListTile(
-      onTap: () => _onTapAccount(selectionMode, account),
+      onTap: () => _onTapAccount(account),
       contentPadding: const EdgeInsets.symmetric(
-          horizontal: Dimensions.listItemPaddingHorizontal,
-          vertical: Dimensions.listItemPaddingVertical),
+          horizontal: Dimens.listItemPaddingHorizontal,
+          vertical: Dimens.listItemPaddingVertical),
       leading: Icon(AccountTypeHelper.getIcon(account.accountType)),
       trailing: Text(Utils.getFormattedCurrency(account.balance)),
       title: Text(account.name),
@@ -107,8 +106,8 @@ class _AccountViewState extends State<AccountView> {
     );
   }
 
-  void _onTapAccount(bool selectionMode, Account account) {
-    if (selectionMode) {
+  void _onTapAccount(Account account) {
+    if (_selectionMode) {
       _transaction.ownAccount = account;
       Navigator.of(context).pushNamed(Router.AddTransactionOverviewRoute,
           arguments: _transaction);

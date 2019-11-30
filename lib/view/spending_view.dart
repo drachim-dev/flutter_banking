@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_banking/common/dimensions.dart';
+import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/model/account_type.dart';
 import 'package:flutter_banking/model/purpose.dart';
 import 'package:flutter_banking/common/utils.dart';
@@ -82,7 +82,7 @@ class _SpendingViewState extends State<SpendingView> {
   ListView _buildTransactionListView(
       SpendingModel model, List<Transaction> transactions) {
     return ListView.builder(
-      padding: const EdgeInsets.only(bottom: Dimensions.listVerticalPadding),
+      padding: const EdgeInsets.only(bottom: Dimens.listVerticalPadding),
       itemCount: transactions.length,
       itemBuilder: (_, index) =>
           _buildTransactionItem(model, transactions, index),
@@ -95,8 +95,8 @@ class _SpendingViewState extends State<SpendingView> {
     var transactionItem = ListTile(
         onTap: () => {},
         contentPadding: const EdgeInsets.symmetric(
-            horizontal: Dimensions.listItemPaddingHorizontal,
-            vertical: Dimensions.listItemPaddingVertical),
+            horizontal: Dimens.listItemPaddingHorizontal,
+            vertical: Dimens.listItemPaddingVertical),
         leading:
             Icon(AccountTypeHelper.getIcon(transaction.ownAccount.accountType)),
         title: Text(transaction.foreignAccount.customer),

@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_banking/common/dimensions.dart';
+import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/model/viewstate.dart';
 import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/model/place.dart';
@@ -42,7 +42,7 @@ class MapViewState extends State<MapView> {
 
     return BaseView<MapModel>(
       builder: (context, model, child) {
-        _model = model;
+        this._model = model;
 
         return StreamBuilder(
             initialData: _userLocation,
@@ -55,7 +55,7 @@ class MapViewState extends State<MapView> {
               _userLocation = snapshot.data;
 
               return Stack(
-                children: <Widget>[
+                children: [
                   AnnotatedRegion<SystemUiOverlayStyle>(
                     value: SystemUiOverlayStyle(
                       statusBarColor: MyColor.transparentStatusBarColor,
@@ -103,7 +103,7 @@ class MapViewState extends State<MapView> {
               'Filialen',
               'Geldautomaten',
               'Geldeinzahlautomaten'
-            ].map<DropdownMenuItem<String>>((String value) {
+            ].map<DropdownMenuItem<String>>((value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value, style: searchBarText),
@@ -205,8 +205,8 @@ class MapViewState extends State<MapView> {
           return Container(
             height: 164,
             padding: const EdgeInsets.symmetric(
-                horizontal: Dimensions.listItemPaddingHorizontal,
-                vertical: Dimensions.listItemPaddingVertical),
+                horizontal: Dimens.listItemPaddingHorizontal,
+                vertical: Dimens.listItemPaddingVertical),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,

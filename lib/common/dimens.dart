@@ -1,4 +1,4 @@
-class Dimensions {
+class Dimens {
 
   // Padding for normal view
   static const double horizontalPadding = 12;

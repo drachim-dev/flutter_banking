@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_banking/common/colors.dart';
-import 'package:flutter_banking/common/dimensions.dart';
+import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/common/utils.dart';
 import 'package:flutter_banking/model/transaction.dart';
 import 'package:flutter_banking/model/account.dart';
@@ -80,8 +80,8 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
     return Column(children: <Widget>[
       Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: Dimensions.listItemPaddingHorizontal,
-            vertical: Dimensions.listItemPaddingVertical),
+            horizontal: Dimens.listItemPaddingHorizontal,
+            vertical: Dimens.listItemPaddingVertical),
         child: TextField(
           controller: _searchController,
           decoration: InputDecoration(
@@ -115,7 +115,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       padding:
-          const EdgeInsets.symmetric(vertical: Dimensions.listVerticalPadding),
+          const EdgeInsets.symmetric(vertical: Dimens.listVerticalPadding),
       itemCount: _contactList.length,
       itemBuilder: (_, index) => _buildContactItem(theme, _contactList, index),
       separatorBuilder: (context, index) {
@@ -137,8 +137,8 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
         account.customer.split(' ').last.substring(0, 1);
     var contactItem = ListTile(
         contentPadding: const EdgeInsets.symmetric(
-            horizontal: Dimensions.listItemPaddingHorizontal,
-            vertical: Dimensions.listItemPaddingVertical),
+            horizontal: Dimens.listItemPaddingHorizontal,
+            vertical: Dimens.listItemPaddingVertical),
         leading: Container(
           width: 48,
           height: 48,
@@ -187,7 +187,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
   ListTile _buildAddContactItem() {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(
-          horizontal: Dimensions.listItemPaddingHorizontal, vertical: 4),
+          horizontal: Dimens.listItemPaddingHorizontal, vertical: 4),
       leading: Container(
         padding: const EdgeInsets.all(12),
         child: Icon(Icons.person_add),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_banking/common/dimensions.dart';
+import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/model/transaction.dart';
 import 'package:flutter_banking/router.dart';
 import 'package:intl/intl.dart';
@@ -129,10 +129,10 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
     final int number = int.parse(numberString);
 
     return FlatButton(
-      padding: const EdgeInsets.all(Dimensions.numberButtonPadding),
+      padding: const EdgeInsets.all(Dimens.numberButtonPadding),
       shape: CircleBorder(),
       child: Text('$numberString',
-          textScaleFactor: Dimensions.numberTextScaleFactor),
+          textScaleFactor: Dimens.numberTextScaleFactor),
       onPressed: () {
         _insertNumber(number);
         if (numberString == '00') _insertNumber(number);
@@ -142,7 +142,7 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
 
   FlatButton _buildBackspaceButton() {
     return FlatButton(
-      padding: const EdgeInsets.all(Dimensions.numberButtonPadding),
+      padding: const EdgeInsets.all(Dimens.numberButtonPadding),
       shape: CircleBorder(),
       child: Icon(Icons.backspace),
       onPressed: () => _removeNumber(),

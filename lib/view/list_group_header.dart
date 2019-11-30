@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/colors.dart';
-import 'package:flutter_banking/common/dimensions.dart';
+import 'package:flutter_banking/common/dimens.dart';
 
 class ListGroupHeader extends StatelessWidget {
   const ListGroupHeader(
@@ -23,7 +23,7 @@ class ListGroupHeader extends StatelessWidget {
     final Color backgroundColor = isDark ? MyColor.darkGrey : MyColor.transparentOlbPrimary;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Dimensions.listGroupHeaderPaddingVertical),
+      padding: const EdgeInsets.symmetric(vertical: Dimens.listGroupHeaderPaddingVertical),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         color: backgroundColor,

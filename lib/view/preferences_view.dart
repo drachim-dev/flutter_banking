@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_banking/common/dimensions.dart';
+import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/common/keys.dart';
 import 'package:flutter_banking/common/my_theme.dart';
 import 'package:flutter_banking/services/theme_notifier.dart';
@@ -51,8 +51,8 @@ class _PreferencesViewState extends State<PreferencesView> {
           return snapshot.hasData
               ? ListView(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Dimensions.horizontalPadding,
-                      vertical: Dimensions.listVerticalPadding),
+                      horizontal: Dimens.horizontalPadding,
+                      vertical: Dimens.listVerticalPadding),
                   children: <Widget>[
                     _buildGroup(context, 'General'),
                     _buildThemeSelector(),

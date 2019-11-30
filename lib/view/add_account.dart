@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_banking/common/colors.dart';
-import 'package:flutter_banking/common/constants.dart';
+import 'package:flutter_banking/common/consts.dart';
 import 'package:flutter_banking/common/masked_text_input_formatter.dart';
-import 'package:flutter_banking/common/dimensions.dart';
+import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/model/account.dart';
 import 'package:flutter_banking/model/account_type.dart';
 import 'package:flutter_banking/model/institute.dart';
@@ -26,7 +26,7 @@ class AddAccountView extends StatefulWidget {
 
 class _AddAccountViewState extends State<AddAccountView> {
   final TextInputFormatter _ibanFormatter = MaskedTextInputFormatter(
-      mask: Constants.ibanMask, separator: Constants.ibanSeparator);
+      mask: Consts.ibanMask, separator: Consts.ibanSeparator);
 
   final bool _createOwnAccount;
 
@@ -124,7 +124,7 @@ class _AddAccountViewState extends State<AddAccountView> {
 
     return ListView(
         padding: const EdgeInsets.symmetric(
-            horizontal: Dimensions.listItemPaddingHorizontal, vertical: 32),
+            horizontal: Dimens.listItemPaddingHorizontal, vertical: 32),
         children: [
           if (_createOwnAccount) _buildAccountTypeField(),
           if (_createOwnAccount) SizedBox(height: 24),
