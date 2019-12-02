@@ -39,4 +39,8 @@ class AddAccountModel extends BaseModel {
   Future<void> addAccount(Account account) {
     return _accountService.addAccount(account);
   }
+
+  Future<void> addContact(Account contact) {
+    return _accountService.addContact(contact);
+  }
 }

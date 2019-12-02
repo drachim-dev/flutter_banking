@@ -21,8 +21,15 @@ class AccountService {
     return _firebaseService.deleteAccount(account.documentID);
   }
 
-  Future<void> addContacts(Account contact) async {
-    return addAccount(contact);
+  Future<void> addContact(Account contact) async {
+    List<Institute> instituteList = await institutes.first;
+    contact.institute = instituteList.first;
+
+    return _firebaseService.addContact(contact.toMap());
+  }
+
+  Future<void> deleteContact(Account contact) async {
+    return _firebaseService.deleteContact(contact.documentID);
   }
 
   Stream<List<Institute>> getInstitutes(String bic) =>

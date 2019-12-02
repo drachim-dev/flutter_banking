@@ -98,7 +98,7 @@ class _AccountViewState extends State<AccountView> {
       onTapDown: _storePosition,
       child: ListTile(
         onTap: () => _onTapAccount(account),
-        onLongPress: () => onLongPressAccount(account),
+        onLongPress: () => _onLongPressAccount(account),
         contentPadding: const EdgeInsets.symmetric(
             horizontal: Dimens.listItemPaddingHorizontal,
             vertical: Dimens.listItemPaddingVertical),
@@ -127,7 +127,7 @@ class _AccountViewState extends State<AccountView> {
     }
   }
 
-  void onLongPressAccount(Account account) {
+  void _onLongPressAccount(Account account) {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
 
     var popup = showMenu(
@@ -135,7 +135,8 @@ class _AccountViewState extends State<AccountView> {
       items: [
         'Edit',
         'Delete',
-      ].map((value) => PopupMenuItem<String>(
+      ]
+          .map((value) => PopupMenuItem<String>(
                 value: value,
                 child: Text(value),
               ))

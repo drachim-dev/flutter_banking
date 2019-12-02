@@ -29,6 +29,8 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
 
   bool _showSearchResults = false;
 
+  Offset _tapPosition;
+
   @override
   initState() {
     super.initState();
@@ -52,8 +54,8 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
     if (_showSearchResults) {
       _contactList = _model.findContactsByName(_searchController.text);
     } else {
-      _contacts ??= _model.allContacts;
-      _suggestions ??= _model.suggestedContacts;
+      _contacts = _model.allContacts;
+      _suggestions = _model.suggestedContacts;
       _contactList = List.from(_contacts)..addAll(_suggestions);
     }
   }
@@ -77,7 +79,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
   Widget _buildBody(ThemeData theme) {
     if (_model.state == ViewState.Error) return _buildErrorUi();
 
-    return Column(children: <Widget>[
+    return Column(children: [
       Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: Dimens.listItemPaddingHorizontal,
@@ -108,77 +110,6 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
     return Center(child: Text('An error occurred'));
   }
 
-  ListView _buildContactListView(ThemeData theme) {
-    _initContactList();
-
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      padding:
-          const EdgeInsets.symmetric(vertical: Dimens.listVerticalPadding),
-      itemCount: _contactList.length,
-      itemBuilder: (_, index) => _buildContactItem(theme, _contactList, index),
-      separatorBuilder: (context, index) {
-        // Contacts header
-        if (index == _suggestions.length - 1) {
-          return ListGroupHeader(context: context, leadingText: 'Contacts');
-        }
-
-        // Divider
-        return Divider();
-      },
-    );
-  }
-
-  _buildContactItem(ThemeData theme, List<Account> contacts, int index) {
-    var account = contacts[index];
-
-    var initials = account.customer.substring(0, 1) +
-        account.customer.split(' ').last.substring(0, 1);
-    var contactItem = ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-            horizontal: Dimens.listItemPaddingHorizontal,
-            vertical: Dimens.listItemPaddingVertical),
-        leading: Container(
-          width: 48,
-          height: 48,
-          child: Center(
-            child: Text(
-              initials,
-              style: theme.textTheme.body1
-                  .copyWith(fontSize: 16, color: MyColor.darkGrey),
-            ),
-          ),
-          decoration:
-              ShapeDecoration(shape: CircleBorder(), color: MyColor.lightGrey),
-        ),
-        title: Text(account.customer),
-        subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(account.institute.name),
-              Text(Utils.getFormattedNumber(account.number))
-            ]),
-        onTap: () {
-          // create transaction
-          _transaction = Transaction(foreignAccount: account);
-
-          // pass transaction to new route
-          _resetFocus();
-          Navigator.of(context).pushNamed(Router.amountSelectionView,
-              arguments: _transaction);
-        });
-
-    if (index == 0) {
-      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        ListGroupHeader(context: context, leadingText: _showSearchResults ? 'Results' : 'Suggestions'),
-        contactItem
-      ]);
-    }
-
-    return contactItem;
-  }
-
   _resetFocus() {
     // unfocus SearchTextField
     WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
@@ -198,5 +129,121 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
         Navigator.of(context).pushNamed(Router.addContactView);
       },
     );
+  }
+
+  ListView _buildContactListView(ThemeData theme) {
+    _initContactList();
+
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(vertical: Dimens.listVerticalPadding),
+      itemCount: _contactList.length,
+      itemBuilder: (_, index) => _buildContactItem(theme, _contactList, index),
+      separatorBuilder: (context, index) {
+        // Contacts header
+        if (index == _suggestions.length - 1) {
+          return ListGroupHeader(context: context, leadingText: 'Contacts');
+        }
+
+        // Divider
+        return Divider();
+      },
+    );
+  }
+
+  _buildContactItem(ThemeData theme, List<Account> contacts, int index) {
+    var contact = contacts[index];
+
+    var initials = contact.customer.substring(0, 1) +
+        contact.customer.split(' ').last.substring(0, 1);
+    var contactItem = GestureDetector(
+      onTapDown: _storePosition,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+            horizontal: Dimens.listItemPaddingHorizontal,
+            vertical: Dimens.listItemPaddingVertical),
+        leading: Container(
+          width: 48,
+          height: 48,
+          child: Center(
+            child: Text(
+              initials,
+              style: theme.textTheme.body1
+                  .copyWith(fontSize: 16, color: MyColor.darkGrey),
+            ),
+          ),
+          decoration:
+              ShapeDecoration(shape: CircleBorder(), color: MyColor.lightGrey),
+        ),
+        title: Text(contact.customer),
+        subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(contact.institute.name),
+              Text(Utils.getFormattedNumber(contact.number))
+            ]),
+        onTap: () {
+          // create transaction
+          _transaction = Transaction(foreignAccount: contact);
+
+          // pass transaction to new route
+          _resetFocus();
+          Navigator.of(context)
+              .pushNamed(Router.amountSelectionView, arguments: _transaction);
+        },
+        onLongPress: () => _onLongPressItem(contact)));
+
+    if (index == 0) {
+      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        ListGroupHeader(
+            context: context,
+            leadingText: _showSearchResults ? 'Results' : 'Suggestions'),
+        contactItem
+      ]);
+    }
+
+    return contactItem;
+  }
+
+  _storePosition(TapDownDetails details) {
+    print('tapDown');
+    _tapPosition = details.globalPosition;
+  }
+
+  _onLongPressItem(Account contact) {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+
+    var popup = showMenu(
+      context: context,
+      items: [
+        'Edit',
+        'Delete',
+      ]
+          .map((value) => PopupMenuItem<String>(
+                value: value,
+                child: Text(value),
+              ))
+          .toList(),
+      position: RelativeRect.fromRect(
+          _tapPosition & Size(40, 40), // smaller rect, the touch area
+          Offset.zero & overlay.size // Bigger rect, the entire screen
+          ),
+    );
+
+    popup.then((value) {
+      switch (value) {
+        case 'Edit':
+          // TODO: Implement edit contact
+          // should share same view as addAccount but other title
+          print('edit contact');
+          break;
+        case 'Delete':
+          _model.deleteContact(contact);
+          break;
+        default:
+          break;
+      }
+    });
   }
 }

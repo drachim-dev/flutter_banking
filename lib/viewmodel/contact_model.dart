@@ -8,18 +8,18 @@ import 'package:flutter_banking/viewmodel/base_model.dart';
 
 class ContactModel extends BaseModel {
   final AccountService _accountService = locator<AccountService>();
-  StreamSubscription _accountSubscription;
+  StreamSubscription _contactSubscription;
 
   List<Account> allContacts;
   List<Account> suggestedContacts;
 
   ContactModel() {
-    _accountSubscription = _accountService.contacts.listen(_onContactsUpdated);
+    _contactSubscription = _accountService.contacts.listen(_onContactsUpdated);
   }
 
   @override
   void dispose() {
-    _accountSubscription.cancel();
+    _contactSubscription.cancel();
     super.dispose();
   }
 
@@ -40,5 +40,9 @@ class ContactModel extends BaseModel {
         .where((contact) =>
             contact.customer.toUpperCase().contains(searchTerm.toUpperCase()))
         .toList();
+  }
+
+  Future<void> deleteContact(Account contact) {
+    return _accountService.deleteContact(contact);
   }
 }
