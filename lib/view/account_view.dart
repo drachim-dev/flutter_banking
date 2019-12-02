@@ -21,8 +21,11 @@ class AccountView extends StatefulWidget {
 class _AccountViewState extends State<AccountView> {
   final Transaction _transaction;
   bool _selectionMode = false;
+  AccountModel _model;
 
   _AccountViewState(this._transaction);
+
+  Offset _tapPosition;
 
   @override
   void initState() {
@@ -34,7 +37,8 @@ class _AccountViewState extends State<AccountView> {
   @override
   Widget build(BuildContext context) {
     return BaseView<AccountModel>(builder: (_, model, child) {
-      return Scaffold(appBar: _buildAppBar(), body: _buildBody(model));
+      this._model = model;
+      return Scaffold(appBar: _buildAppBar(), body: _buildBody());
     });
   }
 
@@ -52,14 +56,14 @@ class _AccountViewState extends State<AccountView> {
     );
   }
 
-  Widget _buildBody(AccountModel model) {
-    switch (model.state) {
+  Widget _buildBody() {
+    switch (_model.state) {
       case ViewState.NoDataAvailable:
         return _buildNoDataUi();
       case ViewState.Error:
         return _buildErrorUi();
       case ViewState.DataFetched:
-        return _buildAccountListView(model.accounts);
+        return _buildAccountListView();
       case ViewState.Busy:
       default:
         return _buildLoadingUi();
@@ -80,37 +84,81 @@ class _AccountViewState extends State<AccountView> {
     return Center(child: Text('An error occurred'));
   }
 
-  ListView _buildAccountListView(List<Account> accounts) {
+  ListView _buildAccountListView() {
     return ListView.separated(
-      padding:
-          const EdgeInsets.symmetric(vertical: Dimens.listVerticalPadding),
-      itemCount: accounts.length,
-      itemBuilder: (_, index) => _buildAccountItem(accounts[index]),
+      padding: const EdgeInsets.symmetric(vertical: Dimens.listVerticalPadding),
+      itemCount: _model.accounts.length,
+      itemBuilder: (_, index) => _buildAccountItem(_model.accounts[index]),
       separatorBuilder: (_, index) => Divider(),
     );
   }
 
-  ListTile _buildAccountItem(Account account) {
-    return ListTile(
-      onTap: () => _onTapAccount(account),
-      contentPadding: const EdgeInsets.symmetric(
-          horizontal: Dimens.listItemPaddingHorizontal,
-          vertical: Dimens.listItemPaddingVertical),
-      leading: Icon(AccountTypeHelper.getIcon(account.accountType)),
-      trailing: Text(Utils.getFormattedCurrency(account.balance)),
-      title: Text(account.name),
-      subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(account.institute.name),
-        Text(Utils.getFormattedNumber(account.number))
-      ]),
+  GestureDetector _buildAccountItem(Account account) {
+    return GestureDetector(
+      onTapDown: _storePosition,
+      child: ListTile(
+        onTap: () => _onTapAccount(account),
+        onLongPress: () => onLongPressAccount(account),
+        contentPadding: const EdgeInsets.symmetric(
+            horizontal: Dimens.listItemPaddingHorizontal,
+            vertical: Dimens.listItemPaddingVertical),
+        leading: Icon(AccountTypeHelper.getIcon(account.accountType)),
+        trailing: Text(Utils.getFormattedCurrency(account.balance)),
+        title: Text(account.name),
+        subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(account.institute.name),
+              Text(Utils.getFormattedNumber(account.number))
+            ]),
+      ),
     );
+  }
+
+  void _storePosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
   }
 
   void _onTapAccount(Account account) {
     if (_selectionMode) {
       _transaction.ownAccount = account;
-      Navigator.of(context).pushNamed(Router.addTransactionOverview,
-          arguments: _transaction);
+      Navigator.of(context)
+          .pushNamed(Router.addTransactionOverview, arguments: _transaction);
     }
+  }
+
+  void onLongPressAccount(Account account) {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+
+    var popup = showMenu(
+      context: context,
+      items: [
+        'Edit',
+        'Delete',
+      ].map((value) => PopupMenuItem<String>(
+                value: value,
+                child: Text(value),
+              ))
+          .toList(),
+      position: RelativeRect.fromRect(
+          _tapPosition & Size(40, 40), // smaller rect, the touch area
+          Offset.zero & overlay.size // Bigger rect, the entire screen
+          ),
+    );
+
+    popup.then((value) {
+      switch (value) {
+        case 'Edit':
+          // TODO: Implement edit account
+          // should share same view as addAccount but other title
+          print('edit account');
+          break;
+        case 'Delete':
+          _model.deleteAccount(account);
+          break;
+        default:
+          break;
+      }
+    });
   }
 }

@@ -23,7 +23,7 @@ Future<void> main() async {
   // Pass all uncaught errors to Crashlytics.
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
-  // access SharedPreferences
+    // access SharedPreferences
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
 

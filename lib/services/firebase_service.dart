@@ -45,7 +45,7 @@ class FirebaseService {
         .snapshots()
         .listen(_transactionsAdded);
 
-        firestore.Firestore.instance
+    firestore.Firestore.instance
         .collection('places')
         .snapshots()
         .listen(_placesAdded);
@@ -73,6 +73,13 @@ class FirebaseService {
     return firestore.Firestore.instance.collection('accounts').add(account);
   }
 
+  Future<void> deleteAccount(String id) {
+    return firestore.Firestore.instance
+        .collection('accounts')
+        .document(id)
+        .delete();
+  }
+
   Future<void> _contactsAdded(firestore.QuerySnapshot snapshot) async {
     List<Account> contacts = List<Account>();
 
@@ -85,14 +92,15 @@ class FirebaseService {
 
   Future<Account> _getContactFromSnapshot(
       firestore.DocumentSnapshot snapshot) async {
-    var contact = Account.fromSnapshot(snapshot);
-    var instituteRef = await contact.instituteRef.get();
-    contact.institute = Institute.fromSnapshot(instituteRef);
-    return contact;
+    return _getAccountFromSnapshot(snapshot);
   }
 
   Future<void> addContact(Map<String, dynamic> contact) {
-    return firestore.Firestore.instance.collection('accounts').add(contact);
+    return addAccount(contact);
+  }
+
+  Future<void> deleteContact(String id) {
+    return deleteAccount(id);
   }
 
   Future<void> _institutesAdded(firestore.QuerySnapshot snapshot) async {
@@ -141,7 +149,8 @@ class FirebaseService {
   Future<void> _placesAdded(firestore.QuerySnapshot snapshot) async {
     List<Place> places = List<Place>();
 
-    snapshot.documents.forEach((doc) async => places.add(Place.fromSnapshot(doc)));
+    snapshot.documents
+        .forEach((doc) async => places.add(Place.fromSnapshot(doc)));
     _placeController.add(places);
   }
 }

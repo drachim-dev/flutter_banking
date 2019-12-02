@@ -98,7 +98,7 @@ class MapViewState extends State<MapView> {
                 _filter = value;
               });
             },
-            items: <String>[
+            items: [
               'Alle',
               'Filialen',
               'Geldautomaten',

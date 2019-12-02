@@ -34,4 +34,8 @@ class AccountModel extends BaseModel {
     }
   }
 
+  Future<void> deleteAccount(Account account) {
+    return _accountService.deleteAccount(account);
+  }
+
 }

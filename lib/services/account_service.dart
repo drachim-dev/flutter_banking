@@ -17,6 +17,10 @@ class AccountService {
     return _firebaseService.addAccount(account.toMap());
   }
 
+  Future<void> deleteAccount(Account account) async {
+    return _firebaseService.deleteAccount(account.documentID);
+  }
+
   Future<void> addContacts(Account contact) async {
     return addAccount(contact);
   }
