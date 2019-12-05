@@ -119,7 +119,7 @@ class _SpendingViewState extends State<SpendingView> {
               ? ListGroupHeader(
                   context: context,
                   leadingText: Utils.getFormattedDate(transaction.date),
-                  trailingText: 'Tagessaldo')
+                  trailingText: 'Daily balance')
               : Divider(),
           transactionItem
         ]);
