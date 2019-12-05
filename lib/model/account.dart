@@ -27,7 +27,7 @@ class Account {
   Map<String, dynamic> toMap() => {
         'customerId': customerId,
         'customer': customer,
-        'number': number.toUpperCase(),
+        'number': number.replaceAll(' ', '').toUpperCase(),
         'name': name,
         'institute': institute.documentReference,
         'accountType': AccountTypeHelper.getValue(accountType),

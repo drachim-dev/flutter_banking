@@ -37,10 +37,12 @@ class AddAccountModel extends BaseModel {
   }
 
   Future<void> addAccount(Account account) {
+    account.number = account.number.replaceAll(' ', '');
     return _accountService.addAccount(account);
   }
 
   Future<void> addContact(Account contact) {
+    contact.number = contact.number.replaceAll(' ', '');
     return _accountService.addContact(contact);
   }
 }
