@@ -15,19 +15,17 @@ class _HomeViewState extends State<HomeView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, 
-      children: [
-        for(int i = 0; i < allDestinations.length; i++)
-          allDestinations[i].keepAlive || i == _selectedIndex 
-            ? allDestinations[i].view 
-            : Container()
-      ] 
-      ),
+      body: IndexedStack(index: _selectedIndex, children: [
+        for (int i = 0; i < allDestinations.length; i++)
+          allDestinations[i].keepAlive || i == _selectedIndex
+              ? allDestinations[i].view
+              : Container()
+      ]),
       bottomNavigationBar: _buildBottomNavigationBar(),
       floatingActionButton: allDestinations[_selectedIndex].showFab
           ? FloatingActionButton(
-              onPressed: () => Navigator.pushNamed(
-                  context, Router.contactSelectionView),
+              onPressed: () =>
+                  Navigator.pushNamed(context, Router.contactSelectionView),
               child: Icon(Icons.add))
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -61,7 +59,7 @@ class _HomeViewState extends State<HomeView>
       final int index = allDestinations.indexOf(destination);
 
       // Placeholder widget for NotchedFloatingActionBar
-      if (index == allDestinations.length / 2) {
+      if (index == (allDestinations.length / 2).round()) {
         navigationBarItems.add(Expanded(
           child: SizedBox(),
         ));
@@ -69,11 +67,38 @@ class _HomeViewState extends State<HomeView>
       navigationBarItems.add(_buildNavigationBarItem(index, destination.icon));
     });
 
-    return BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        clipBehavior: Clip.antiAlias,
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: navigationBarItems));
+    var popupMenu = Expanded(child: PopupMenuButton(
+      icon: Icon(Icons.more_horiz),
+      onSelected: _selectMore,
+            itemBuilder: (_) {
+            return ['Preferences', 'ATMs', 'Documents']
+                .map<PopupMenuEntry<String>>((value) {
+              return PopupMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList();
+          }));
+      
+          navigationBarItems.add(popupMenu);
+      
+          return BottomAppBar(
+              shape: CircularNotchedRectangle(),
+              clipBehavior: Clip.antiAlias,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: navigationBarItems));
+        }
+      
+        void _selectMore(String value) {
+          switch (value) {
+            case 'Preferences':
+                Navigator.of(context).pushNamed(Router.preferencesView);
+              break;
+              case 'ATMs':
+                Navigator.of(context).pushNamed(Router.mapView);
+              break;
+            default:
+          }
   }
 }

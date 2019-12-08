@@ -60,8 +60,6 @@ class MapViewState extends State<MapView> {
         break;
       default:
         _showAll = true;
-
-
     }
 
     setState(() {
@@ -71,8 +69,8 @@ class MapViewState extends State<MapView> {
   }
 
   void initPlaces() {
-      _places = _model.getPlaces(
-          showATM: _showATM, showCDM: _showCDM, showOffice: _showOffice);
+    _places = _model.getPlaces(
+        showATM: _showATM, showCDM: _showCDM, showOffice: _showOffice);
   }
 
   @override

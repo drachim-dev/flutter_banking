@@ -42,7 +42,6 @@ class _PreferencesViewState extends State<PreferencesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: Text('Settings'),
       ),
       body: FutureBuilder(
