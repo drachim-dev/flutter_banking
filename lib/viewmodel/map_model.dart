@@ -16,7 +16,7 @@ class MapModel extends BaseModel {
 
   Stream<UserLocation> get locationStream => _locationService.locationStream;
 
-  List<Place> places;
+  List<Place> _places;
 
   MapModel() {
     _placesSubscription = _firebaseService.places.listen(_onPlacesUpdated);
@@ -29,8 +29,24 @@ class MapModel extends BaseModel {
     super.dispose();
   }
 
+    List<Place> getPlaces({bool showATM, bool showCDM, bool showOffice}) {
+    if(showATM) {
+      return _places.where((place) => place.hasATM).toList();
+    }
+
+    if(showCDM) {
+      return _places.where((place) => place.hasCDM).toList();
+    }
+
+    if(showOffice) {
+      return _places.where((place) => place.type == 'Filiale').toList();
+    }
+
+    return _places;
+  }
+
   void _onPlacesUpdated(List<Place> places) {
-    this.places = places;
+    this._places = places;
 
     if (places == null) {
       setState(ViewState.Busy);
@@ -39,4 +55,5 @@ class MapModel extends BaseModel {
           places.isEmpty ? ViewState.NoDataAvailable : ViewState.DataFetched);
     }
   }
+  
 }

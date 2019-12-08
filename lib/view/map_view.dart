@@ -27,11 +27,53 @@ class MapViewState extends State<MapView> {
   String _nightStyle;
   bool _nightMode;
 
+  List<Place> _places;
   Set<Marker> markers = {};
-  String _filter = 'Alle';
+  String _filter = 'All';
+  bool _showATM = false;
+  bool _showCDM = false;
+  bool _showOffice = false;
+  bool _showAll = true;
 
   UserLocation _userLocation =
       UserLocation(latitude: 53.158017, longitude: 8.213230);
+
+  void _onFilterChanged(String value) {
+    // reset
+    _showATM = false;
+    _showCDM = false;
+    _showOffice = false;
+    _showAll = false;
+
+    switch (value) {
+      case 'ATM':
+        _showATM = true;
+        break;
+      case 'CDM':
+        _showCDM = true;
+        break;
+      case 'Offices':
+        _showOffice = true;
+        break;
+      case 'All':
+        _showAll = true;
+        break;
+      default:
+        _showAll = true;
+
+
+    }
+
+    setState(() {
+      initPlaces();
+      _filter = value;
+    });
+  }
+
+  void initPlaces() {
+      _places = _model.getPlaces(
+          showATM: _showATM, showCDM: _showCDM, showOffice: _showOffice);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +83,12 @@ class MapViewState extends State<MapView> {
     _nightMode = theme.brightness == Brightness.dark;
 
     return BaseView<MapModel>(
-      builder: (context, model, child) {
+      onModelReady: (model) {
         this._model = model;
-
+        _places = model.getPlaces(
+            showATM: _showATM, showCDM: _showCDM, showOffice: _showOffice);
+      },
+      builder: (context, model, child) {
         return StreamBuilder(
             initialData: _userLocation,
             stream: model.locationStream,
@@ -93,17 +138,9 @@ class MapViewState extends State<MapView> {
             value: _filter,
             icon: Icon(Icons.filter_list),
             isExpanded: true,
-            onChanged: (String value) {
-              setState(() {
-                _filter = value;
-              });
-            },
-            items: [
-              'Alle',
-              'Filialen',
-              'Geldautomaten',
-              'Geldeinzahlautomaten'
-            ].map<DropdownMenuItem<String>>((value) {
+            onChanged: _onFilterChanged,
+            items: ['All', 'Offices', 'ATM', 'CDM']
+                .map<DropdownMenuItem<String>>((value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value, style: searchBarText),
@@ -160,13 +197,15 @@ class MapViewState extends State<MapView> {
 
   void initMarkers() async {
     /* TODO: Parameter size does nothing. Maybe related to https://github.com/flutter/flutter/issues/40699
-       For now use a smaller version of the image */
+                   For now use a smaller version of the image */
+
+    initPlaces();
 
     BitmapDescriptor markerIcon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(size: Size(16, 16)),
         'assets/images/institute/olb-small.png');
 
-    Set<Marker> _markers = _model.places.map((place) {
+    Set<Marker> _markers = _places.map((place) {
       return Marker(
           markerId: MarkerId(place.documentID),
           onTap: () => _buildBottomSheet(place),
