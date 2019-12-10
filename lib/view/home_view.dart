@@ -67,38 +67,11 @@ class _HomeViewState extends State<HomeView>
       navigationBarItems.add(_buildNavigationBarItem(index, destination.icon));
     });
 
-    var popupMenu = Expanded(child: PopupMenuButton(
-      icon: Icon(Icons.more_horiz),
-      onSelected: _selectMore,
-            itemBuilder: (_) {
-            return ['Preferences', 'ATMs', 'Documents']
-                .map<PopupMenuEntry<String>>((value) {
-              return PopupMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList();
-          }));
-      
-          navigationBarItems.add(popupMenu);
-      
-          return BottomAppBar(
-              shape: CircularNotchedRectangle(),
-              clipBehavior: Clip.antiAlias,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: navigationBarItems));
-        }
-      
-        void _selectMore(String value) {
-          switch (value) {
-            case 'Preferences':
-                Navigator.of(context).pushNamed(Router.preferencesView);
-              break;
-              case 'ATMs':
-                Navigator.of(context).pushNamed(Router.mapView);
-              break;
-            default:
-          }
+    return BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        clipBehavior: Clip.antiAlias,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: navigationBarItems));
   }
 }

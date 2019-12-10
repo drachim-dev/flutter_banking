@@ -50,6 +50,7 @@ class _AccountViewState extends State<AccountView> {
           IconButton(
             onPressed: () =>
                 Navigator.of(context).pushNamed(Router.addAccountView),
+                tooltip: 'Add account',
             icon: Icon(Icons.add),
           )
       ],

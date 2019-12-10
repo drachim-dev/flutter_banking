@@ -127,6 +127,7 @@ class MapViewState extends State<MapView> {
       left: 10,
       child: SafeArea(
         child: AppBar(
+          iconTheme: theme.iconTheme,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           backgroundColor: searchBarColor,

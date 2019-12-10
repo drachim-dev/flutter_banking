@@ -31,8 +31,7 @@ class Router {
   static const String amountSelectionView = '/transaction/send/amount';
   static const String purposeSelectionView = '/transaction/send/purpose';
   static const String accountSelectionView = '/transaction/send/account';
-  static const String addTransactionOverview =
-      '/transaction/send/overview';
+  static const String addTransactionOverview = '/transaction/send/overview';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -56,7 +55,14 @@ class Router {
         return MaterialPageRoute(builder: (_) => MapView());
 
       case preferencesView:
-        return MaterialPageRoute(builder: (_) => PreferencesView());
+        return PageRouteBuilder(
+          pageBuilder: (context, anim1, anim2) {
+            return PreferencesView();
+          },
+          transitionsBuilder: (context, anim1, anim2, child) {
+            return FadeTransition(opacity: anim1, child: child);
+          },
+        );
 
       case contactSelectionView:
         return MaterialPageRoute(builder: (_) => ContactSelectionView());

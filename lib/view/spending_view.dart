@@ -37,8 +37,8 @@ class _SpendingViewState extends State<SpendingView> {
             onPressed: _onTapActionSearch,
           ),
           IconButton(
-            tooltip: 'More',
-            icon: Icon(Icons.more_vert),
+            tooltip: 'Filter',
+            icon: Icon(Icons.filter_list),
             onPressed: () {},
           ),
         ]);

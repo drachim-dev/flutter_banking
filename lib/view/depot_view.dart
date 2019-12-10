@@ -27,15 +27,13 @@ class _DepotViewState extends State<DepotView> {
       automaticallyImplyLeading: false,
       title: TextField(
         decoration: InputDecoration(
-            hintText: 'Search for stocks, ETFs, ...',
-            hintStyle: theme.primaryTextTheme.subhead),
+          contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
+          border: InputBorder.none,
+          hintText: 'Search for stocks, ETFs, ...',
+          hintStyle: theme.primaryTextTheme.subhead,
+          suffixIcon: Icon(Icons.search),
+        ),
       ),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.search),
-          onPressed: () {},
-        )
-      ],
     );
   }
 
