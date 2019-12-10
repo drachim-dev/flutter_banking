@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class MyColor {
-
   static final Color lighterGrey = Colors.grey[100];
   static final Color lightGrey = Colors.grey[350];
   static final Color grey = Colors.grey[500];
@@ -16,5 +15,4 @@ class MyColor {
   static final Color transparentOlbAccent = olbAccent.withOpacity(0.10);
 
   static const Color transparentStatusBarColor = Colors.black26;
-
 }
