@@ -12,11 +12,15 @@ import 'package:flutter_banking/view/login_view.dart';
 import 'package:flutter_banking/view/map_view.dart';
 import 'package:flutter_banking/view/preferences_view.dart';
 import 'package:flutter_banking/view/purpose_selection_view.dart';
+import 'package:flutter_banking/view/signup_stepper_view.dart';
+import 'package:flutter_banking/view/signup_view.dart';
 import 'package:flutter_banking/view/spending_view.dart';
 import 'package:flutter_banking/view/undefined_view.dart';
 
 class Router {
-  static const String loginView = '/';
+  static const String signUpView = '/';
+  static const String signUpStepperView = '/signup/stepper';
+  static const String loginView = '/login';
   static const String homeView = '/home';
   static const String spendingView = '/spending/list';
   static const String mapView = '/mapview';
@@ -35,6 +39,12 @@ class Router {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case signUpView:
+        return MaterialPageRoute(builder: (_) => SignUpView());
+
+      case signUpStepperView:
+        return MaterialPageRoute(builder: (_) => SignUpStepperView());
+
       case loginView:
         return MaterialPageRoute(builder: (_) => LoginView());
 

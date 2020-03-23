@@ -49,15 +49,45 @@ class MyTheme {
   );
 
   static ThemeData getThemeFromName(String themeName) {
+    ThemeData theme = light;
+
     switch (themeName) {
       case 'Light':
-        return light;
+        theme = light;
+        break;
       case 'Dark':
-        return dark;
+        theme = dark;
+        break;
       case 'Black':
-        return black;
-      default:
-        return light;
+        theme = black;
+        break;
     }
+
+    return initTheme(theme);
+  }
+
+  static ThemeData initTheme(ThemeData theme) {
+    return theme.copyWith(
+      textTheme: theme.textTheme.copyWith(
+        headline1: theme.textTheme.headline1.copyWith(
+          fontSize: 48.0,
+        ),
+        headline2: theme.textTheme.headline2.copyWith(
+          fontSize: 32.0,
+        ),
+        headline3: theme.textTheme.headline3.copyWith(
+          fontSize: 28.0,
+        ),
+        headline4: theme.textTheme.headline4.copyWith(
+          fontSize: 24.0,
+        ),
+        headline5: theme.textTheme.headline5.copyWith(
+          fontSize: 20.0,
+        ),
+        headline6: theme.textTheme.headline6.copyWith(
+          fontSize: 18.0,
+        ),
+      ),
+    );
   }
 }

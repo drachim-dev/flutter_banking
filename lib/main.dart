@@ -28,7 +28,7 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
 
   // get theme from SharedPreferences
-  ThemeData theme = MyTheme.getThemeFromName(prefs.getString(Keys.pref_theme));
+  final ThemeData theme = MyTheme.getThemeFromName(prefs.getString(Keys.pref_theme));
 
   setupLocator();
   FirebaseService();
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: Provider.of<ThemeNotifier>(context).theme,
         onGenerateRoute: Router.generateRoute,
-        initialRoute: Router.loginView,
+        initialRoute: Router.signUpView,
       ),
     );
   }

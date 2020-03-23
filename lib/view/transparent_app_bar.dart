@@ -4,14 +4,17 @@ import 'package:flutter_banking/common/colors.dart';
 
 class TransparentAppBar extends StatelessWidget implements PreferredSizeWidget {
   final AppBar appBar;
+  final bool hasElevation;
 
   TransparentAppBar(
-      {Text title, List<IconButton> actions})
+      {Widget title, bool centerTitle, this.hasElevation = false, List<IconButton> actions, PreferredSizeWidget bottom})
       : appBar = AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+          backgroundColor: hasElevation ? Colors.white : Colors.transparent,
+          elevation: hasElevation ? 2 : 0,
           title: title,
+          centerTitle: centerTitle,
           actions: actions,
+          bottom: bottom,
         );
 
   @override
@@ -20,7 +23,7 @@ class TransparentAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-            statusBarColor: MyColor.transparentStatusBarColor,
+            statusBarColor: hasElevation ? Colors.transparent : MyColor.transparentStatusBarColor,
         ),
       child: Theme(
         child: appBar,
