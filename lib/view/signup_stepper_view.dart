@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/view/signup_address_view.dart';
 import 'package:flutter_banking/view/signup_contact_view.dart';
+import 'package:flutter_banking/view/signup_law_view.dart';
 import 'package:flutter_banking/view/signup_name_view.dart';
 import 'package:flutter_banking/view/signup_tax_view.dart';
 import 'package:flutter_banking/view/transparent_app_bar.dart';
@@ -55,6 +56,11 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
             nextPage: () => _nextPage(),
           ),
           "Verify contact data"),
+          Step(
+          SignUpLawView(
+            nextPage: () => _nextPage(),
+          ),
+          "Legal information"),
       Step(
           SignUpTaxView(
             nextPage: () => _nextPage(),
@@ -103,13 +109,14 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
   }
 
   Future<void> _nextPage() {
+    print('nextPage');
     return _pageController.nextPage(
         duration: const Duration(milliseconds: 300), curve: Curves.linear);
   }
 
   PreferredSizeWidget _buildAppBar(
       final ThemeData theme, String title, int itemCount) {
-    double progress = _index == 0 ? 0.1 : _index / itemCount;
+    double progress = _index == 0 ? 0.1 : (_index / itemCount) + 0.1;
 
     return TransparentAppBar(
       hasElevation: true,

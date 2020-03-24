@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_banking/view/signup_form.dart';
 
 class SignUpTaxView extends StatelessWidget {
+  final FocusNode _countryFocus = FocusNode();
   final FocusNode _taxId = FocusNode();
-  final FocusNode _codeFocus = FocusNode();
 
   final VoidCallback nextPage;
 
@@ -13,17 +13,20 @@ class SignUpTaxView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SignUpFormListView(
       list: [
+        Text("In which country are you taxable?"),
+        SignUpFormField('Country',
+            keyboardType: TextInputType.number,
+            textCapitalization: TextCapitalization.none,
+            focusId: _countryFocus,
+            nextFocusId: _taxId,),
         SignUpFormField('Tax ID (optional)',
             keyboardType: TextInputType.number,
             textCapitalization: TextCapitalization.words,
-            helperText: "If you don't know your tax id, we will determine it automatically",
+            helperText:
+                "If you don't know your tax id, we will determine it automatically",
             focusId: _taxId,
-            nextFocusId: _codeFocus),
-        SignUpFormField('Placeholder field',
-            keyboardType: TextInputType.number,
-            textCapitalization: TextCapitalization.none,
-            focusId: _codeFocus,
             onFieldSubmitted: nextPage),
+        OutlineButton(onPressed: () {}, child: Text('Add another country')),
       ],
     );
   }

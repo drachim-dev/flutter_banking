@@ -26,6 +26,7 @@ class SignUpFormListView extends StatelessWidget {
 class SignUpFormField extends StatelessWidget {
   const SignUpFormField(
     this.label, {
+    this.autofocus = true,
     @required this.focusId,
     this.nextFocusId,
     this.keyboardType,
@@ -35,6 +36,7 @@ class SignUpFormField extends StatelessWidget {
   }) : lastField = nextFocusId == null;
 
   final String label;
+  final bool autofocus;
   final FocusNode focusId;
   final FocusNode nextFocusId;
   final bool lastField;
@@ -49,7 +51,7 @@ class SignUpFormField extends StatelessWidget {
 
     return TextFormField(
         focusNode: focusId,
-        autofocus: true,
+        autofocus: autofocus,
         keyboardType: keyboardType ?? TextInputType.text,
         textCapitalization: textCapitalization ?? TextCapitalization.words,
         textInputAction:
@@ -73,6 +75,7 @@ class SignUpFormField extends StatelessWidget {
 class ValidationFormField extends StatelessWidget {
   const ValidationFormField(
     this.label, {
+    this.autofocus = true,
     @required this.focusId,
     this.nextFocusId,
     this.keyboardType,
@@ -80,6 +83,7 @@ class ValidationFormField extends StatelessWidget {
   }) : lastField = nextFocusId == null;
 
   final String label;
+  final bool autofocus;
   final FocusNode focusId;
   final FocusNode nextFocusId;
   final bool lastField;
@@ -92,7 +96,7 @@ class ValidationFormField extends StatelessWidget {
 
     return TextFormField(
         focusNode: focusId,
-        autofocus: true,
+        autofocus: autofocus,
         keyboardType: keyboardType ?? TextInputType.text,
         textCapitalization: TextCapitalization.characters,
         textInputAction:
@@ -103,7 +107,8 @@ class ValidationFormField extends StatelessWidget {
         maxLengthEnforced: true,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(height: Dimens.inputFieldLabelHeight, letterSpacing: 1),
+          labelStyle:
+              TextStyle(height: Dimens.inputFieldLabelHeight, letterSpacing: 1),
           border: OutlineInputBorder(),
           filled: false,
         ),

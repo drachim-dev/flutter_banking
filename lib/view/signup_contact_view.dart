@@ -16,13 +16,14 @@ class SignUpContactView extends StatelessWidget {
         SignUpFormField('E-Mail',
             keyboardType: TextInputType.emailAddress,
             textCapitalization: TextCapitalization.words,
+            autofocus: false,
             focusId: _mailFocus,
             nextFocusId: _codeFocus),
         OutlineButton(onPressed: () {}, child: Text('Resend')),
         Text(
-            "We've sent you an email containing a verification code. Please enter the code:"),
+            "We've sent you an email containing a verification code. Please enter it here:"),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 112, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 96, vertical: 8),
           child: ValidationFormField('Verification',
               keyboardType: TextInputType.number,
               focusId: _codeFocus,
