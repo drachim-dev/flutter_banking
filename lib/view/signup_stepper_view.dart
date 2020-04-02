@@ -3,6 +3,7 @@ import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/view/signup_address_view.dart';
 import 'package:flutter_banking/view/signup_contact_view.dart';
 import 'package:flutter_banking/view/signup_law_view.dart';
+import 'package:flutter_banking/view/signup_legi.dart';
 import 'package:flutter_banking/view/signup_name_view.dart';
 import 'package:flutter_banking/view/signup_tax_view.dart';
 import 'package:flutter_banking/view/transparent_app_bar.dart';
@@ -21,26 +22,18 @@ class SignUpStepperView extends StatefulWidget {
 
 class _SignUpStepperViewState extends State<SignUpStepperView>
     with SingleTickerProviderStateMixin {
-  int _index = 0;
+
   PageController _pageController;
+  List<Step> _steps;
+  int _index = 0;
+  bool _hasStep = true;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
-  }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
-    final List<Step> steps = [
+    _steps = [
       Step(
           SignUpNameView(
             nextPage: () => _nextPage(),
@@ -56,7 +49,7 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
             nextPage: () => _nextPage(),
           ),
           "Verify contact data"),
-          Step(
+      Step(
           SignUpLawView(
             nextPage: () => _nextPage(),
           ),
@@ -66,21 +59,34 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
             nextPage: () => _nextPage(),
           ),
           "Tax information"),
+      Step(SignUpLegitimationView(), "Video ident"),
     ];
+  }
 
-    final Step step = steps[_index];
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
+    final Step step = _steps[_index];
+    _hasStep =  _index + 1 < _steps.length;
 
     return WillPopScope(
       onWillPop: () => Future.sync(_onWillPop),
       child: Scaffold(
-        appBar: _buildAppBar(theme, step.title, steps.length),
+        appBar: _buildAppBar(theme, step.title, _steps.length),
         body: PageView(
             controller: _pageController,
             onPageChanged: _onPageChanged,
             physics: NeverScrollableScrollPhysics(),
-            children: steps.map((s) => s.view).toList()),
+            children: _steps.map((s) => s.view).toList()),
         backgroundColor: Colors.white,
-        floatingActionButton: _buildFAB(),
+        floatingActionButton: _hasStep ? _buildFAB() : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
     );
@@ -109,7 +115,6 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
   }
 
   Future<void> _nextPage() {
-    print('nextPage');
     return _pageController.nextPage(
         duration: const Duration(milliseconds: 300), curve: Curves.linear);
   }

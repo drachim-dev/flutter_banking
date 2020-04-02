@@ -9,6 +9,7 @@ class SignUpFormListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
+      shrinkWrap: true,
       padding: const EdgeInsets.only(
           left: Dimens.listItemPaddingHorizontal,
           right: Dimens.listItemPaddingHorizontal,
@@ -67,7 +68,7 @@ class SignUpFormField extends StatelessWidget {
           contentPadding: const EdgeInsets.all(Dimens.textFieldInnerPadding),
         ),
         onFieldSubmitted: (v) =>
-            lastField ? onFieldSubmitted : nextFocusId.requestFocus(),
+            lastField ? onFieldSubmitted() : nextFocusId.requestFocus(),
         scrollPadding: const EdgeInsets.only(bottom: Dimens.fabScrollPadding));
   }
 }
@@ -113,7 +114,7 @@ class ValidationFormField extends StatelessWidget {
           filled: false,
         ),
         onFieldSubmitted: (v) =>
-            lastField ? onFieldSubmitted : nextFocusId.requestFocus(),
+            lastField ? onFieldSubmitted() : nextFocusId.requestFocus(),
         scrollPadding: const EdgeInsets.only(bottom: Dimens.fabScrollPadding));
   }
 }
