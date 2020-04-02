@@ -73,7 +73,7 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
                           formatCurrency.format(_cents.toDouble() / 100),
                           textAlign: TextAlign.center,
                           style:
-                              theme.textTheme.display3.copyWith(fontSize: 48),
+                              theme.textTheme.headline2.copyWith(fontSize: 48),
                         ),
                       );
                     }),

@@ -95,7 +95,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final TextStyle amountTextStyle =
-        theme.textTheme.title.copyWith(color: Colors.white);
+        theme.textTheme.headline6.copyWith(color: Colors.white);
     final Color amountBgColor = MyColor.olbPrimary;
 
     const double contentPadding = 16.0;
@@ -265,7 +265,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text(_isSuccess ? 'Success' : 'Sending',
-                                  style: theme.textTheme.display1),
+                                  style: theme.textTheme.headline4),
                               SizedBox(height: 36),
                               AnimatedCrossFade(
                                 firstChild: Padding(
@@ -302,7 +302,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                               (Route<dynamic> route) => false),
                                       child: Text(
                                         'OVERVIEW',
-                                        style: theme.textTheme.body1
+                                        style: theme.textTheme.bodyText2
                                             .copyWith(color: Colors.white),
                                       ),
                                     ),
@@ -323,7 +323,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                             Router.contactSelectionView);
                                       },
                                       child: Text('SEND MORE',
-                                          style: theme.textTheme.body1
+                                          style: theme.textTheme.bodyText2
                                               .copyWith(color: Colors.white)),
                                     ),
                                   ),

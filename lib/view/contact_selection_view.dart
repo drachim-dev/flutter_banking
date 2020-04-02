@@ -169,7 +169,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
           child: Center(
             child: Text(
               initials,
-              style: theme.textTheme.body1
+              style: theme.textTheme.bodyText2
                   .copyWith(fontSize: 16, color: MyColor.darkGrey),
             ),
           ),

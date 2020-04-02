@@ -122,7 +122,7 @@ class _AddAccountViewState extends State<AddAccountView> {
 
   ListView _buildInputFields(ThemeData theme) {
     final TextStyle hintStyle =
-        theme.textTheme.body2.copyWith(color: MyColor.grey);
+        theme.textTheme.bodyText1.copyWith(color: MyColor.grey);
 
     return ListView(
         padding: const EdgeInsets.symmetric(

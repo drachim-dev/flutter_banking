@@ -118,7 +118,7 @@ class MapViewState extends State<MapView> {
 
   Positioned _buildAppBar(ThemeData theme) {
     final TextStyle searchBarText =
-        theme.textTheme.title.copyWith(fontSize: 16);
+        theme.textTheme.headline6.copyWith(fontSize: 16);
     final Color searchBarColor = theme.bottomAppBarColor;
 
     return Positioned(
@@ -233,9 +233,9 @@ class MapViewState extends State<MapView> {
 
   Future _buildBottomSheet(Place place) {
     final ThemeData theme = Theme.of(context);
-    final TextStyle headline = theme.textTheme.title;
+    final TextStyle headline = theme.textTheme.headline6;
     final TextStyle body =
-        theme.textTheme.subtitle.copyWith(color: Colors.grey);
+        theme.textTheme.subtitle2.copyWith(color: Colors.grey);
 
     return showModalBottomSheet(
         context: context,

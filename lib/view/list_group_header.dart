@@ -19,7 +19,7 @@ class ListGroupHeader extends StatelessWidget {
     final bool isDark = theme.brightness == Brightness.dark;
 
     final TextStyle textStyle =
-        theme.textTheme.subhead;
+        theme.textTheme.subtitle1;
     final Color backgroundColor = isDark ? MyColor.darkGrey : MyColor.transparentOlbPrimary;
 
     return Padding(

@@ -30,7 +30,7 @@ class _DepotViewState extends State<DepotView> {
           contentPadding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
           border: InputBorder.none,
           hintText: 'Search for stocks, ETFs, ...',
-          hintStyle: theme.primaryTextTheme.subhead,
+          hintStyle: theme.primaryTextTheme.subtitle1,
           suffixIcon: Icon(Icons.search),
         ),
       ),
@@ -38,8 +38,8 @@ class _DepotViewState extends State<DepotView> {
   }
 
   _buildBody(ThemeData theme) {
-    final TextStyle title = theme.textTheme.title;
-    final TextStyle subTitle = theme.textTheme.subtitle;
+    final TextStyle title = theme.textTheme.headline6;
+    final TextStyle subTitle = theme.textTheme.subtitle2;
 
     return ListView(
       padding: const EdgeInsets.symmetric(

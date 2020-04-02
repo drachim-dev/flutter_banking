@@ -21,7 +21,7 @@ class _PurposeSelectionViewState extends State<PurposeSelectionView> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 TextField(
-                  style: theme.textTheme.display1,
+                  style: theme.textTheme.headline4,
                   decoration: InputDecoration(
                     hintText: 'e.g. reference number',
                     border: OutlineInputBorder(

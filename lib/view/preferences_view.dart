@@ -71,7 +71,7 @@ class _PreferencesViewState extends State<PreferencesView> {
 
   Widget _buildGroup(BuildContext context, String label) {
     final labelStyle =
-        Theme.of(context).textTheme.subtitle.copyWith(color: Colors.grey);
+        Theme.of(context).textTheme.subtitle2.copyWith(color: Colors.grey);
     return Padding(
       padding: const EdgeInsets.only(left: 6, top: 16, bottom: 8),
       child: Text(
