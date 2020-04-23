@@ -10,20 +10,23 @@ class SignUpLegitimationView extends StatelessWidget {
 
     return Stack(children: <Widget>[
       Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          SizedBox(height: 128),
+          SizedBox(height: 96),
           Text(
             "Almost done",
             textAlign: TextAlign.center,
             style: theme.textTheme.headline1,
           ),
+          SizedBox(height: 24,),
           Icon(
-            Icons.video_call,
+            Icons.contact_phone,
             size: 156,
             color: MyColor.lightGrey,
           ),
+          SizedBox(height: 24,),
           Text(
-            "As the last step, you need to identify yourself",
+            "Your ID code: 5D79KA",
             textAlign: TextAlign.center,
             style: theme.textTheme.headline4,
           ),
