@@ -1,10 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/common/utils.dart';
 import 'package:flutter_banking/model/account_type.dart';
 import 'package:flutter_banking/model/transaction.dart';
-import 'package:flutter_banking/router.dart';
+import 'package:flutter_banking/router.gr.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/view/transparent_app_bar.dart';
 import 'package:flutter_banking/viewmodel/add_transaction_overview_model.dart';
@@ -104,6 +105,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
       return Stack(children: [
         Scaffold(
             appBar: TransparentAppBar(
+              theme: theme,
               title: Text('Validate and send'),
             ),
             body: ListView(padding: const EdgeInsets.all(8), children: <Widget>[
@@ -127,7 +129,8 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                     bottom: contentPadding,
                                     top: contentPadding * 2.5),
                                 leading: Icon(Icons.person),
-                                title: Text(_transaction.foreignAccount.customer),
+                                title:
+                                    Text(_transaction.foreignAccount.customer),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
@@ -145,7 +148,8 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                     horizontal: contentPadding),
                                 leading: Icon(Icons.add),
                                 title: TextFormField(
-                                  onChanged: (value) => _transaction.usageText = value,
+                                  onChanged: (value) =>
+                                      _transaction.usageText = value,
                                   decoration: InputDecoration(
                                       border: InputBorder.none,
                                       hintText: 'Purpose of transaction'),
@@ -295,10 +299,10 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                 children: <Widget>[
                                   Expanded(
                                     child: FlatButton(
-                                      onPressed: () =>
-                                          Navigator.pushNamedAndRemoveUntil(
-                                              context,
-                                              Router.homeView,
+                                      onPressed: () => ExtendedNavigator
+                                          .rootNavigator
+                                          .pushNamedAndRemoveUntil(
+                                              Routes.homeView,
                                               (Route<dynamic> route) => false),
                                       child: Text(
                                         'OVERVIEW',
@@ -314,13 +318,14 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                   Expanded(
                                     child: FlatButton(
                                       onPressed: () {
-                                        Navigator.of(context)
+                                        ExtendedNavigator.rootNavigator
                                             .pushNamedAndRemoveUntil(
-                                                Router.homeView,
+                                                Routes.homeView,
                                                 (Route<dynamic> route) =>
                                                     false);
-                                        Navigator.of(context).pushNamed(
-                                            Router.contactSelectionView);
+                                        ExtendedNavigator.rootNavigator
+                                            .pushNamed(
+                                                Routes.contactSelectionView);
                                       },
                                       child: Text('SEND MORE',
                                           style: theme.textTheme.bodyText2

@@ -22,7 +22,6 @@ class SignUpStepperView extends StatefulWidget {
 
 class _SignUpStepperViewState extends State<SignUpStepperView>
     with SingleTickerProviderStateMixin {
-
   PageController _pageController;
   List<Step> _steps;
   int _index = 0;
@@ -74,7 +73,7 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
     final ThemeData theme = Theme.of(context);
 
     final Step step = _steps[_index];
-    _hasStep =  _index + 1 < _steps.length;
+    _hasStep = _index + 1 < _steps.length;
 
     return WillPopScope(
       onWillPop: () => Future.sync(_onWillPop),
@@ -85,7 +84,6 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
             onPageChanged: _onPageChanged,
             physics: NeverScrollableScrollPhysics(),
             children: _steps.map((s) => s.view).toList()),
-        backgroundColor: Colors.white,
         floatingActionButton: _hasStep ? _buildFAB() : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
@@ -94,9 +92,7 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
 
   bool _onWillPop() {
     if (_index > 0) {
-      _pageController.previousPage(
-          duration: const Duration(milliseconds: 200), curve: Curves.linear);
-
+      _previousPage();
       return false;
     }
 
@@ -121,9 +117,10 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
 
   PreferredSizeWidget _buildAppBar(
       final ThemeData theme, String title, int itemCount) {
-    double progress = _index == 0 ? 0.1 : (_index / itemCount) + 0.1;
+    final double progress = _index == 0 ? 0.1 : (_index / itemCount) + 0.1;
 
     return TransparentAppBar(
+      theme: theme,
       hasElevation: true,
       title: Column(
         children: <Widget>[

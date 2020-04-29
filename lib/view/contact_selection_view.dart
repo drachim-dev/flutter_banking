@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_banking/common/colors.dart';
@@ -6,7 +7,7 @@ import 'package:flutter_banking/common/utils.dart';
 import 'package:flutter_banking/model/transaction.dart';
 import 'package:flutter_banking/model/account.dart';
 import 'package:flutter_banking/model/viewstate.dart';
-import 'package:flutter_banking/router.dart';
+import 'package:flutter_banking/router.gr.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/view/list_group_header.dart';
 import 'package:flutter_banking/viewmodel/contact_model.dart';
@@ -126,7 +127,8 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
       title: Text('Add new contact'),
       onTap: () {
         _resetFocus();
-        Navigator.of(context).pushNamed(Router.addContactView);
+        ExtendedNavigator.rootNavigator.pushNamed(Routes.addContactView,
+            arguments: AddAccountViewArguments(createOwnAccount: false));
       },
     );
   }
@@ -158,41 +160,43 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
     var initials = contact.customer.substring(0, 1) +
         contact.customer.split(' ').last.substring(0, 1);
     var contactItem = GestureDetector(
-      onTapDown: _storePosition,
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-            horizontal: Dimens.listItemPaddingHorizontal,
-            vertical: Dimens.listItemPaddingVertical),
-        leading: Container(
-          width: 48,
-          height: 48,
-          child: Center(
-            child: Text(
-              initials,
-              style: theme.textTheme.bodyText2
-                  .copyWith(fontSize: 16, color: MyColor.darkGrey),
+        onTapDown: _storePosition,
+        child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+                horizontal: Dimens.listItemPaddingHorizontal,
+                vertical: Dimens.listItemPaddingVertical),
+            leading: Container(
+              width: 48,
+              height: 48,
+              child: Center(
+                child: Text(
+                  initials,
+                  style: theme.textTheme.bodyText2
+                      .copyWith(fontSize: 16, color: MyColor.darkGrey),
+                ),
+              ),
+              decoration: ShapeDecoration(
+                  shape: CircleBorder(), color: MyColor.lightGrey),
             ),
-          ),
-          decoration:
-              ShapeDecoration(shape: CircleBorder(), color: MyColor.lightGrey),
-        ),
-        title: Text(contact.customer),
-        subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(contact.institute.name),
-              Text(Utils.getFormattedNumber(contact.number))
-            ]),
-        onTap: () {
-          // create transaction
-          _transaction = Transaction(foreignAccount: contact);
+            title: Text(contact.customer),
+            subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(contact.institute.name),
+                  Text(Utils.getFormattedNumber(contact.number))
+                ]),
+            onTap: () {
+              // create transaction
+              _transaction = Transaction(foreignAccount: contact);
 
-          // pass transaction to new route
-          _resetFocus();
-          Navigator.of(context)
-              .pushNamed(Router.amountSelectionView, arguments: _transaction);
-        },
-        onLongPress: () => _onLongPressItem(contact)));
+              // pass transaction to new route
+              _resetFocus();
+              ExtendedNavigator.rootNavigator.pushNamed(
+                  Routes.amountSelectionView,
+                  arguments:
+                      AmountSelectionViewArguments(transaction: _transaction));
+            },
+            onLongPress: () => _onLongPressItem(contact)));
 
     if (index == 0) {
       return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [

@@ -1,6 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/dimens.dart';
-import 'package:flutter_banking/router.dart';
+import 'package:flutter_banking/router.gr.dart';
 
 class MoreView extends StatelessWidget {
   @override
@@ -22,27 +23,28 @@ class MoreView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: Dimens.listVerticalPadding),
       children: [
         ListTile(
-          leading: Icon(Icons.settings),
-          title: Text('Preferences'),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: Dimens.listItemPaddingHorizontal,
-            vertical: Dimens.listItemPaddingVertical),
-          onTap: () => Navigator.of(context).pushNamed(Router.preferencesView),
-        ),
+            leading: Icon(Icons.settings),
+            title: Text('Preferences'),
+            contentPadding: const EdgeInsets.symmetric(
+                horizontal: Dimens.listItemPaddingHorizontal,
+                vertical: Dimens.listItemPaddingVertical),
+            onTap: () => ExtendedNavigator.rootNavigator
+                .pushNamed(Routes.preferencesView)),
         ListTile(
           leading: Icon(Icons.place),
           title: Text('ATM map'),
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: Dimens.listItemPaddingHorizontal,
-            vertical: Dimens.listItemPaddingVertical),
-          onTap: () => Navigator.of(context).pushNamed(Router.mapView),
+              horizontal: Dimens.listItemPaddingHorizontal,
+              vertical: Dimens.listItemPaddingVertical),
+          onTap: () =>
+              ExtendedNavigator.rootNavigator.pushNamed(Routes.atmMapView),
         ),
         ListTile(
           leading: Icon(Icons.insert_drive_file),
           title: Text('Documents'),
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: Dimens.listItemPaddingHorizontal,
-            vertical: Dimens.listItemPaddingVertical),
+              horizontal: Dimens.listItemPaddingHorizontal,
+              vertical: Dimens.listItemPaddingVertical),
           onTap: () {},
         ),
       ],

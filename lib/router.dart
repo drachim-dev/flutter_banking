@@ -1,11 +1,9 @@
-import 'dart:collection';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_banking/model/transaction.dart';
-import 'package:flutter_banking/view/add_account.dart';
-import 'package:flutter_banking/view/amount_selection_view.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:auto_route/auto_route_annotations.dart';
 import 'package:flutter_banking/view/account_view.dart';
+import 'package:flutter_banking/view/add_account.dart';
 import 'package:flutter_banking/view/add_transaction_overview.dart';
+import 'package:flutter_banking/view/amount_selection_view.dart';
 import 'package:flutter_banking/view/contact_selection_view.dart';
 import 'package:flutter_banking/view/home_view.dart';
 import 'package:flutter_banking/view/login_view.dart';
@@ -15,114 +13,35 @@ import 'package:flutter_banking/view/purpose_selection_view.dart';
 import 'package:flutter_banking/view/signup_stepper_view.dart';
 import 'package:flutter_banking/view/signup_view.dart';
 import 'package:flutter_banking/view/spending_view.dart';
-import 'package:flutter_banking/view/undefined_view.dart';
 
-class Router {
-  static const String signUpView = '/';
-  static const String signUpStepperView = '/signup/stepper';
-  static const String loginView = '/login';
-  static const String homeView = '/home';
-  static const String spendingView = '/spending/list';
-  static const String mapView = '/mapview';
-  static const String preferencesView = '/preferences';
+@MaterialAutoRouter()
+class $Router {
+  @initial
+  SignUpView signUpView;
 
-  static const String accountView = '/account/list';
-  static const String addAccountView = '/account/list/add';
+  SignUpStepperView signUpStepperView;
+  LoginView loginView;
+  HomeView homeView;
+  SpendingView spendingView;
+  AccountView accountView;
 
-  static const String contactSelectionView = '/transaction/contact/list';
-  static const String addContactView = '/transaction/contact/list/add';
+  AddAccountView addAccountView;
+  AtmMapView atmMapView;
 
-  static const String amountSelectionView = '/transaction/send/amount';
-  static const String purposeSelectionView = '/transaction/send/purpose';
-  static const String accountSelectionView = '/transaction/send/account';
-  static const String addTransactionOverview = '/transaction/send/overview';
+  @CustomRoute(transitionsBuilder: TransitionsBuilders.fadeIn)
+  PreferencesView preferencesView;
 
-  static Route<dynamic> generateRoute(RouteSettings settings) {
-    switch (settings.name) {
-      case signUpView:
-        return MaterialPageRoute(builder: (_) => SignUpView());
+  ContactSelectionView contactSelectionView;
+  AddAccountView addContactView;
 
-      case signUpStepperView:
-        return MaterialPageRoute(builder: (_) => SignUpStepperView());
+  @CustomRoute(transitionsBuilder: TransitionsBuilders.fadeIn)
+  AmountSelectionView amountSelectionView;
 
-      case loginView:
-        return MaterialPageRoute(builder: (_) => LoginView());
+  @CustomRoute(transitionsBuilder: TransitionsBuilders.fadeIn)
+  AccountView accountSelectionView;
 
-      case homeView:
-        return MaterialPageRoute(builder: (_) => HomeView());
+  AddTransactionOverview addTransactionOverview;
 
-      case spendingView:
-        return MaterialPageRoute(builder: (_) => SpendingView());
-
-      case accountView:
-        return MaterialPageRoute(builder: (_) => AccountView());
-
-      case addAccountView:
-        return MaterialPageRoute(
-            builder: (_) => AddAccountView(createOwnAccount: true));
-
-      case mapView:
-        return MaterialPageRoute(builder: (_) => MapView());
-
-      case preferencesView:
-        return PageRouteBuilder(
-          pageBuilder: (context, anim1, anim2) {
-            return PreferencesView();
-          },
-          transitionsBuilder: (context, anim1, anim2, child) {
-            return FadeTransition(opacity: anim1, child: child);
-          },
-        );
-
-      case contactSelectionView:
-        return MaterialPageRoute(builder: (_) => ContactSelectionView());
-
-      case addContactView:
-        return MaterialPageRoute(
-            builder: (_) => AddAccountView(createOwnAccount: false));
-
-      case amountSelectionView:
-        final Transaction transaction = settings.arguments;
-
-        return PageRouteBuilder(
-          pageBuilder: (context, anim1, anim2) =>
-              AmountSelectionView(transaction: transaction),
-          transitionsBuilder: (context, anim1, anim2, child) {
-            return FadeTransition(opacity: anim1, child: child);
-          },
-        );
-
-      case accountSelectionView:
-        final Transaction transaction = settings.arguments;
-
-        return PageRouteBuilder(
-          pageBuilder: (context, anim1, anim2) {
-            return AccountView(transaction: transaction);
-          },
-          transitionsBuilder: (context, anim1, anim2, child) {
-            return FadeTransition(opacity: anim1, child: child);
-          },
-        );
-
-      case addTransactionOverview:
-        final Transaction transaction = settings.arguments;
-
-        return MaterialPageRoute(
-            builder: (_) => AddTransactionOverview(transaction: transaction));
-
-      case purposeSelectionView:
-        return PageRouteBuilder(
-          pageBuilder: (context, anim1, anim2) {
-            return PurposeSelectionView();
-          },
-          transitionsBuilder: (context, anim1, anim2, child) {
-            return FadeTransition(opacity: anim1, child: child);
-          },
-        );
-
-      default:
-        return MaterialPageRoute(
-            builder: (_) => UndefinedView(name: settings.name));
-    }
-  }
+  @CustomRoute(transitionsBuilder: TransitionsBuilders.fadeIn)
+  PurposeSelectionView purposeSelectionView;
 }

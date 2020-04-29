@@ -1,7 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/model/transaction.dart';
-import 'package:flutter_banking/router.dart';
+import 'package:flutter_banking/router.gr.dart';
 import 'package:intl/intl.dart';
 
 class AmountSelectionView extends StatefulWidget {
@@ -96,9 +97,9 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
                 child: Text('Continue'),
                 onPressed: () {
                   _transaction.amount = _cents / 100 * -1;
-                  Navigator.of(context).pushNamed(
-                      Router.accountSelectionView,
-                      arguments: _transaction);
+                  ExtendedNavigator.rootNavigator.pushNamed(
+                      Routes.accountSelectionView,
+                      arguments: AccountViewArguments(transaction: _transaction));
                 })
           ]),
         ));
@@ -131,8 +132,8 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
     return FlatButton(
       padding: const EdgeInsets.all(Dimens.numberButtonPadding),
       shape: CircleBorder(),
-      child: Text('$numberString',
-          textScaleFactor: Dimens.numberTextScaleFactor),
+      child:
+          Text('$numberString', textScaleFactor: Dimens.numberTextScaleFactor),
       onPressed: () {
         _insertNumber(number);
         if (numberString == '00') _insertNumber(number);

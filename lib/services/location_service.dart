@@ -13,9 +13,9 @@ class LocationService {
   StreamSubscription _locationSubscription;
 
   LocationService() {
-    _location.requestPermission().then((granted) {
-      if (granted) {
-        _locationSubscription = _location.onLocationChanged().listen((locationData) => {
+    _location.requestPermission().then((status) {
+      if (status == PermissionStatus.granted) {
+        _locationSubscription = _location.onLocationChanged.listen((locationData) => {
               _locationController.add(UserLocation(
                   latitude: locationData.latitude,
                   longitude: locationData.longitude))

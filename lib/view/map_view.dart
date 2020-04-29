@@ -15,12 +15,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 
-class MapView extends StatefulWidget {
+class AtmMapView extends StatefulWidget {
   @override
-  MapViewState createState() => MapViewState();
+  _AtmMapViewState createState() => _AtmMapViewState();
 }
 
-class MapViewState extends State<MapView> {
+class _AtmMapViewState extends State<AtmMapView> {
   MapModel _model;
 
   GoogleMapController _mapController;

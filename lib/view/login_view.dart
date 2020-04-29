@@ -1,10 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_banking/model/viewstate.dart';
 import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/viewmodel/login_model.dart';
-import 'package:flutter_banking/router.dart';
+import 'package:flutter_banking/router.gr.dart';
 import 'package:flutter_banking/view/base_view.dart';
 
 class LoginView extends StatefulWidget {
@@ -115,7 +116,7 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void startHome() {
-    Navigator.pushReplacementNamed(context, Router.homeView);
+    ExtendedNavigator.rootNavigator.pushReplacementNamed(Routes.homeView);
   }
 
   void _validatePassword(LoginModel model, String value) async {

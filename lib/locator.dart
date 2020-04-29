@@ -9,7 +9,6 @@ import 'package:flutter_banking/viewmodel/contact_model.dart';
 import 'package:flutter_banking/viewmodel/depot_model.dart';
 import 'package:flutter_banking/viewmodel/login_model.dart';
 import 'package:flutter_banking/services/authentication_service.dart';
-import 'package:flutter_banking/services/user_service.dart';
 import 'package:flutter_banking/viewmodel/map_model.dart';
 import 'package:flutter_banking/viewmodel/spending_model.dart';
 import 'package:get_it/get_it.dart';
@@ -23,7 +22,6 @@ void setupLocator() {
   locator.registerLazySingleton(() => LocationService());
   locator.registerLazySingleton(() => AccountService());
   locator.registerLazySingleton(() => TransactionService());
-  locator.registerLazySingleton(() => UserService());
   locator.registerLazySingleton(() => LocalAuthentication());
 
   locator.registerFactory(() => AccountModel());

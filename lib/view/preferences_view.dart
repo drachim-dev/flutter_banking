@@ -119,7 +119,7 @@ class _PreferencesViewState extends State<PreferencesView> {
   }
 
   void setTheme(String value) async {
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
     themeNotifier.setTheme(MyTheme.getThemeFromName(value));
 
     _prefs.setString(Keys.pref_theme, value);

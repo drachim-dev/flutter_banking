@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_banking/common/colors.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_banking/model/account.dart';
 import 'package:flutter_banking/model/account_type.dart';
 import 'package:flutter_banking/model/institute.dart';
 import 'package:flutter_banking/model/transaction.dart';
-import 'package:flutter_banking/router.dart';
+import 'package:flutter_banking/router.gr.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/view/transparent_app_bar.dart';
 import 'package:flutter_banking/viewmodel/add_account_model.dart';
@@ -50,7 +51,7 @@ class _AddAccountViewState extends State<AddAccountView> {
     return BaseView<AddAccountModel>(builder: (_, model, child) {
       return Stack(children: [
         Scaffold(
-          appBar: _buildAppBar(),
+          appBar: _buildAppBar(theme),
           body: _buildInputFields(theme),
         ),
         _buildBottomBar(model)
@@ -58,9 +59,10 @@ class _AddAccountViewState extends State<AddAccountView> {
     });
   }
 
-  TransparentAppBar _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(ThemeData theme) {
     String title = _createOwnAccount ? 'Add account' : 'Add contact';
     return TransparentAppBar(
+      theme: theme,
       title: Text(title),
     );
   }
@@ -111,8 +113,10 @@ class _AddAccountViewState extends State<AddAccountView> {
             Transaction _transaction = Transaction(foreignAccount: _account);
 
             // pass transaction to new route
-            Navigator.of(context)
-                .pushNamed(Router.amountSelectionView, arguments: _transaction);
+            ExtendedNavigator.rootNavigator.pushNamed(
+                Routes.amountSelectionView,
+                arguments:
+                    AmountSelectionViewArguments(transaction: _transaction));
           },
           child: Text('Add & Send money'),
         ),

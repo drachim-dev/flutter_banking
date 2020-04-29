@@ -1,7 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_banking/model/destination.dart';
-import 'package:flutter_banking/router.dart';
+import 'package:flutter_banking/router.gr.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -24,8 +25,8 @@ class _HomeViewState extends State<HomeView>
       bottomNavigationBar: _buildBottomNavigationBar(),
       floatingActionButton: allDestinations[_selectedIndex].showFab
           ? FloatingActionButton(
-              onPressed: () =>
-                  Navigator.pushNamed(context, Router.contactSelectionView),
+              onPressed: () => ExtendedNavigator.rootNavigator
+                  .pushNamed(Routes.contactSelectionView),
               child: Icon(Icons.add))
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
