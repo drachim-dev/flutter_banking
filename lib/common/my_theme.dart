@@ -5,33 +5,36 @@ import 'package:flutter_banking/common/dimens.dart';
 class MyTheme {
   static final ThemeData light = ThemeData(
     brightness: Brightness.light,
-    primaryColor: MyColor.olbPrimary,
-    accentColor: MyColor.olbAccent,
+    primaryColor: MyColor.primary,
+    accentColor: MyColor.accent,
     accentColorBrightness: Brightness.dark,
     buttonTheme: ButtonThemeData(
-      buttonColor: MyColor.olbAccent,
+      buttonColor: MyColor.accent,
       padding: const EdgeInsets.all(Dimens.buttonPadding),
     ),
-    textSelectionColor: MyColor.olbPrimary.withAlpha(100),
+    textSelectionColor: MyColor.primary.withAlpha(100),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+    )
   );
 
   static final ThemeData dark = ThemeData(
     brightness: Brightness.dark,
     primaryColor: MyColor.darkGrey,
-    accentColor: MyColor.olbAccent,
+    accentColor: MyColor.accent,
     accentColorBrightness: Brightness.light,
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: MyColor.olbPrimary,
+      backgroundColor: MyColor.primary,
       foregroundColor: Colors.white,
     ),
     bottomAppBarColor: MyColor.darkGrey,
-    toggleableActiveColor: MyColor.olbAccent,
+    toggleableActiveColor: MyColor.accent,
     buttonTheme: ButtonThemeData(
-      buttonColor: MyColor.olbPrimary,
+      buttonColor: MyColor.primary,
       padding: const EdgeInsets.all(Dimens.buttonPadding),
     ),
-    indicatorColor: MyColor.olbAccent,
-    textSelectionColor: MyColor.olbAccent.withAlpha(100),
+    indicatorColor: MyColor.accent,
+    textSelectionColor: MyColor.accent.withAlpha(100),
     cursorColor: MyColor.lightGrey,
     inputDecorationTheme: InputDecorationTheme(
       border: UnderlineInputBorder(),
@@ -40,6 +43,9 @@ class MyTheme {
       backgroundColor: MyColor.darkGrey,
       modalBackgroundColor: MyColor.darkGrey,
     ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+    )
   );
 
   static final ThemeData black = dark.copyWith(

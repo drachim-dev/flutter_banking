@@ -165,7 +165,7 @@ class _SignUpViewState extends State<SignUpView> {
   Widget _buildFAB() {
     return _isLoading
         ? FloatingActionButton(
-            onPressed: () {},
+            onPressed: null,
             child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             ))
@@ -174,15 +174,9 @@ class _SignUpViewState extends State<SignUpView> {
             shape: StadiumBorder(),
             child: Text('Continue'),
             onPressed: () async {
-              setState(() {
-                _isLoading = true;
-              });
-              await Future.delayed(Duration(milliseconds: 500));
-              setState(() {
-                _isLoading = false;
-              });
-
-              signInWithPassword();
+              setState(() => _isLoading = true);
+              await signInWithPassword();
+              setState(() => _isLoading = false);
             },
           );
   }
@@ -192,12 +186,17 @@ class _SignUpViewState extends State<SignUpView> {
 
     // local syntax validation
     if (formState.validate()) {
-      // save data for login
+      
+       // save data for login
       formState.save();
 
+      // try to login
       try {
-        // try to login
         await viewModel.signInWithPassword(email: _email, password: _password);
+        setState(() {
+          _emailErrorText = null;
+          _passwordErrorText = null;
+        });
         ExtendedNavigator.rootNavigator.pushNamed(Routes.homeView);
       } catch (e) {
         switch (e.code) {

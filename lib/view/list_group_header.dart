@@ -20,7 +20,7 @@ class ListGroupHeader extends StatelessWidget {
 
     final TextStyle textStyle =
         theme.textTheme.subtitle1;
-    final Color backgroundColor = isDark ? MyColor.darkGrey : MyColor.transparentOlbPrimary;
+    final Color backgroundColor = isDark ? MyColor.darkGrey : MyColor.transparentPrimary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Dimens.listGroupHeaderPaddingVertical),

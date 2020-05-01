@@ -97,7 +97,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
     final ThemeData theme = Theme.of(context);
     final TextStyle amountTextStyle =
         theme.textTheme.headline6.copyWith(color: Colors.white);
-    final Color amountBgColor = MyColor.olbPrimary;
+    final Color amountBgColor = MyColor.olbGreen;
 
     const double contentPadding = 16.0;
 
@@ -279,7 +279,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                 secondChild: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Icon(Icons.check_circle,
-                                      color: MyColor.olbPrimary, size: 48),
+                                      color: MyColor.olbGreen, size: 48),
                                 ),
                                 duration: Duration(milliseconds: 500),
                                 crossFadeState: _isSuccess
@@ -291,7 +291,7 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                         ),
                         if (_isSuccess)
                           Container(
-                            color: MyColor.olbPrimary,
+                            color: MyColor.olbGreen,
                             child: IntrinsicHeight(
                               child: Row(
                                 mainAxisAlignment:

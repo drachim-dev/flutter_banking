@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/view/signup_address_view.dart';
 import 'package:flutter_banking/view/signup_contact_view.dart';
@@ -128,7 +129,10 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
             borderRadius: BorderRadius.circular(Dimens.progressBarBorderRadius),
             child: Container(
                 height: Dimens.progressBarHeight,
-                child: LinearProgressIndicator(value: progress)),
+                child: LinearProgressIndicator(
+                  backgroundColor: MyColor.transparentPrimary,
+                  valueColor: AlwaysStoppedAnimation(MyColor.primary),
+                  value: progress)),
           ),
         ],
       ),

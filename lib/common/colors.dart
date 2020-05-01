@@ -8,11 +8,14 @@ class MyColor {
   static final Color grey = Colors.grey[500];
   static final Color darkGrey = Colors.grey[900];
 
-  static const Color olbPrimary = const Color(0xff007858);
-  static const Color olbAccent = const Color(0xffff8b02);
+  static const Color olbGreen = const Color(0xff007858);
+  static const Color olbOrange = const Color(0xffff8b02);
 
-  static final Color transparentOlbPrimary = olbPrimary.withOpacity(0.10);
-  static final Color transparentOlbAccent = olbAccent.withOpacity(0.10);
+  static const Color primary = Colors.teal;
+  static const Color accent = olbOrange;
+
+  static final Color transparentPrimary = primary.withOpacity(0.25);
+  static final Color transparentAccent = accent.withOpacity(0.15);
 
   static const Color transparentStatusBarColor = Colors.black26;
 }

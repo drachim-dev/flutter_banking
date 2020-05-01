@@ -76,7 +76,7 @@ class _LoginViewState extends State<LoginView> {
   Align _buildBottomColorBar() {
     return Align(
         alignment: Alignment.bottomCenter,
-        child: Container(height: 25, color: MyColor.olbPrimary));
+        child: Container(height: 25, color: MyColor.olbGreen));
   }
 
   Widget get _buildLogo => Image.asset(
@@ -111,7 +111,7 @@ class _LoginViewState extends State<LoginView> {
         _loginSuccess = await model.authenticateWithBiometrics();
         if (_loginSuccess) startHome();
       },
-      icon: Icon(Icons.fingerprint, color: MyColor.olbPrimary),
+      icon: Icon(Icons.fingerprint, color: MyColor.olbGreen),
     );
   }
 
