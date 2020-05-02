@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_banking/common/colors.dart';
+import 'package:flutter_banking/router.gr.dart';
 
 class SignUpLegitimationView extends StatelessWidget {
   final String identCode = 'KTGA17';
@@ -68,7 +70,8 @@ class SignUpLegitimationView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: Text("Later"),
-                  onPressed: () {}),
+                  onPressed: () => ExtendedNavigator.rootNavigator
+                      .pushReplacementNamed(Routes.homeView)),
             ),
             SizedBox(
               width: 16,

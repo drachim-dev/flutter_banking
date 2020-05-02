@@ -11,6 +11,7 @@ import 'package:flutter_banking/model/viewstate.dart';
 import 'package:flutter_banking/router.gr.dart';
 import 'package:flutter_banking/services/authentication_service.dart';
 import 'package:flutter_banking/services/biometric_auth_notifier.dart';
+import 'package:flutter_banking/view/base_view.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_banking/viewmodel/base_model.dart';
 
@@ -37,16 +38,32 @@ class _SignUpViewState extends State<SignUpView> {
 
     final biometricAuthNotifier =
         Provider.of<BiometricAuthNotifier>(context, listen: false);
-    _biometricLogin = biometricAuthNotifier.enabled;
+    _biometricLogin = biometricAuthNotifier.enabled ?? _biometricLogin;
   }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
+    return BaseView<SignUpViewModel>(onModelReady: (model) async {
+      this.viewModel = model;
+      var user = await this.viewModel.currentUser();
+      bool isLoggedIn = user != null;
+
+      if (isLoggedIn && _biometricLogin)
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => biometricLogin(context));
+    }, builder: (_, model, child) {
+      return Scaffold(
+          body: _buildBody(theme),
+          floatingActionButton: _buildFAB(),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat);
+    });
+
     if (_biometricLogin)
       WidgetsBinding.instance
-          .addPostFrameCallback((_) => showBiometricLogin(context));
+          .addPostFrameCallback((_) => biometricLogin(context));
 
     return ChangeNotifierProvider<SignUpViewModel>(
       create: (_) => SignUpViewModel(),
@@ -66,7 +83,7 @@ class _SignUpViewState extends State<SignUpView> {
   _buildBody(ThemeData theme) {
     return ListView(
       padding: const EdgeInsets.only(bottom: Dimens.listScrollPadding),
-      children: <Widget>[
+      children: [
         _buildHeader(theme),
         Padding(
           padding: const EdgeInsets.symmetric(
@@ -86,7 +103,7 @@ class _SignUpViewState extends State<SignUpView> {
                 _biometricLogin
                     ? IconButton(
                         iconSize: 56.0,
-                        onPressed: () => showBiometricLogin(context),
+                        onPressed: () => biometricLogin(context),
                         icon: Icon(Icons.fingerprint, color: MyColor.grey),
                       )
                     : FlatButton(
@@ -100,8 +117,11 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
-  showBiometricLogin(BuildContext context) {
-    viewModel.authenticateWithBiometrics(localizedReason: 'Login');
+  biometricLogin(BuildContext context) async {
+    var success =
+        await viewModel.authenticateWithBiometrics(localizedReason: 'Login');
+    if (success)
+      ExtendedNavigator.rootNavigator.pushReplacementNamed(Routes.homeView);
   }
 
   void _onClickCreateAccount() =>
@@ -215,11 +235,7 @@ class _SignUpViewState extends State<SignUpView> {
       // try to login
       try {
         await viewModel.signInWithPassword(email: _email, password: _password);
-        setState(() {
-          _emailErrorText = null;
-          _passwordErrorText = null;
-        });
-        ExtendedNavigator.rootNavigator.pushNamed(Routes.homeView);
+        ExtendedNavigator.rootNavigator.pushReplacementNamed(Routes.homeView);
       } catch (e) {
         switch (e.code) {
           case 'ERROR_USER_NOT_FOUND':
@@ -237,11 +253,8 @@ class _SignUpViewState extends State<SignUpView> {
           default:
         }
       }
-    }
-    {
-      setState(() {
-        _autoValidate = true;
-      });
+    } else {
+      setState(() => _autoValidate = true);
     }
   }
 }
@@ -255,10 +268,15 @@ class SignUpViewModel extends BaseModel {
       notifyListeners();
       return await user;
     } catch (e) {
+      rethrow;
+    } finally {
       setState(ViewState.Idle);
       notifyListeners();
-      rethrow;
     }
+  }
+
+  Future<User> currentUser() async {
+    return _authService.currentUser();
   }
 
   Future<User> signInWithPassword(

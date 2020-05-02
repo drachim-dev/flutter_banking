@@ -10,6 +10,11 @@ class AuthenticationService {
   LocalAuthentication _localAuth = locator<LocalAuthentication>();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  Future<User> currentUser() async {
+    var user = await _firebaseAuth.currentUser();
+    return user != null ? User.fromFirebase(user) : null;
+  }
+
   Future<User> loginWithEmail({
     @required String email,
     @required String password,
@@ -18,7 +23,7 @@ class AuthenticationService {
       var authResult = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
       return User.fromFirebase(authResult.user);
-    } catch(e) {
+    } catch (e) {
       rethrow;
     }
   }
@@ -31,7 +36,7 @@ class AuthenticationService {
       var authResult = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
       return User.fromFirebase(authResult.user);
-    } catch(e) {
+    } catch (e) {
       rethrow;
     }
   }

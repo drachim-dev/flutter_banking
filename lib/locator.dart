@@ -2,6 +2,7 @@ import 'package:flutter_banking/services/account_service.dart';
 import 'package:flutter_banking/services/firebase_service.dart';
 import 'package:flutter_banking/services/location_service.dart';
 import 'package:flutter_banking/services/transaction_service.dart';
+import 'package:flutter_banking/view/signup_view.dart';
 import 'package:flutter_banking/viewmodel/account_model.dart';
 import 'package:flutter_banking/viewmodel/add_account_model.dart';
 import 'package:flutter_banking/viewmodel/add_transaction_overview_model.dart';
@@ -29,6 +30,7 @@ void setupLocator() {
   locator.registerFactory(() => ContactModel());
   locator.registerFactory(() => DepotModel());
   locator.registerFactory(() => LoginModel());
+  locator.registerFactory(() => SignUpViewModel());
   locator.registerFactory(() => MapModel());
   locator.registerFactory(() => SpendingModel());
   locator.registerFactory(() => AddTransactionOverviewModel());
