@@ -14,11 +14,13 @@ class SignUpTaxView extends StatelessWidget {
     return SignUpFormListView(
       list: [
         Text("In which country are you taxable?"),
-        SignUpFormField('Country',
-            keyboardType: TextInputType.number,
-            textCapitalization: TextCapitalization.none,
-            focusId: _countryFocus,
-            nextFocusId: _taxId,),
+        SignUpFormField(
+          'Country',
+          keyboardType: TextInputType.number,
+          textCapitalization: TextCapitalization.none,
+          focusId: _countryFocus,
+          nextFocusId: _taxId,
+        ),
         SignUpFormField('Tax ID (optional)',
             keyboardType: TextInputType.number,
             textCapitalization: TextCapitalization.words,

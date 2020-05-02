@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/common/dimens.dart';
+import 'package:flutter_banking/common/utils.dart';
 import 'package:flutter_banking/view/signup_address_view.dart';
 import 'package:flutter_banking/view/signup_contact_view.dart';
 import 'package:flutter_banking/view/signup_law_view.dart';
@@ -101,9 +102,7 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
   }
 
   void _onPageChanged(int page) {
-    setState(() {
-      _index = page;
-    });
+    setState(() => _index = page);
   }
 
   Future<void> _previousPage() {
@@ -112,6 +111,7 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
   }
 
   Future<void> _nextPage() {
+    Utils.unfocus();
     return _pageController.nextPage(
         duration: const Duration(milliseconds: 300), curve: Curves.linear);
   }
@@ -124,15 +124,15 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
       theme: theme,
       hasElevation: true,
       title: Column(
-        children: <Widget>[
+        children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(Dimens.progressBarBorderRadius),
             child: Container(
                 height: Dimens.progressBarHeight,
                 child: LinearProgressIndicator(
-                  backgroundColor: MyColor.transparentPrimary,
-                  valueColor: AlwaysStoppedAnimation(MyColor.primary),
-                  value: progress)),
+                    backgroundColor: MyColor.transparentPrimary,
+                    valueColor: AlwaysStoppedAnimation(MyColor.primary),
+                    value: progress)),
           ),
         ],
       ),

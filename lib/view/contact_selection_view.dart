@@ -111,11 +111,6 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
     return Center(child: Text('An error occurred'));
   }
 
-  _resetFocus() {
-    // unfocus SearchTextField
-    WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
-  }
-
   ListTile _buildAddContactItem() {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(
@@ -126,7 +121,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
       ),
       title: Text('Add new contact'),
       onTap: () {
-        _resetFocus();
+        Utils.unfocus();
         ExtendedNavigator.rootNavigator.pushNamed(Routes.addContactView,
             arguments: AddAccountViewArguments(createOwnAccount: false));
       },
@@ -190,7 +185,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
               _transaction = Transaction(foreignAccount: contact);
 
               // pass transaction to new route
-              _resetFocus();
+              Utils.unfocus();
               ExtendedNavigator.rootNavigator.pushNamed(
                   Routes.amountSelectionView,
                   arguments:

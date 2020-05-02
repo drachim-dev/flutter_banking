@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/common/keys.dart';
 import 'package:flutter_banking/common/my_theme.dart';
+import 'package:flutter_banking/services/biometric_auth_notifier.dart';
 import 'package:flutter_banking/services/theme_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,7 @@ class _PreferencesViewState extends State<PreferencesView> {
   String _selectedTheme = 'Light';
 
   bool _notifyOnTransaction = true;
+  bool _biometricLogin = false;
   bool _notifyOnDocument = false;
 
   @override
@@ -29,8 +31,10 @@ class _PreferencesViewState extends State<PreferencesView> {
   void loadPreferences() {
     _prefsFuture.then((prefs) {
       _selectedTheme = prefs.getString(Keys.pref_theme) ?? _selectedTheme;
-      _notifyOnTransaction =
-          prefs.getBool(Keys.pref_notify_on_transaction) ?? _notifyOnTransaction;
+      _biometricLogin =
+          prefs.getBool(Keys.pref_biometric_login) ?? _biometricLogin;
+      _notifyOnTransaction = prefs.getBool(Keys.pref_notify_on_transaction) ??
+          _notifyOnTransaction;
       _notifyOnDocument =
           prefs.getBool(Keys.pref_notify_on_document) ?? _notifyOnDocument;
 
@@ -55,6 +59,8 @@ class _PreferencesViewState extends State<PreferencesView> {
                   children: <Widget>[
                     _buildGroup(context, 'General'),
                     _buildThemeSelector(),
+                    _buildGroup(context, 'Security'),
+                    _buildBiometricAuth(),
                     _buildGroup(context, 'Notifications'),
                     _buildTransactionNotifier(),
                     _buildDocumentNotifier(),
@@ -123,9 +129,22 @@ class _PreferencesViewState extends State<PreferencesView> {
     themeNotifier.setTheme(MyTheme.getThemeFromName(value));
 
     _prefs.setString(Keys.pref_theme, value);
-    setState(() {
-      _selectedTheme = value;
-    });
+    setState(() => _selectedTheme = value);
+  }
+
+  Widget _buildBiometricAuth() {
+    return SwitchListTile(
+        title: Text('Biometric authentication'),
+        secondary: Icon(Icons.lock_open),
+        value: _biometricLogin,
+        onChanged: (bool value) {
+          final biometricAuthNotifier =
+              Provider.of<BiometricAuthNotifier>(context, listen: false);
+          biometricAuthNotifier.setEnabled(value);
+
+          _prefs.setBool(Keys.pref_biometric_login, value);
+          setState(() => _biometricLogin = value);
+        });
   }
 
   Widget _buildTransactionNotifier() {
@@ -135,9 +154,7 @@ class _PreferencesViewState extends State<PreferencesView> {
         value: _notifyOnTransaction,
         onChanged: (bool value) {
           _prefs.setBool(Keys.pref_notify_on_transaction, value);
-          setState(() {
-            _notifyOnTransaction = value;
-          });
+          setState(() => _notifyOnTransaction = value);
         });
   }
 
@@ -148,9 +165,7 @@ class _PreferencesViewState extends State<PreferencesView> {
         value: _notifyOnDocument,
         onChanged: (bool value) {
           _prefs.setBool(Keys.pref_notify_on_document, value);
-          setState(() {
-            _notifyOnDocument = value;
-          });
+          setState(() => _notifyOnDocument = value);
         });
   }
 

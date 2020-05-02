@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/keys.dart';
 import 'package:flutter_banking/common/my_theme.dart';
 import 'package:flutter_banking/router.gr.dart';
+import 'package:flutter_banking/services/biometric_auth_notifier.dart';
 import 'package:flutter_banking/services/firebase_service.dart';
 import 'package:flutter_banking/services/theme_notifier.dart';
 import 'package:provider/provider.dart';
@@ -16,19 +17,25 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
 
-  // get theme from SharedPreferences
+  // get settings from SharedPreferences
   final ThemeData theme =
       MyTheme.getThemeFromName(prefs.getString(Keys.pref_theme));
+  final bool _biometricLogin = prefs.getBool(Keys.pref_biometric_login);
 
   setupLocator();
   FirebaseService();
 
-  runApp(
-    ChangeNotifierProvider<ThemeNotifier>(
-      create: (_) => ThemeNotifier(theme),
-      child: MyApp(),
-    ),
-  );
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<ThemeNotifier>(
+        create: (_) => ThemeNotifier(theme),
+      ),
+      ChangeNotifierProvider<BiometricAuthNotifier>(
+        create: (context) => BiometricAuthNotifier(_biometricLogin),
+      ),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

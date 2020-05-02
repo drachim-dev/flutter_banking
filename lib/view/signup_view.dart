@@ -3,12 +3,16 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/locator.dart';
 import 'package:flutter_banking/model/user.dart';
+import 'package:flutter_banking/model/viewstate.dart';
 import 'package:flutter_banking/router.gr.dart';
 import 'package:flutter_banking/services/authentication_service.dart';
+import 'package:flutter_banking/services/biometric_auth_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_banking/viewmodel/base_model.dart';
 
 class SignUpView extends StatefulWidget {
   @override
@@ -20,7 +24,7 @@ class _SignUpViewState extends State<SignUpView> {
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
 
-  bool _isLoading = false;
+  bool _biometricLogin = false;
   bool _autoValidate = false;
 
   String _email, _password, _emailErrorText, _passwordErrorText;
@@ -28,13 +32,26 @@ class _SignUpViewState extends State<SignUpView> {
   SignUpViewModel viewModel;
 
   @override
+  void initState() {
+    super.initState();
+
+    final biometricAuthNotifier =
+        Provider.of<BiometricAuthNotifier>(context, listen: false);
+    _biometricLogin = biometricAuthNotifier.enabled;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+
+    if (_biometricLogin)
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => showBiometricLogin(context));
 
     return ChangeNotifierProvider<SignUpViewModel>(
       create: (_) => SignUpViewModel(),
       child: Consumer<SignUpViewModel>(
-          builder: (_, SignUpViewModel viewModel, __) {
+          builder: (_, SignUpViewModel viewModel, child) {
         this.viewModel = viewModel;
 
         return Scaffold(
@@ -65,16 +82,26 @@ class _SignUpViewState extends State<SignUpView> {
                 _buildEmailField(theme),
                 SizedBox(height: Dimens.listItemPaddingVertical),
                 _buildPasswordField(theme),
-                SizedBox(height: Dimens.listItemPaddingVertical),
-                FlatButton(
-                    onPressed: _onClickCreateAccount,
-                    child: Text("I don't have an account yet"))
+                SizedBox(height: Dimens.listItemPaddingVertical * 2),
+                _biometricLogin
+                    ? IconButton(
+                        iconSize: 56.0,
+                        onPressed: () => showBiometricLogin(context),
+                        icon: Icon(Icons.fingerprint, color: MyColor.grey),
+                      )
+                    : FlatButton(
+                        onPressed: _onClickCreateAccount,
+                        child: Text("I don't have an account yet"))
               ],
             ),
           ),
         ),
       ],
     );
+  }
+
+  showBiometricLogin(BuildContext context) {
+    viewModel.authenticateWithBiometrics(localizedReason: 'Login');
   }
 
   void _onClickCreateAccount() =>
@@ -123,7 +150,8 @@ class _SignUpViewState extends State<SignUpView> {
           errorText: _emailErrorText,
           filled: true,
           prefixIcon: Icon(Icons.mail_outline)),
-      scrollPadding: const EdgeInsets.only(bottom: Dimens.fabScrollPadding),
+      scrollPadding:
+          const EdgeInsets.only(bottom: Dimens.fabScrollPadding * 2.5),
       validator: (value) {
         if (!EmailValidator.validate(value)) {
           return 'Email must be valid';
@@ -163,22 +191,17 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   Widget _buildFAB() {
-    return _isLoading
-        ? FloatingActionButton(
-            onPressed: null,
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            ))
-        : RaisedButton(
+    return viewModel.state == ViewState.Idle
+        ? RaisedButton(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             shape: StadiumBorder(),
             child: Text('Continue'),
-            onPressed: () async {
-              setState(() => _isLoading = true);
-              await signInWithPassword();
-              setState(() => _isLoading = false);
-            },
-          );
+            onPressed: () => signInWithPassword())
+        : FloatingActionButton(
+            onPressed: null,
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ));
   }
 
   Future<void> signInWithPassword() async {
@@ -186,8 +209,7 @@ class _SignUpViewState extends State<SignUpView> {
 
     // local syntax validation
     if (formState.validate()) {
-      
-       // save data for login
+      // save data for login
       formState.save();
 
       // try to login
@@ -224,17 +246,16 @@ class _SignUpViewState extends State<SignUpView> {
   }
 }
 
-class SignUpViewModel with ChangeNotifier {
+class SignUpViewModel extends BaseModel {
   final AuthenticationService _authService = locator<AuthenticationService>();
-  bool isLoading = false;
 
   Future<User> _signIn(Future<User> user) async {
     try {
-      isLoading = true;
+      setState(ViewState.Busy);
       notifyListeners();
       return await user;
     } catch (e) {
-      isLoading = false;
+      setState(ViewState.Idle);
       notifyListeners();
       rethrow;
     }
@@ -245,6 +266,26 @@ class SignUpViewModel with ChangeNotifier {
     try {
       return _signIn(
           _authService.loginWithEmail(email: email, password: password));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> canCheckBiometrics() async {
+    try {
+      return _authService.canCheckBiometrics();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> authenticateWithBiometrics(
+      {@required String localizedReason}) async {
+    try {
+      bool _hasBiometrics = await canCheckBiometrics();
+      return _hasBiometrics
+          ? _authService.authenticateWithBiometrics(localizedReason)
+          : false;
     } catch (e) {
       rethrow;
     }
