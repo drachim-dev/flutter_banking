@@ -49,9 +49,7 @@ class _HomeViewState extends State<HomeView>
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    setState(() => _selectedIndex = index);
   }
 
   Widget _buildBottomNavigationBar() {

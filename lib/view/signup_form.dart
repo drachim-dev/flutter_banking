@@ -27,16 +27,19 @@ class SignUpFormListView extends StatelessWidget {
 class SignUpFormField extends StatelessWidget {
   const SignUpFormField(
     this.label, {
+        this.controller,
     this.autofocus = true,
     @required this.focusId,
     this.nextFocusId,
     this.keyboardType,
     this.textCapitalization,
     this.helperText,
+    this.onTap,
     this.onFieldSubmitted,
   }) : lastField = nextFocusId == null;
 
   final String label;
+  final TextEditingController controller;
   final bool autofocus;
   final FocusNode focusId;
   final FocusNode nextFocusId;
@@ -44,6 +47,7 @@ class SignUpFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final TextCapitalization textCapitalization;
   final String helperText;
+  final VoidCallback onTap;
   final VoidCallback onFieldSubmitted;
 
   @override
@@ -51,6 +55,7 @@ class SignUpFormField extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
 
     return TextFormField(
+      controller: controller ?? TextEditingController(),
         focusNode: focusId,
         autofocus: autofocus,
         keyboardType: keyboardType ?? TextInputType.text,
@@ -69,6 +74,7 @@ class SignUpFormField extends StatelessWidget {
         ),
         onFieldSubmitted: (v) =>
             lastField ? onFieldSubmitted() : nextFocusId.requestFocus(),
+        onTap: onTap,
         scrollPadding: const EdgeInsets.only(bottom: Dimens.fabScrollPadding));
   }
 }

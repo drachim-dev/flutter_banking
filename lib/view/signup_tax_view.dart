@@ -16,14 +16,13 @@ class SignUpTaxView extends StatelessWidget {
         Text("In which country are you taxable?"),
         SignUpFormField(
           'Country',
-          keyboardType: TextInputType.number,
-          textCapitalization: TextCapitalization.none,
+          keyboardType: TextInputType.text,
+          textCapitalization: TextCapitalization.words,
           focusId: _countryFocus,
           nextFocusId: _taxId,
         ),
         SignUpFormField('Tax ID (optional)',
             keyboardType: TextInputType.number,
-            textCapitalization: TextCapitalization.words,
             helperText:
                 "If you don't know your tax id, we will determine it automatically",
             focusId: _taxId,

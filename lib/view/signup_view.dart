@@ -47,12 +47,12 @@ class _SignUpViewState extends State<SignUpView> {
 
     return BaseView<SignUpViewModel>(onModelReady: (model) async {
       this.viewModel = model;
-      var user = await this.viewModel.currentUser();
+      var user = await model.currentUser();
       bool isLoggedIn = user != null;
 
       if (isLoggedIn && _biometricLogin)
         WidgetsBinding.instance
-            .addPostFrameCallback((_) => biometricLogin(context));
+            .addPostFrameCallback((_) => signInWithBiometrics());
     }, builder: (_, model, child) {
       return Scaffold(
           body: _buildBody(theme),
@@ -60,24 +60,6 @@ class _SignUpViewState extends State<SignUpView> {
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat);
     });
-
-    if (_biometricLogin)
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => biometricLogin(context));
-
-    return ChangeNotifierProvider<SignUpViewModel>(
-      create: (_) => SignUpViewModel(),
-      child: Consumer<SignUpViewModel>(
-          builder: (_, SignUpViewModel viewModel, child) {
-        this.viewModel = viewModel;
-
-        return Scaffold(
-            body: _buildBody(theme),
-            floatingActionButton: _buildFAB(),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat);
-      }),
-    );
   }
 
   _buildBody(ThemeData theme) {
@@ -103,7 +85,7 @@ class _SignUpViewState extends State<SignUpView> {
                 _biometricLogin
                     ? IconButton(
                         iconSize: 56.0,
-                        onPressed: () => biometricLogin(context),
+                        onPressed: () => signInWithBiometrics(),
                         icon: Icon(Icons.fingerprint, color: MyColor.grey),
                       )
                     : FlatButton(
@@ -115,13 +97,6 @@ class _SignUpViewState extends State<SignUpView> {
         ),
       ],
     );
-  }
-
-  biometricLogin(BuildContext context) async {
-    var success =
-        await viewModel.authenticateWithBiometrics(localizedReason: 'Login');
-    if (success)
-      ExtendedNavigator.rootNavigator.pushReplacementNamed(Routes.homeView);
   }
 
   void _onClickCreateAccount() =>
@@ -235,7 +210,7 @@ class _SignUpViewState extends State<SignUpView> {
       // try to login
       try {
         await viewModel.signInWithPassword(email: _email, password: _password);
-        ExtendedNavigator.rootNavigator.pushReplacementNamed(Routes.homeView);
+        navigateToHome();
       } catch (e) {
         switch (e.code) {
           case 'ERROR_USER_NOT_FOUND':
@@ -256,6 +231,17 @@ class _SignUpViewState extends State<SignUpView> {
     } else {
       setState(() => _autoValidate = true);
     }
+  }
+
+  Future<void> signInWithBiometrics() async {
+    var success =
+        await viewModel.authenticateWithBiometrics(localizedReason: 'Login');
+    if (success) navigateToHome();
+  }
+
+  void navigateToHome() {
+    ExtendedNavigator.rootNavigator
+        .pushNamedAndRemoveUntil(Routes.homeView, (_) => false);
   }
 }
 

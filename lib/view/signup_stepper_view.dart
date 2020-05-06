@@ -5,7 +5,7 @@ import 'package:flutter_banking/common/utils.dart';
 import 'package:flutter_banking/view/signup_address_view.dart';
 import 'package:flutter_banking/view/signup_contact_view.dart';
 import 'package:flutter_banking/view/signup_law_view.dart';
-import 'package:flutter_banking/view/signup_legi.dart';
+import 'package:flutter_banking/view/signup_legi_view.dart';
 import 'package:flutter_banking/view/signup_name_view.dart';
 import 'package:flutter_banking/view/signup_tax_view.dart';
 import 'package:flutter_banking/view/transparent_app_bar.dart';

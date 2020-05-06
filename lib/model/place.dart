@@ -27,3 +27,25 @@ class Place {
         hasATM = snapshot['hasATM'],
         hasCDM = snapshot['hasCDM'];
 }
+
+class PlaceNew {
+  final String documentID, name, description;
+  final PlaceType type;
+  final Address address;
+  final LatLng position;
+
+  PlaceNew(
+      {this.documentID, this.name, this.description, this.type, this.address, this.position});
+}
+
+
+class PlaceType {
+
+}
+
+class Address {
+  String country, city, street, streetNumber, postalCode;
+
+  Address({this.country, this.city, this.street, this.streetNumber,
+      this.postalCode});
+}

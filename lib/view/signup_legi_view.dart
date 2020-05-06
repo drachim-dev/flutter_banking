@@ -19,7 +19,7 @@ class SignUpLegitimationView extends StatelessWidget {
           return Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
+              children: [
                 Icon(
                   Icons.contact_phone,
                   size: 156,
@@ -70,8 +70,7 @@ class SignUpLegitimationView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: Text("Later"),
-                  onPressed: () => ExtendedNavigator.rootNavigator
-                      .pushReplacementNamed(Routes.homeView)),
+                  onPressed: () => navigateToHome()),
             ),
             SizedBox(
               width: 16,
@@ -90,5 +89,10 @@ class SignUpLegitimationView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void navigateToHome() {
+    ExtendedNavigator.rootNavigator
+        .pushNamedAndRemoveUntil(Routes.homeView, (_) => false);
   }
 }

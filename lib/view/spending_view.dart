@@ -7,6 +7,7 @@ import 'package:flutter_banking/model/transaction.dart';
 import 'package:flutter_banking/model/viewstate.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/view/list_group_header.dart';
+import 'package:flutter_banking/view/search_transaction_delegate.dart';
 import 'package:flutter_banking/viewmodel/spending_model.dart';
 
 class SpendingView extends StatefulWidget {
@@ -15,9 +16,9 @@ class SpendingView extends StatefulWidget {
 }
 
 class _SpendingViewState extends State<SpendingView> {
-  final _SearchDemoSearchDelegate _delegate = _SearchDemoSearchDelegate();
+  final SearchTransactionDelegate _delegate = SearchTransactionDelegate();
 
-  int _lastIntegerSelected;
+  String _lastStringSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +46,12 @@ class _SpendingViewState extends State<SpendingView> {
   }
 
   void _onTapActionSearch() async {
-    final int selected = await showSearch<int>(
+    final String selected = await showSearch<String>(
       context: context,
       delegate: _delegate,
     );
-    if (selected != null && selected != _lastIntegerSelected) {
-      setState(() {
-        _lastIntegerSelected = selected;
-      });
+    if (selected != null && selected != _lastStringSelected) {
+      setState(() => _lastStringSelected = selected);
     }
   }
 
@@ -123,160 +122,5 @@ class _SpendingViewState extends State<SpendingView> {
               : Divider(),
           transactionItem
         ]);
-  }
-}
-
-class _SearchDemoSearchDelegate extends SearchDelegate<int> {
-  final List<int> _data =
-      List<int>.generate(100001, (int i) => i).reversed.toList();
-  final List<int> _history = <int>[42607, 85604, 66374, 44, 174];
-
-  // TODO: SearchDelegate doesn't respect theme
-  // Workaround from https://github.com/flutter/flutter/issues/32180
-  @override
-   ThemeData appBarTheme(BuildContext context) => Theme.of(context);
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      tooltip: 'Back',
-      icon: Icon(Icons.arrow_back),
-      onPressed: () => close(context, null),
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    final Iterable<int> suggestions = query.isEmpty
-        ? _history
-        : _data.where((int i) => '$i'.startsWith(query));
-
-    return _SuggestionList(
-      query: query,
-      suggestions: suggestions.map((int i) => '$i').toList(),
-      onSelected: (String suggestion) {
-        query = suggestion;
-        showResults(context);
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    final int searched = int.tryParse(query);
-    if (searched == null || !_data.contains(searched)) {
-      return Center(
-        child: Text(
-          '"$query"\n is not a valid integer between 0 and 100,000.\nTry again.',
-          textAlign: TextAlign.center,
-        ),
-      );
-    }
-
-    return ListView(
-      children: <Widget>[
-        _ResultCard(
-          title: 'This integer',
-          integer: searched,
-          searchDelegate: this,
-        ),
-        _ResultCard(
-          title: 'Next integer',
-          integer: searched + 1,
-          searchDelegate: this,
-        ),
-        _ResultCard(
-          title: 'Previous integer',
-          integer: searched - 1,
-          searchDelegate: this,
-        ),
-      ],
-    );
-  }
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return query.isEmpty
-        ? null
-        : <Widget>[
-            IconButton(
-              tooltip: 'Clear',
-              icon: Icon(Icons.clear),
-              onPressed: () {
-                query = '';
-                showSuggestions(context);
-              },
-            )
-          ];
-  }
-}
-
-class _ResultCard extends StatelessWidget {
-  const _ResultCard({this.integer, this.title, this.searchDelegate});
-
-  final int integer;
-  final String title;
-  final SearchDelegate<int> searchDelegate;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return GestureDetector(
-      onTap: () {
-        searchDelegate.close(context, integer);
-      },
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              Text(title),
-              Text(
-                '$integer',
-                style: theme.textTheme.headline5.copyWith(fontSize: 72.0),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SuggestionList extends StatelessWidget {
-  const _SuggestionList({this.suggestions, this.query, this.onSelected});
-
-  final List<String> suggestions;
-  final String query;
-  final ValueChanged<String> onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return ListView.builder(
-      itemCount: suggestions.length,
-      itemBuilder: (BuildContext context, int i) {
-        final String suggestion = suggestions[i];
-        return ListTile(
-          leading: query.isEmpty ? Icon(Icons.history) : Icon(null),
-          title: RichText(
-            text: TextSpan(
-              text: suggestion.substring(0, query.length),
-              style:
-                  theme.textTheme.subtitle1.copyWith(fontWeight: FontWeight.bold),
-              children: <TextSpan>[
-                TextSpan(
-                  text: suggestion.substring(query.length),
-                  style: theme.textTheme.subtitle1,
-                ),
-              ],
-            ),
-          ),
-          onTap: () {
-            onSelected(suggestion);
-          },
-        );
-      },
-    );
   }
 }

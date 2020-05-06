@@ -39,7 +39,9 @@ class SignUpNameView extends StatelessWidget {
                 nextFocusId: _monthOfBirthFocus,
               ),
             ),
-            SizedBox(width: Dimens.inputFieldHorizontalPadding,),
+            SizedBox(
+              width: Dimens.inputFieldHorizontalPadding,
+            ),
             Expanded(
               child: SignUpFormField(
                 'MM',
@@ -48,7 +50,9 @@ class SignUpNameView extends StatelessWidget {
                 nextFocusId: _yearOfBirthFocus,
               ),
             ),
-            SizedBox(width: Dimens.inputFieldHorizontalPadding,),
+            SizedBox(
+              width: Dimens.inputFieldHorizontalPadding,
+            ),
             Expanded(
               child: SignUpFormField('JJJJ',
                   keyboardType: TextInputType.number,
