@@ -202,7 +202,7 @@ class _AtmMapViewState extends State<AtmMapView> {
 
     BitmapDescriptor markerIcon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(size: Size(16, 16)),
-        'assets/images/institute/olb-small.png');
+        'assets/images/marker-icon.png');
 
     Set<Marker> _markers = _places.map((place) {
       return Marker(
