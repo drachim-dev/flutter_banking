@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/common/keys.dart';
 import 'package:flutter_banking/common/my_theme.dart';
+import 'package:flutter_banking/locator.dart';
 import 'package:flutter_banking/services/biometric_auth_notifier.dart';
 import 'package:flutter_banking/services/theme_notifier.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,6 +15,10 @@ class PreferencesView extends StatefulWidget {
 }
 
 class _PreferencesViewState extends State<PreferencesView> {
+  LocalAuthentication _localAuth = locator<LocalAuthentication>();
+  ThemeNotifier themeNotifier;
+  BiometricAuthNotifier biometricAuthNotifier;
+
   Future<SharedPreferences> _prefsFuture = SharedPreferences.getInstance();
   SharedPreferences _prefs;
 
@@ -26,6 +32,10 @@ class _PreferencesViewState extends State<PreferencesView> {
   void initState() {
     super.initState();
     loadPreferences();
+
+    themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    biometricAuthNotifier =
+        Provider.of<BiometricAuthNotifier>(context, listen: false);
   }
 
   void loadPreferences() {
@@ -60,7 +70,13 @@ class _PreferencesViewState extends State<PreferencesView> {
                     _buildGroup(context, 'General'),
                     _buildThemeSelector(),
                     _buildGroup(context, 'Security'),
-                    _buildBiometricAuth(),
+                    FutureBuilder(
+                        future: _localAuth.canCheckBiometrics,
+                        builder: (context, AsyncSnapshot<bool> snapshot) {
+                          return snapshot.hasData
+                              ? _buildBiometricAuth(snapshot.data)
+                              : Center(child: CircularProgressIndicator());
+                        }),
                     _buildGroup(context, 'Notifications'),
                     _buildTransactionNotifier(),
                     _buildDocumentNotifier(),
@@ -125,26 +141,25 @@ class _PreferencesViewState extends State<PreferencesView> {
   }
 
   void setTheme(String value) async {
-    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
     themeNotifier.setTheme(MyTheme.getThemeFromName(value));
 
     _prefs.setString(Keys.pref_theme, value);
     setState(() => _selectedTheme = value);
   }
 
-  Widget _buildBiometricAuth() {
+  Widget _buildBiometricAuth(bool canCheck) {
     return SwitchListTile(
         title: Text('Biometric authentication'),
         secondary: Icon(Icons.lock_open),
         value: _biometricLogin,
-        onChanged: (bool value) {
-          final biometricAuthNotifier =
-              Provider.of<BiometricAuthNotifier>(context, listen: false);
-          biometricAuthNotifier.setEnabled(value);
+        onChanged: canCheck
+            ? (bool value) {
+                biometricAuthNotifier.setEnabled(value);
 
-          _prefs.setBool(Keys.pref_biometric_login, value);
-          setState(() => _biometricLogin = value);
-        });
+                _prefs.setBool(Keys.pref_biometric_login, value);
+                setState(() => _biometricLogin = value);
+              }
+            : null);
   }
 
   Widget _buildTransactionNotifier() {
