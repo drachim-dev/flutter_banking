@@ -52,7 +52,7 @@ class FirebaseService {
   }
 
   Future<void> _accountsAdded(firestore.QuerySnapshot snapshot) async {
-    List<Account> accounts = List<Account>();
+    List<Account> accounts = [];
 
     for (var document in snapshot.documents) {
       var account = await _getAccountFromSnapshot(document);
@@ -81,7 +81,7 @@ class FirebaseService {
   }
 
   Future<void> _contactsAdded(firestore.QuerySnapshot snapshot) async {
-    List<Account> contacts = List<Account>();
+    List<Account> contacts = [];
 
     for (var document in snapshot.documents) {
       var contact = await _getContactFromSnapshot(document);
@@ -104,7 +104,7 @@ class FirebaseService {
   }
 
   Future<void> _institutesAdded(firestore.QuerySnapshot snapshot) async {
-    List<Institute> institutes = List<Institute>();
+    List<Institute> institutes = [];
 
     for (var document in snapshot.documents) {
       var institute = await _getInstituteFromSnapshot(document);
@@ -119,7 +119,7 @@ class FirebaseService {
   }
 
   Future<void> _transactionsAdded(firestore.QuerySnapshot snapshot) async {
-    List<Transaction> transactions = List<Transaction>();
+    List<Transaction> transactions = [];
 
     for (var document in snapshot.documents) {
       var transaction = Transaction.fromSnapshot(document);
@@ -147,7 +147,7 @@ class FirebaseService {
   }
 
   Future<void> _placesAdded(firestore.QuerySnapshot snapshot) async {
-    List<Place> places = List<Place>();
+    List<Place> places = [];
 
     snapshot.documents
         .forEach((doc) async => places.add(Place.fromSnapshot(doc)));

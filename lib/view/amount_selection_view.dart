@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_banking/auto_router.gr.dart';
 import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/model/transaction.dart';
-import 'package:flutter_banking/router.gr.dart';
 import 'package:intl/intl.dart';
 
 class AmountSelectionView extends StatefulWidget {
@@ -35,8 +35,7 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
     super.initState();
 
     controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 500),
+      duration: Duration(milliseconds: 500), vsync: this,
     );
 
     offsetAnimation = Tween(begin: 0.00, end: offsetEnd)
@@ -97,9 +96,9 @@ class _AmountSelectionViewState extends State<AmountSelectionView>
                 child: Text('Continue'),
                 onPressed: () {
                   _transaction.amount = _cents / 100 * -1;
-                  ExtendedNavigator.rootNavigator.pushNamed(
-                      Routes.accountSelectionView,
-                      arguments: AccountViewArguments(transaction: _transaction));
+                  ExtendedNavigator.of(context).push(Routes.accountView,
+                      arguments:
+                          AccountViewArguments(transaction: _transaction));
                 })
           ]),
         ));

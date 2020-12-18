@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_banking/router.gr.dart';
+import 'package:flutter_banking/auto_router.gr.dart';
 
 class PurposeSelectionView extends StatefulWidget {
   @override
@@ -33,8 +33,8 @@ class _PurposeSelectionViewState extends State<PurposeSelectionView> {
                 ),
                 RaisedButton(
                     child: Text('Continue'),
-                    onPressed: () => ExtendedNavigator.rootNavigator
-                        .pushNamed(Routes.accountSelectionView))
+                    onPressed: () => ExtendedNavigator.of(context)
+                        .push(Routes.accountView))
               ]),
         ));
   }

@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_banking/view/signup_form.dart';
+import 'package:flutter_banking/widgets/signup_title.dart';
 
 class SignUpTaxView extends StatelessWidget {
   final FocusNode _countryFocus = FocusNode();
   final FocusNode _taxId = FocusNode();
 
+  final String title, description;
   final VoidCallback nextPage;
 
-  SignUpTaxView({this.nextPage});
+  SignUpTaxView({this.title, this.description, this.nextPage});
 
   @override
   Widget build(BuildContext context) {
     return SignUpFormListView(
-      list: [
-        Text("In which country are you taxable?"),
+      children: [
+        SignUpTitle(title: title, description: description),
         SignUpFormField(
-          'Country',
+          'Germany',
+          readonly: true,
           keyboardType: TextInputType.text,
           textCapitalization: TextCapitalization.words,
           focusId: _countryFocus,

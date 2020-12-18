@@ -21,12 +21,12 @@ class MaskedTextInputFormatter extends TextInputFormatter {
         if (newValue.text.length < mask.length &&
             mask[newValue.text.length - 1] == separator) {
           return TextEditingValue(
-            text:
-                '${oldValue.text}$separator${newValue.text.substring(newValue.text.length - 1)}'.toUpperCase(),
-            selection: TextSelection.collapsed(
-              offset: newValue.selection.end + 1,
-            ),
-          );
+              text:
+                  '${oldValue.text}$separator${newValue.text.substring(newValue.text.length - 1)}'
+                      .toUpperCase(),
+              selection: TextSelection.collapsed(
+                offset: newValue.selection.end + 1,
+              ));
         }
       }
     }

@@ -2,24 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/dimens.dart';
 
 class SignUpFormListView extends StatelessWidget {
-  final List<Widget> list;
+  final List<Widget> children;
+  final bool scrollable;
 
-  const SignUpFormListView({@required this.list});
+  const SignUpFormListView({@required this.children, this.scrollable = true});
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
       shrinkWrap: true,
+      physics: scrollable
+          ? ScrollPhysics() // AlwaysScrollableScrollPhysics()
+          : NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.only(
           left: Dimens.listItemPaddingHorizontal,
           right: Dimens.listItemPaddingHorizontal,
-          top: Dimens.listItemPaddingVerticalBig,
+          top: Dimens.listVerticalPadding,
           bottom: Dimens.listScrollPadding),
-      itemBuilder: (BuildContext context, int index) => list[index],
+      itemBuilder: (BuildContext context, int index) => children[index],
       separatorBuilder: (BuildContext context, int index) {
         return SizedBox(height: Dimens.inputFieldVerticalPadding);
       },
-      itemCount: list.length,
+      itemCount: children.length,
     );
   }
 }
@@ -27,8 +31,13 @@ class SignUpFormListView extends StatelessWidget {
 class SignUpFormField extends StatelessWidget {
   const SignUpFormField(
     this.label, {
-        this.controller,
+    this.controller,
+        this.autofillHints,
+        this.autocorrect =true,
+        this.enableSuggestions = true,
+    this.readonly = false,
     this.autofocus = true,
+    this.filled = true,
     @required this.focusId,
     this.nextFocusId,
     this.keyboardType,
@@ -40,7 +49,12 @@ class SignUpFormField extends StatelessWidget {
 
   final String label;
   final TextEditingController controller;
+  final Iterable<String> autofillHints;
+  final bool autocorrect;
+  final bool enableSuggestions;
+  final bool readonly;
   final bool autofocus;
+  final bool filled;
   final FocusNode focusId;
   final FocusNode nextFocusId;
   final bool lastField;
@@ -55,9 +69,13 @@ class SignUpFormField extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
 
     return TextFormField(
-      controller: controller ?? TextEditingController(),
-        focusNode: focusId,
+        controller: controller ?? TextEditingController(),
+        autofillHints: autofillHints,
+        autocorrect: autocorrect,
+        enableSuggestions: enableSuggestions,
+        readOnly: readonly,
         autofocus: autofocus,
+        focusNode: focusId,
         keyboardType: keyboardType ?? TextInputType.text,
         textCapitalization: textCapitalization ?? TextCapitalization.words,
         textInputAction:
@@ -69,58 +87,12 @@ class SignUpFormField extends StatelessWidget {
           labelText: label,
           labelStyle: TextStyle(height: Dimens.inputFieldLabelHeight),
           border: UnderlineInputBorder(),
-          filled: true,
+          filled: filled,
           contentPadding: const EdgeInsets.all(Dimens.textFieldInnerPadding),
         ),
         onFieldSubmitted: (v) =>
             lastField ? onFieldSubmitted() : nextFocusId.requestFocus(),
         onTap: onTap,
-        scrollPadding: const EdgeInsets.only(bottom: Dimens.fabScrollPadding));
-  }
-}
-
-class ValidationFormField extends StatelessWidget {
-  const ValidationFormField(
-    this.label, {
-    this.autofocus = true,
-    @required this.focusId,
-    this.nextFocusId,
-    this.keyboardType,
-    this.onFieldSubmitted,
-  }) : lastField = nextFocusId == null;
-
-  final String label;
-  final bool autofocus;
-  final FocusNode focusId;
-  final FocusNode nextFocusId;
-  final bool lastField;
-  final TextInputType keyboardType;
-  final VoidCallback onFieldSubmitted;
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
-    return TextFormField(
-        focusNode: focusId,
-        autofocus: autofocus,
-        keyboardType: keyboardType ?? TextInputType.text,
-        textCapitalization: TextCapitalization.characters,
-        textInputAction:
-            lastField ? TextInputAction.done : TextInputAction.next,
-        style: theme.textTheme.headline5.copyWith(letterSpacing: 10),
-        textAlign: TextAlign.center,
-        maxLength: 4,
-        maxLengthEnforced: true,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle:
-              TextStyle(height: Dimens.inputFieldLabelHeight, letterSpacing: 1),
-          border: OutlineInputBorder(),
-          filled: false,
-        ),
-        onFieldSubmitted: (v) =>
-            lastField ? onFieldSubmitted() : nextFocusId.requestFocus(),
         scrollPadding: const EdgeInsets.only(bottom: Dimens.fabScrollPadding));
   }
 }

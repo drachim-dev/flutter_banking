@@ -27,6 +27,18 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.google.gms.google-services'  // Google Play services Gradle plugin
 apply plugin: 'io.fabric' // for crashlytics
 
+def dartEnvironmentVariables = [
+        MAPS_API_KEY: ""
+]
+if (project.hasProperty('dart-defines')) {
+    dartEnvironmentVariables = dartEnvironmentVariables + project.property('dart-defines')
+            .split(',')
+            .collectEntries { entry ->
+                def pair = URLDecoder.decode(entry).split('=')
+                [(pair.first()): pair.last()]
+            }
+}
+
 android {
     compileSdkVersion 29
 
@@ -45,7 +57,7 @@ android {
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders.MAPS_API_KEY = dartEnvironmentVariables.MAPS_API_KEY
     }
 
     buildTypes {

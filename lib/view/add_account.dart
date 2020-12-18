@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_banking/auto_router.gr.dart';
 import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/common/consts.dart';
 import 'package:flutter_banking/common/masked_text_input_formatter.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_banking/model/account.dart';
 import 'package:flutter_banking/model/account_type.dart';
 import 'package:flutter_banking/model/institute.dart';
 import 'package:flutter_banking/model/transaction.dart';
-import 'package:flutter_banking/router.gr.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/view/transparent_app_bar.dart';
 import 'package:flutter_banking/viewmodel/add_account_model.dart';
@@ -113,7 +113,7 @@ class _AddAccountViewState extends State<AddAccountView> {
             Transaction _transaction = Transaction(foreignAccount: _account);
 
             // pass transaction to new route
-            ExtendedNavigator.rootNavigator.pushNamed(
+            ExtendedNavigator.of(context).push(
                 Routes.amountSelectionView,
                 arguments:
                     AmountSelectionViewArguments(transaction: _transaction));

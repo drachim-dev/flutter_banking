@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_banking/auto_router.gr.dart';
 import 'package:flutter_banking/model/destination.dart';
-import 'package:flutter_banking/router.gr.dart';
 
 class HomeView extends StatefulWidget {
   @override
@@ -25,8 +25,8 @@ class _HomeViewState extends State<HomeView>
       bottomNavigationBar: _buildBottomNavigationBar(),
       floatingActionButton: allDestinations[_selectedIndex].showFab
           ? FloatingActionButton(
-              onPressed: () => ExtendedNavigator.rootNavigator
-                  .pushNamed(Routes.contactSelectionView),
+              onPressed: () => ExtendedNavigator.of(context)
+                  .push(Routes.contactSelectionView),
               child: Icon(Icons.add))
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -53,7 +53,7 @@ class _HomeViewState extends State<HomeView>
   }
 
   Widget _buildBottomNavigationBar() {
-    List<Widget> navigationBarItems = List<Widget>();
+    List<Widget> navigationBarItems = [];
     allDestinations.forEach((destination) {
       final int index = allDestinations.indexOf(destination);
 

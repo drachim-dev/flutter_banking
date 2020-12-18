@@ -1,52 +1,55 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/common/dimens.dart';
 
 class MyTheme {
   static final ThemeData light = ThemeData(
-    brightness: Brightness.light,
-    primaryColor: MyColor.primary,
-    accentColor: MyColor.accent,
-    accentColorBrightness: Brightness.dark,
-    buttonTheme: ButtonThemeData(
-      buttonColor: MyColor.accent,
-      padding: const EdgeInsets.all(Dimens.buttonPadding),
-    ),
-    textSelectionColor: MyColor.primary.withAlpha(100),
-    snackBarTheme: SnackBarThemeData(
-      behavior: SnackBarBehavior.floating,
-    )
-  );
+      brightness: Brightness.light,
+      primaryColor: MyColor.primary,
+      accentColor: MyColor.accent,
+      accentColorBrightness: Brightness.dark,
+      buttonTheme: ButtonThemeData(
+        buttonColor: MyColor.accent,
+        padding: const EdgeInsets.all(Dimens.buttonPadding),
+      ),
+      textSelectionTheme: TextSelectionThemeData(
+        selectionColor: MyColor.primary.withAlpha(100),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+      ));
 
   static final ThemeData dark = ThemeData(
-    brightness: Brightness.dark,
-    primaryColor: MyColor.darkGrey,
-    accentColor: MyColor.accent,
-    accentColorBrightness: Brightness.light,
-    floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: MyColor.primary,
-      foregroundColor: Colors.white,
-    ),
-    bottomAppBarColor: MyColor.darkGrey,
-    toggleableActiveColor: MyColor.accent,
-    buttonTheme: ButtonThemeData(
-      buttonColor: MyColor.primary,
-      padding: const EdgeInsets.all(Dimens.buttonPadding),
-    ),
-    indicatorColor: MyColor.accent,
-    textSelectionColor: MyColor.accent.withAlpha(100),
-    cursorColor: MyColor.lightGrey,
-    inputDecorationTheme: InputDecorationTheme(
-      border: UnderlineInputBorder(),
-    ),
-    bottomSheetTheme: BottomSheetThemeData(
-      backgroundColor: MyColor.darkGrey,
-      modalBackgroundColor: MyColor.darkGrey,
-    ),
-    snackBarTheme: SnackBarThemeData(
-      behavior: SnackBarBehavior.floating,
-    )
-  );
+      brightness: Brightness.dark,
+      primaryColor: MyColor.darkGrey,
+      accentColor: MyColor.accent,
+      accentColorBrightness: Brightness.light,
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: MyColor.primary,
+        foregroundColor: Colors.white,
+      ),
+      bottomAppBarColor: MyColor.darkGrey,
+      toggleableActiveColor: MyColor.accent,
+      buttonTheme: ButtonThemeData(
+        buttonColor: MyColor.primary,
+        padding: const EdgeInsets.all(Dimens.buttonPadding),
+      ),
+      indicatorColor: MyColor.accent,
+      textSelectionTheme: TextSelectionThemeData(
+        selectionColor: MyColor.accent.withAlpha(100),
+        cursorColor: MyColor.lightGrey,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: UnderlineInputBorder(),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: MyColor.darkGrey,
+        modalBackgroundColor: MyColor.darkGrey,
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+      ));
 
   static final ThemeData black = dark.copyWith(
     scaffoldBackgroundColor: Colors.black,

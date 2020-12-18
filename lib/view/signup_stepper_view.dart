@@ -3,18 +3,21 @@ import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/common/utils.dart';
 import 'package:flutter_banking/view/signup_address_view.dart';
-import 'package:flutter_banking/view/signup_contact_view.dart';
+import 'package:flutter_banking/view/signup_mail_view.dart';
 import 'package:flutter_banking/view/signup_law_view.dart';
 import 'package:flutter_banking/view/signup_legi_view.dart';
 import 'package:flutter_banking/view/signup_name_view.dart';
+import 'package:flutter_banking/view/signup_phone_number_confirm_view.dart';
+import 'package:flutter_banking/view/signup_security_code.dart';
 import 'package:flutter_banking/view/signup_tax_view.dart';
 import 'package:flutter_banking/view/transparent_app_bar.dart';
+import 'package:flutter_banking/widgets/action_button.dart';
 
 class Step {
-  final Widget view;
-  final String title;
+  final Widget child;
+  final bool showAppBar;
 
-  const Step(this.view, this.title);
+  const Step({@required this.child, this.showAppBar = true});
 }
 
 class SignUpStepperView extends StatefulWidget {
@@ -36,31 +39,54 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
 
     _steps = [
       Step(
-          SignUpNameView(
-            nextPage: () => _nextPage(),
-          ),
-          "What's your name?"),
+        child: SignUpSecurityCode(
+          title: "Assign a security code",
+          nextPage: () => _nextPage(),
+        ),
+      ),
       Step(
-          SignUpAddressView(
-            nextPage: () => _nextPage(),
-          ),
-          "And your address?"),
+        child: SignUpPhoneNumberConfirmView(
+          title: "Please enter the 6-digit code",
+          subtitle: "We've sent it to +49 173 1234567",
+          nextPage: () => _nextPage(),
+        ),
+      ),
       Step(
-          SignUpContactView(
-            nextPage: () => _nextPage(),
-          ),
-          "Verify contact data"),
+        child: SignUpNameView(
+          title: "Who are you?",
+          nextPage: () => _nextPage(),
+        ),
+      ),
       Step(
-          SignUpLawView(
-            nextPage: () => _nextPage(),
-          ),
-          "Legal information"),
+        child: SignUpAddressView(
+          title: "Enter your address?",
+          nextPage: () => _nextPage(),
+        ),
+      ),
       Step(
-          SignUpTaxView(
-            nextPage: () => _nextPage(),
-          ),
-          "Tax information"),
-      Step(SignUpLegitimationView(), "Video ident"),
+        child: SignUpMailView(
+          title: "Your mail address",
+          description: "We use it only to inform you about important changes.",
+          nextPage: () => _nextPage(),
+        ),
+      ),
+      Step(
+        child: SignUpTaxView(
+          title: "Tax information",
+          description:
+              "In which country are you taxable? You may be subject to taxes in several countries. Please specify them all.",
+          nextPage: () => _nextPage(),
+        ),
+      ),
+      Step(
+        child: SignUpLawView(
+          title: "Legal information",
+          nextPage: () => _nextPage(),
+        ),
+      ),
+      Step(
+        child: SignUpLegitimationView(title: "Video ident"),
+      ),
     ];
   }
 
@@ -73,21 +99,28 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-
     final Step step = _steps[_index];
     _hasStep = _index + 1 < _steps.length;
 
     return WillPopScope(
       onWillPop: () => Future.sync(_onWillPop),
       child: Scaffold(
-        appBar: _buildAppBar(theme, step.title, _steps.length),
+        appBar:
+            step.showAppBar ? _buildAppBar(theme, step, _steps.length) : null,
         body: PageView(
             controller: _pageController,
             onPageChanged: _onPageChanged,
             physics: NeverScrollableScrollPhysics(),
-            children: _steps.map((s) => s.view).toList()),
-        floatingActionButton: _hasStep ? _buildFAB() : null,
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+            children: _steps.map((s) => s.child).toList()),
+        floatingActionButton: _hasStep
+            ? ButtomActionButtonBar(
+                primary: PrimaryActionButton(
+                  label: "Continue",
+                  onPressed: () => _nextPage(),
+                ),
+              )
+            : null,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
@@ -117,54 +150,31 @@ class _SignUpStepperViewState extends State<SignUpStepperView>
   }
 
   PreferredSizeWidget _buildAppBar(
-      final ThemeData theme, String title, int itemCount) {
+      final ThemeData theme, Step step, int itemCount) {
     final double progress = _index == 0 ? 0.1 : (_index / itemCount) + 0.1;
 
     return TransparentAppBar(
       theme: theme,
-      hasElevation: true,
-      title: Column(
+      hasElevation: false,
+      title: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(Dimens.progressBarBorderRadius),
-            child: Container(
-                height: Dimens.progressBarHeight,
-                child: LinearProgressIndicator(
-                    backgroundColor: MyColor.transparentPrimary,
-                    valueColor: AlwaysStoppedAnimation(MyColor.primary),
-                    value: progress)),
+          Expanded(
+            child: ClipRRect(
+              borderRadius:
+                  BorderRadius.circular(Dimens.progressBarBorderRadius),
+              child: Container(
+                  height: Dimens.progressBarHeight,
+                  child: LinearProgressIndicator(
+                      backgroundColor: MyColor.transparentPrimary,
+                      valueColor: AlwaysStoppedAnimation(MyColor.primary),
+                      value: progress)),
+            ),
+          ),
+          SizedBox(
+            width: 52,
           ),
         ],
       ),
-      actions: [
-        IconButton(
-            icon: Icon(Icons.clear),
-            onPressed: () => Navigator.of(context).pop()),
-      ],
-      bottom: PreferredSize(
-        child: Container(
-          height: Dimens.progressAppBarHeight,
-          padding: const EdgeInsets.symmetric(
-              horizontal: Dimens.listItemPaddingHorizontal),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: _buildTitle(title, theme),
-          ),
-        ),
-        preferredSize: const Size.fromHeight(Dimens.progressAppBarHeight),
-      ),
-    );
-  }
-
-  Text _buildTitle(final String text, final ThemeData theme) {
-    final TextStyle titleStyle = theme.textTheme.headline3;
-    return Text(text, style: titleStyle);
-  }
-
-  FloatingActionButton _buildFAB() {
-    return FloatingActionButton(
-      onPressed: () => _nextPage(),
-      child: Icon(Icons.arrow_forward),
     );
   }
 }

@@ -1,5 +1,4 @@
 class Dimens {
-
   // Padding for normal view
   static const double horizontalPadding = 12;
 
@@ -14,6 +13,7 @@ class Dimens {
 
   // buttons
   static const double buttonPadding = 12;
+  static const double primaryActionButtonPaddingHorizontal = 36;
 
   // amount input buttons
   static const double numberTextScaleFactor = 1.5;
@@ -25,7 +25,9 @@ class Dimens {
   static const double inputFieldHorizontalPadding = 16;
   static const double textFieldInnerPadding = 6;
   static const double fabScrollPadding = 104;
+  static const double bigFabScrollPadding = fabScrollPadding * 1.5;
   static const double listScrollPadding = fabScrollPadding - 18;
+  static const double listBigScrollPadding = bigFabScrollPadding - 18;
   static const double inputFieldLabelHeight = 1;
   static const double progressAppBarHeight = 48;
 }

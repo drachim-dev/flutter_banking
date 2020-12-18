@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_banking/auto_router.gr.dart';
 import 'package:flutter_banking/common/dimens.dart';
-import 'package:flutter_banking/router.gr.dart';
 
 class MoreView extends StatelessWidget {
   @override
@@ -28,16 +28,15 @@ class MoreView extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(
                 horizontal: Dimens.listItemPaddingHorizontal,
                 vertical: Dimens.listItemPaddingVertical),
-            onTap: () => ExtendedNavigator.rootNavigator
-                .pushNamed(Routes.preferencesView)),
+            onTap: () =>
+                ExtendedNavigator.of(context).push(Routes.preferencesView)),
         ListTile(
           leading: Icon(Icons.place),
           title: Text('ATM map'),
           contentPadding: const EdgeInsets.symmetric(
               horizontal: Dimens.listItemPaddingHorizontal,
               vertical: Dimens.listItemPaddingVertical),
-          onTap: () =>
-              ExtendedNavigator.rootNavigator.pushNamed(Routes.atmMapView),
+          onTap: () => ExtendedNavigator.of(context).push(Routes.atmMapView),
         ),
         ListTile(
           leading: Icon(Icons.insert_drive_file),

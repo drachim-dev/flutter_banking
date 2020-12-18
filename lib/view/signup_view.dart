@@ -3,12 +3,12 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_banking/auto_router.gr.dart';
 import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/locator.dart';
 import 'package:flutter_banking/model/user.dart';
 import 'package:flutter_banking/model/viewstate.dart';
-import 'package:flutter_banking/router.gr.dart';
 import 'package:flutter_banking/services/authentication_service.dart';
 import 'package:flutter_banking/services/biometric_auth_notifier.dart';
 import 'package:flutter_banking/view/base_view.dart';
@@ -72,7 +72,9 @@ class _SignUpViewState extends State<SignUpView> {
               horizontal: Dimens.listItemPaddingHorizontal),
           child: Form(
             key: _formKey,
-            autovalidate: _autoValidate,
+            autovalidateMode: _autoValidate
+                ? AutovalidateMode.always
+                : AutovalidateMode.disabled,
             child: Column(
               children: <Widget>[
                 SizedBox(height: Dimens.listItemPaddingVerticalBig),
@@ -100,7 +102,7 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   void _onClickCreateAccount() =>
-      ExtendedNavigator.rootNavigator.pushNamed(Routes.signUpStepperView);
+      ExtendedNavigator.of(context).push(Routes.signUpStepperView);
 
   Widget _buildHeader(final ThemeData theme) {
     final TextStyle headerStyle =
@@ -240,8 +242,8 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   void navigateToHome() {
-    ExtendedNavigator.rootNavigator
-        .pushNamedAndRemoveUntil(Routes.homeView, (_) => false);
+    ExtendedNavigator.of(context)
+        .pushAndRemoveUntil(Routes.homeView, (_) => false);
   }
 }
 

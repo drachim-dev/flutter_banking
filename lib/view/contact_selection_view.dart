@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_banking/auto_router.gr.dart';
 import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/common/utils.dart';
 import 'package:flutter_banking/model/transaction.dart';
 import 'package:flutter_banking/model/account.dart';
 import 'package:flutter_banking/model/viewstate.dart';
-import 'package:flutter_banking/router.gr.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/view/list_group_header.dart';
 import 'package:flutter_banking/viewmodel/contact_model.dart';
@@ -122,7 +122,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
       title: Text('Add new contact'),
       onTap: () {
         Utils.unfocus();
-        ExtendedNavigator.rootNavigator.pushNamed(Routes.addContactView,
+        ExtendedNavigator.of(context).push(Routes.addAccountView,
             arguments: AddAccountViewArguments(createOwnAccount: false));
       },
     );
@@ -186,8 +186,7 @@ class _ContactSelectionViewState extends State<ContactSelectionView> {
 
               // pass transaction to new route
               Utils.unfocus();
-              ExtendedNavigator.rootNavigator.pushNamed(
-                  Routes.amountSelectionView,
+              ExtendedNavigator.of(context).push(Routes.amountSelectionView,
                   arguments:
                       AmountSelectionViewArguments(transaction: _transaction));
             },

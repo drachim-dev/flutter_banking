@@ -1,11 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_banking/auto_router.gr.dart';
 import 'package:flutter_banking/common/colors.dart';
 import 'package:flutter_banking/common/utils.dart';
 import 'package:flutter_banking/model/account_type.dart';
 import 'package:flutter_banking/model/transaction.dart';
-import 'package:flutter_banking/router.gr.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/view/transparent_app_bar.dart';
 import 'package:flutter_banking/viewmodel/add_transaction_overview_model.dart';
@@ -300,8 +300,8 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                   Expanded(
                                     child: FlatButton(
                                       onPressed: () => ExtendedNavigator
-                                          .rootNavigator
-                                          .pushNamedAndRemoveUntil(
+                                          .of(context)
+                                          .pushAndRemoveUntil(
                                               Routes.homeView,
                                               (Route<dynamic> route) => false),
                                       child: Text(
@@ -318,13 +318,13 @@ class _AddTransactionOverviewState extends State<AddTransactionOverview>
                                   Expanded(
                                     child: FlatButton(
                                       onPressed: () {
-                                        ExtendedNavigator.rootNavigator
-                                            .pushNamedAndRemoveUntil(
+                                        ExtendedNavigator.of(context)
+                                            .pushAndRemoveUntil(
                                                 Routes.homeView,
                                                 (Route<dynamic> route) =>
                                                     false);
-                                        ExtendedNavigator.rootNavigator
-                                            .pushNamed(
+                                        ExtendedNavigator.of(context)
+                                            .push(
                                                 Routes.contactSelectionView);
                                       },
                                       child: Text('SEND MORE',

@@ -180,17 +180,13 @@ class _AtmMapViewState extends State<AtmMapView> {
   }
 
   void onMapCreated(GoogleMapController controller) async {
-    setState(() {
-      _mapController = controller;
-    });
+    setState(() => _mapController = controller);
 
     // load night style
     if (_nightMode) {
       _nightStyle =
           await rootBundle.loadString('assets/styles/maps_night_mode.json');
-      setState(() {
-        _mapController.setMapStyle(_nightStyle);
-      });
+      setState(() => _mapController.setMapStyle(_nightStyle));
     }
   }
 
@@ -215,9 +211,7 @@ class _AtmMapViewState extends State<AtmMapView> {
           position: place.position);
     }).toSet();
 
-    setState(() {
-      markers = _markers;
-    });
+    setState(() => markers = _markers);
   }
 
   FloatingActionButton _buildFloatingActionButton() {

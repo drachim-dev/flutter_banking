@@ -1,16 +1,60 @@
-# flutter_banking
+# Flutter Banking
 
-A new Flutter application.
+A concept for a multibanking app developed with flutter.
 
-## Getting Started
+## Screenshots
 
-This project is a starting point for a Flutter application.
+### Easy signup
 
-A few resources to get you started if this is your first Flutter project:
+<table>
+    <tr>
+        <td>
+            <img src="screenshots/signup_1.jpg" width="250"/>
+        </td>
+        <td>
+            <img src="screenshots/signup_2.jpg" width="250"/>
+        </td>
+        <td>
+            <img src="screenshots/home.jpg" width="250"/>
+        </td>
+    </tr>
+</table>
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Send money
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<table>
+    <tr>
+        <td>
+            <img src="screenshots/send_money_1.jpg" width="250"/>
+        </td>
+        <td>
+            <img src="screenshots/send_money_2.jpg" width="250"/>
+        </td>
+        <td>
+            <img src="screenshots/send_money_3.jpg" width="250"/>
+        </td>
+        <td>
+            <img src="screenshots/send_money_4.jpg" width="250"/>
+        </td>
+    </tr>
+</table>
+
+### Dark theme
+
+<table>
+    <tr>
+        <td>
+            <img src="screenshots/dark_send_money_1.jpg" width="250"/>
+        </td>
+        <td>
+            <img src="screenshots/dark_send_money_2.jpg" width="250"/>
+        </td>
+        <td>
+            <img src="screenshots/dark_send_money_3.jpg" width="250"/>
+        </td>
+    </tr>
+</table>
+
+### Settings
+
+<img src="screenshots/dark_settings.jpg" width="250"/>

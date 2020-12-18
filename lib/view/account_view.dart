@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_banking/auto_router.gr.dart';
 import 'package:flutter_banking/common/dimens.dart';
 import 'package:flutter_banking/common/utils.dart';
 import 'package:flutter_banking/model/account.dart';
 import 'package:flutter_banking/model/account_type.dart';
 import 'package:flutter_banking/model/transaction.dart';
 import 'package:flutter_banking/model/viewstate.dart';
-import 'package:flutter_banking/router.gr.dart';
 import 'package:flutter_banking/view/base_view.dart';
 import 'package:flutter_banking/viewmodel/account_model.dart';
 
@@ -49,7 +49,7 @@ class _AccountViewState extends State<AccountView> {
       actions: [
         if (!_selectionMode)
           IconButton(
-            onPressed: () => ExtendedNavigator.rootNavigator.pushNamed(
+            onPressed: () => ExtendedNavigator.of(context).push(
                 Routes.addAccountView,
                 arguments: AddAccountViewArguments(createOwnAccount: true)),
             tooltip: 'Add account',
@@ -125,7 +125,7 @@ class _AccountViewState extends State<AccountView> {
   void _onTapAccount(Account account) {
     if (_selectionMode) {
       _transaction.ownAccount = account;
-      ExtendedNavigator.rootNavigator.pushNamed(Routes.addTransactionOverview,
+      ExtendedNavigator.of(context).push(Routes.addTransactionOverview,
           arguments:
               AddTransactionOverviewArguments(transaction: _transaction));
     }

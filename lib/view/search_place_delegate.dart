@@ -2,20 +2,14 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_banking/common/key_manager.dart';
 import 'package:flutter_banking/model/place.dart';
 import 'package:flutter_banking/view/search_suggestion_list.dart';
+import 'package:uuid/uuid.dart';
 
 class SearchPlaceDelegate extends SearchDelegate<PlaceNew> {
-  String PLACES_API_KEY = 'AIzaSyA5By6RbOWhe0mBLyhxD5IS5S2r1JMfv7k';
-
-  final List<String> _data = [
-    'Ammerländer Heerstraße',
-    'Aachener Straße',
-    'Widukindstraße'
-  ];
-  final List<String> _history = ['Ehnernstraße'];
-
-  Timer _throttle;
+  final String sessionToken = Uuid().v4();
+  final List<String> _history = ['Musterstraße'];
 
   // TODO: SearchDelegate doesn't respect theme
   // Workaround from https://github.com/flutter/flutter/issues/32180
@@ -85,9 +79,9 @@ class SearchPlaceDelegate extends SearchDelegate<PlaceNew> {
     String baseURL =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json';
     String type = 'address';
-    // TODO: Add session token
 
-    String request = '$baseURL?input=$query&key=$PLACES_API_KEY&type=$type';
+    String request =
+        '$baseURL?input=$query&key=${KeyManager.placedApiKey}.&sessiontoken=$sessionToken&types=$type';
     Response response = await Dio().get(request);
 
     final List predictions = response.data['predictions'];
@@ -101,20 +95,18 @@ class SearchPlaceDelegate extends SearchDelegate<PlaceNew> {
   }
 
   Future<PlaceNew> getPlaceDetails(String placeId) async {
-    String baseURL =
-        'https://maps.googleapis.com/maps/api/place/details/json';
+    String baseURL = 'https://maps.googleapis.com/maps/api/place/details/json';
     String fields = 'address_component';
-    // TODO: Add session token
 
-    String request = '$baseURL?place_id=$placeId&key=$PLACES_API_KEY&fields=$fields';
+    String request =
+        '$baseURL?place_id=$placeId&key=${KeyManager.placedApiKey}&sessiontoken=$sessionToken&fields=$fields';
     Response response = await Dio().get(request);
 
     var result = response.data['result'];
     List addressComponents = result['address_components'];
 
     Address address = Address();
-    for(int i = 0; i < addressComponents.length; i++) {
-
+    for (int i = 0; i < addressComponents.length; i++) {
       var component = addressComponents[i];
       List typesArray = component['types'];
 
